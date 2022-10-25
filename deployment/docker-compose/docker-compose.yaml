@@ -1,0 +1,56 @@
+version: '3'
+
+volumes:
+  mysql:
+  redis:
+
+networks:
+  slash-admin:
+    driver: bridge
+
+services:
+  mysql:
+    image: mysql:8.0.21
+    container_name: mysql
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    restart: always
+    ports:
+      - '3306:3306'
+    environment:
+      MYSQL_DATABASE: 'slash-admin'
+      MYSQL_ROOT_PASSWORD: '123456'
+    volumes:
+      - mysql:/var/lib/mysql
+    networks:
+      slash-admin:
+        aliases:
+          - mysqlserver
+    deploy:
+      resources:
+        limits:
+          cpus: '0.1'
+          memory: 300M
+        reservations:
+          cpus: '0.05'
+          memory: 200M
+
+  redis:
+    image: redis:7.0.5-alpine
+    container_name: redis
+    restart: always
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis:/data
+    networks:
+      slash-admin:
+        aliases:
+          - redisserver
+    deploy:
+      resources:
+        limits:
+          cpus: '0.1'
+          memory: 300M
+        reservations:
+          cpus: '0.05'
+          memory: 200M

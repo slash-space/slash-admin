@@ -1,0 +1,21 @@
+syntax = "v1"
+
+info(
+	title: "core service"
+	desc: "this is the api describe file for core services"
+	author: "waltcow"
+	email: "waltcow@gmail.com"
+	version: "v1.0"
+)
+
+import "base.api"
+
+//import "role.api"
+import "user/user.api"
+//import "menu.api"
+//import "captcha.api"
+//import "apis.api"
+//import "authority.api"
+//import "dictionary.api"
+//import "oauth.api"
+import "token/token.api"

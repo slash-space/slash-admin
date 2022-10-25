@@ -1,0 +1,49 @@
+name: Release tags
+
+on:
+  push:
+    branches:
+      - "main"
+    paths:
+      - 'release-channels.yaml'
+  workflow_dispatch:
+
+
+jobs:
+  Build:
+    runs-on: ubuntu-20.04
+    env:
+      DOCKER_BUILDKIT: 1
+    steps:
+      - name: Source checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: get stable tag
+        run: echo STABLE_RELEASE=$(yq eval '.stable' release-channels.yaml) >> $GITHUB_ENV
+      - name: checkout stable tag
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          ref: ${{ env.STABLE_RELEASE }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to Aliyun Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: registry.cn-shenzhen.aliyuncs.com
+          username: "${{ secrets.REGISTRY_USERNAME }}"
+          password: "${{ secrets.REGISTRY_PASSWORD }}"
+
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          file: app/bff/admin/cmd/api/Dockerfile
+          push: true
+          tags: registry.cn-shenzhen.aliyuncs.com/go-slash/slash-admin:stable
+
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
