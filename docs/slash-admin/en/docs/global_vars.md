@@ -7,10 +7,10 @@ For example:
 package svc
 
 import (
-	"github.com/suyuan32/simple-admin-core/api/internal/config"
-	"github.com/suyuan32/simple-admin-core/api/internal/middleware"
-	"github.com/suyuan32/simple-admin-core/common/logmessage"
-	"github.com/suyuan32/simple-admin-core/rpc/coreclient"
+	"github.com/suyuan32/slash-admin/api/internal/config"
+	"github.com/suyuan32/slash-admin/api/internal/middleware"
+	"github.com/suyuan32/slash-admin/common/logmessage"
+	"github.com/suyuan32/slash-admin/rpc/coreclient"
 
 	"github.com/casbin/casbin/v2"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -63,9 +63,9 @@ package api
 import (
 	"context"
 
-	"github.com/suyuan32/simple-admin-core/api/internal/svc"
-	"github.com/suyuan32/simple-admin-core/api/internal/types"
-	"github.com/suyuan32/simple-admin-core/rpc/types/core"
+	"github.com/suyuan32/slash-admin/api/internal/svc"
+	"github.com/suyuan32/slash-admin/api/internal/types"
+	"github.com/suyuan32/slash-admin/rpc/types/core"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

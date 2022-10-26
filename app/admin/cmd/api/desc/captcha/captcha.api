@@ -1,5 +1,3 @@
-
-
 syntax = "v1"
 
 info(
@@ -30,6 +28,7 @@ service core {
     //   200: CaptchaInfo
     //   401: SimpleMsg
     //   500: SimpleMsg
+    @doc "获取验证码"
     @handler getCaptcha
     get /captcha returns (CaptchaInfo)
 }

@@ -9,17 +9,23 @@ import (
 	"slash-admin/app/admin/cmd/api/internal/types"
 )
 
-// swagger:route POST /user/list user getUserList
-// Get user list | 获取用户列表
+// swagger:route post /user/list user GetUserList
+//
+// "Get user list | 获取用户列表"
+//
+// "获取用户列表"
+//
 // Parameters:
 //  + name: body
 //    require: true
 //    in: body
 //    type: GetUserListReq
+//
+//
 // Responses:
-//   200: UserListResp
-//   401: SimpleMsg
-//   500: SimpleMsg
+//  200: UserListResp
+//
+//
 
 func GetUserListHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {

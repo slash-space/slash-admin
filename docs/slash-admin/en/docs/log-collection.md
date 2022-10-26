@@ -25,7 +25,7 @@ docker run --name kib-01 --net elastic -p 5601:5601 docker.elastic.co/kibana/kib
 
 > Filebeat
 
-Modify filebeat-deploy.yaml， which is in simple-admin-core/deploy/k8s/log-collection/filebeat/
+Modify filebeat-deploy.yaml， which is in slash-admin/deploy/k8s/log-collection/filebeat/
 > You can add other log path for other api service， default only having core logs.
 
 ```yaml
@@ -57,7 +57,7 @@ Modify filebeat-deploy.yaml， which is in simple-admin-core/deploy/k8s/log-coll
 > Install filebeat via script
 
 ```shell
-# Enter simple-admin-core/deploy/k8s/log-collection/filebeat
+# Enter slash-admin/deploy/k8s/log-collection/filebeat
 kubectl apply -f filebeat-deploy.yaml
 ```
 

@@ -8,7 +8,7 @@
 [![Vben Admin](https://img.shields.io/badge/Vben%20Admin-v2.8.0-yellow.svg)](https://vvbin.cn/doc-next/)
 [![GORM](https://img.shields.io/badge/GORM-v1.23.8-blue.svg)](https://gorm.io/)
 [![Casbin](https://img.shields.io/badge/Casbin-v2.52.1-orange.svg)](https://github.com/casbin/casbin)
-[![Release](https://img.shields.io/badge/Release-v0.0.6-green.svg)](https://github.com/suyuan32/simple-admin-core/releases)
+[![Release](https://img.shields.io/badge/Release-v0.0.6-green.svg)](https://github.com/suyuan32/slash-admin/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![SimpleAdmin](https://dcbadge.vercel.app/api/server/NDED5p2hJk)](https://discord.gg/NDED5p2hJk)
 ## Introduction
@@ -57,11 +57,11 @@ Password:  simple-admin
 ![pic](https://s1.imagehub.cc/images/2022/09/15/register_zh_cn.png)
 ![pic](https://s1.imagehub.cc/images/2022/09/15/add_example_api_authority.png)
 
-[More](https://suyuan32.github.io/simple-admin-core/#/slash-admin/zh-cn/docs/screenshot)
+[More](https://suyuan32.github.io/slash-admin/#/slash-admin/zh-cn/docs/screenshot)
 
 ## Documentation
 
-[Document](https://suyuan32.github.io/simple-admin-core/)
+[Document](https://suyuan32.github.io/slash-admin/)
 
 or running locally
 
@@ -87,13 +87,13 @@ docsify serve .
 - Get the project code
 
 ```bash
-git clone https://github.com/suyuan32/simple-admin-core.git
+git clone https://github.com/suyuan32/slash-admin.git
 ```
 
 - Installation dependencies
 
 ```bash
-cd simple-admin-core/
+cd slash-admin/
 
 go mod tidy
 

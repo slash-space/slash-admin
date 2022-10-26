@@ -8,49 +8,29 @@ info(
     version: "v1.0"
 )
 
-// The basic response with data | 基础带数据信息
-// swagger:response BaseMsg
-type BaseMsg {
+// The basic response without data | 基础不带数据信息
+type BaseMsgResp {
     Code int32 `json:"code"`
     Msg string `json:"msg"`
     Data string `json:"data"`
 }
 
-// The basic response without data | 基础不带数据信息
-// swagger:response BaseMsg
-type BaseResp {
-    Code int32 `json:"code"`
-    Msg string `json:"msg"`
-}
-
-// The simplest message | 最简单的信息
-// swagger:response SimpleMsg
-type SimpleMsg {
+// The SimpleMsgResp | 简单信息Resp
+type SimpleMsgResp {
     // Message | 信息
     Msg string `json:"msg"`
 }
 
-// swagger:model PageInfo
 // The page request parameters | 列表请求参数
-type PageInfo {
+type PageReq {
     // Page number | 第几页
     // Required: true
-    Page uint64 `json:"page" validate:"number"`
+    PageNo uint64 `json:"pageNo" validate:"number"`
 
     // Page size | 单页数据行数
     // Required: true
     // Maximum: 100000
     PageSize uint64 `json:"pageSize" validate:"number,max=100000"`
-}
-
-// The page response data model | 列表返回信息
-// swagger:response PageList
-type PageList {
-    // Total number | 数据总数
-    Total uint64 `json:"total"`
-
-    // Data | 数据
-    Data []string `json:"data"`
 }
 
 // Basic id request | 基础id参数请求
@@ -63,7 +43,6 @@ type IDReq {
 
 
 // Basic id request | 基础id参数请求
-// swagger:model IDPathReq
 type IDPathReq {
     // ID
     // Required: true
@@ -71,7 +50,6 @@ type IDPathReq {
 }
 
 // Basic UUID request | 基础UUID参数请求
-// swagger:model UUIDReq
 type UUIDReq {
     // UUID
     // Required: true
@@ -80,7 +58,6 @@ type UUIDReq {
 }
 
 // The base response data | 基础信息
-// swagger:response BaseInfo
 type BaseInfo {
     // ID
     ID uint `json:"id"`
@@ -96,7 +73,6 @@ type BaseInfo {
 }
 
 // The request params of setting boolean status | 设置状态参数
-// swagger:model SetBooleanStatusReq
 type SetBooleanStatusReq {
     // ID
     // Required: true

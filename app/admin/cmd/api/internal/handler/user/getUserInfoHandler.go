@@ -8,12 +8,16 @@ import (
 	"slash-admin/app/admin/cmd/api/internal/svc"
 )
 
-// swagger:route GET /user/info user getUserInfo
-// Get user basic information | 获取用户基本信息
+// swagger:route get /user/info user GetUserInfo
+//
+// "Get user basic information | 获取用户基本信息"
+//
+// "获取用户基本信息"
+//
 // Responses:
-//   200: GetUserInfoResp
-//   401: SimpleMsg
-//   500: SimpleMsg
+//  200: GetUserInfoResp
+//
+//
 
 func GetUserInfoHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {

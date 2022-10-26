@@ -9,17 +9,23 @@ import (
 	"slash-admin/app/admin/cmd/api/internal/types"
 )
 
-// swagger:route POST /user/login user login
-// Log in | 登录
+// swagger:route post /user/login user Login
+//
+// "Log in | 登录"
+//
+// "登录"
+//
 // Parameters:
 //  + name: body
 //    require: true
 //    in: body
 //    type: LoginReq
+//
+//
 // Responses:
-//   200: LoginResp
-//   401: SimpleMsg
-//   500: SimpleMsg
+//  200: LoginResp
+//
+//
 
 func LoginHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {

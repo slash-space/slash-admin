@@ -8,7 +8,7 @@
 [![Vben Admin](https://img.shields.io/badge/Vben%20Admin-v2.8.0-yellow.svg)](https://vvbin.cn/doc-next/)
 [![GORM](https://img.shields.io/badge/GORM-v1.23.8-blue.svg)](https://gorm.io/)
 [![Casbin](https://img.shields.io/badge/Casbin-v2.52.1-orange.svg)](https://github.com/casbin/casbin)
-[![Release](https://img.shields.io/badge/Release-v0.0.6-green.svg)](https://github.com/suyuan32/simple-admin-core/releases)
+[![Release](https://img.shields.io/badge/Release-v0.0.6-green.svg)](https://github.com/suyuan32/slash-admin/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![SimpleAdmin](https://dcbadge.vercel.app/api/server/NDED5p2hJk)](https://discord.gg/NDED5p2hJk)
 ![QQ群](https://img.shields.io/badge/QQ%E7%BE%A4-801043319-blue)
@@ -58,12 +58,12 @@ Simple Admin 是一个开箱即用的分布式微服务后端管理系统，基�
 ![pic](https://s1.imagehub.cc/images/2022/09/15/register_zh_cn.png)
 ![pic](https://s1.imagehub.cc/images/2022/09/15/add_example_api_authority.png)
 
-[更多预览](https://suyuan32.github.io/simple-admin-core/#/slash-admin/zh-cn/docs/screenshot)
+[更多预览](https://suyuan32.github.io/slash-admin/#/slash-admin/zh-cn/docs/screenshot)
 
 
 ## 文档
 
-[文档](https://suyuan32.github.io/simple-admin-core/)
+[文档](https://suyuan32.github.io/slash-admin/)
 
 或者直接本地运行
 ```shell
@@ -89,13 +89,13 @@ docsify serve .
 - 获取项目代码
 
 ```bash
-git clone https://github.com/suyuan32/simple-admin-core.git
+git clone https://github.com/suyuan32/slash-admin.git
 ```
 
 - 安装依赖
 
 ```bash
-cd simple-admin-core/
+cd slash-admin/
 
 go mod tidy
 ```

@@ -25,7 +25,7 @@ docker run --name kib-01 --net elastic -p 5601:5601 docker.elastic.co/kibana/kib
 
 > Filebeat
 
-修改 filebeat-deploy.yaml， 位置 simple-admin-core/deploy/k8s/log-collection/filebeat/
+修改 filebeat-deploy.yaml， 位置 slash-admin/deploy/k8s/log-collection/filebeat/
 > 可以添加 log 来源位置，默认有 core
 
 ```yaml
@@ -57,7 +57,7 @@ docker run --name kib-01 --net elastic -p 5601:5601 docker.elastic.co/kibana/kib
 > 然后使用脚本部署 filebeat
 
 ```shell
-# 进入 simple-admin-core/deploy/k8s/log-collection/filebeat
+# 进入 slash-admin/deploy/k8s/log-collection/filebeat
 kubectl apply -f filebeat-deploy.yaml
 ```
 

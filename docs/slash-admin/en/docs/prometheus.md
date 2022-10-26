@@ -6,7 +6,7 @@
 
 [Install Steps](https://prometheus-operator.dev/docs/prologue/quick-start/)
 
-> After installation, cd simple-admin-core/deploy/k8s/prometheus
+> After installation, cd slash-admin/deploy/k8s/prometheus
 
 ```shell
 # Run

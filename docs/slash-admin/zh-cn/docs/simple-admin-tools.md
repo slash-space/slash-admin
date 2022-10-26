@@ -134,7 +134,7 @@ goctl rpc protoc user.proto --go_out=. --go-grpc_out=. --zrpc_out=.
 导入fork项目需要使用 replace 命令。
 
 ```mod
-module github.com/suyuan32/simple-admin-core
+module github.com/suyuan32/slash-admin
 
 go 1.19
 

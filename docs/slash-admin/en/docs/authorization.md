@@ -7,7 +7,7 @@ We use Casbin to do authorization validating.
 cbn := utils.NewCasbin(db)
 ```
 
-[cbn](https://github.com/suyuan32/simple-admin-core/blob/master/api/internal/svc/servicecontext.go)
+[cbn](https://github.com/suyuan32/slash-admin/blob/master/api/internal/svc/servicecontext.go)
 
 > Use in middleware
 
@@ -19,8 +19,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/suyuan32/simple-admin-core/common/logmessage"
-	"github.com/suyuan32/simple-admin-core/common/message"
+	"github.com/suyuan32/slash-admin/common/logmessage"
+	"github.com/suyuan32/slash-admin/common/message"
 
 	"github.com/casbin/casbin/v2"
 	"github.com/zeromicro/go-zero/core/errorx"
@@ -84,7 +84,7 @@ func (m *AuthorityMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 
 ```
 
-[Middleware](https://github.com/suyuan32/simple-admin-core/blob/master/api/internal/middleware/authoritymiddleware.go)
+[Middleware](https://github.com/suyuan32/slash-admin/blob/master/api/internal/middleware/authoritymiddleware.go)
 
 > Use in api file
 

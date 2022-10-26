@@ -9,17 +9,23 @@ import (
 	"slash-admin/app/admin/cmd/api/internal/types"
 )
 
-// swagger:route POST /user/change-password user changePassword
-// Change Password | 修改密码
+// swagger:route post /user/change-password user ChangePassword
+//
+// "Change Password | 修改密码"
+//
+// "修改用户密码"
+//
 // Parameters:
 //  + name: body
 //    require: true
 //    in: body
 //    type: ChangePasswordReq
+//
+//
 // Responses:
-//   200: SimpleMsg
-//   401: SimpleMsg
-//   500: SimpleMsg
+//  200: SimpleMsg
+//
+//
 
 func ChangePasswordHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {

@@ -47,7 +47,7 @@ kubectl apply -f core-api.yaml
 kubectl apply -f backend-ui.yaml
 ```
 
-> 可以直接运行 simple-admin-core/deploy/k8s/setup.sh 完成以上操作
+> 可以直接运行 slash-admin/deploy/k8s/setup.sh 完成以上操作
 
 ### Ingress 配置
 参考官方文档 [Official Document](https://minikube.sigs.k8s.io/docs/tutorials/nginx_tcp_udp_ingress/)
@@ -106,7 +106,7 @@ kubectl patch deployment ingress-nginx-controller --patch "$(cat ingress-patch.y
 
 ```
 
-> 以直接运行 simple-admin-core/deploy/k8s/setup-ingress.sh 完成以上操作
+> 以直接运行 slash-admin/deploy/k8s/setup-ingress.sh 完成以上操作
 
 > 查看 ingress 地址
 

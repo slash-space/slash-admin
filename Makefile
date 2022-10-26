@@ -13,8 +13,14 @@ RELEASE_TAG     = $(VERSION).$(GIT_HASH)
 init:
 	go install github.com/zeromicro/go-zero/tools/goctl@v${GOCTL_ENHANCED_VERSION}
 
-gen-admin-api:
-	goctls api go --api ./app/admin/cmd/api/desc/admin.api --dir ./app/admin/cmd/api -style=goZero
+goctl-admin-api:
+	goctls api go --swagger --api ./app/admin/cmd/api/desc/admin.api --dir ./app/admin/cmd/api -style=goZero
 
-gen-admin-swagger:
+scan-admin-swagger:
 	swagger generate spec --output=./core.yml --scan-models
+
+serve-admin-swagger:
+	swagger serve --no-open -F=swagger --port 36666 core.yml
+
+ent-admin-orm:
+	cd app/admin/ent && go run -mod=mod ./entc.go

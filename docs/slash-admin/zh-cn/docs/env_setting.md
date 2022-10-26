@@ -17,7 +17,7 @@ password:     simple-admin
 
 ### 下载代码 
 ```bash
-git clone https://github.com/suyuan32/simple-admin-core.git
+git clone https://github.com/suyuan32/slash-admin.git
 ```
 
 ### 本地调试配置

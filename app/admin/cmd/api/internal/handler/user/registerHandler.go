@@ -9,17 +9,23 @@ import (
 	"slash-admin/app/admin/cmd/api/internal/types"
 )
 
-// swagger:route POST /user/register user register
-// Register | 注册
+// swagger:route post /user/register user Register
+//
+// "Register | 注册"
+//
+// "注册"
+//
 // Parameters:
 //  + name: body
 //    require: true
 //    in: body
 //    type: RegisterReq
+//
+//
 // Responses:
-//   200: SimpleMsg
-//   401: SimpleMsg
-//   500: SimpleMsg
+//  200: SimpleMsg
+//
+//
 
 func RegisterHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {

@@ -1,12 +1,11 @@
 //	System Name
 //
-//	Description ...
+//	Description: core service
 //
 //	Schemes: http, https
 //	Host: localhost:9100
 //	BasePath: /
 //	Version: 0.0.1
-//	Contact: waltcow@gmail.com
 //	SecurityDefinitions:
 //	  Token:
 //	    type: apiKey

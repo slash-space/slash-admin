@@ -31,7 +31,7 @@
 
 > Default translation support Chinese and English, you can add other languages in servicecontext.go like below
 
-[Example](https://github.com/suyuan32/simple-admin-core/blob/master/api/internal/svc/servicecontext_test.go)
+[Example](https://github.com/suyuan32/slash-admin/blob/master/api/internal/svc/servicecontext_test.go)
 
 ```go
 func TestAddTrans(t *testing.T) {

@@ -2,9 +2,9 @@
 
 > 环境配置
 
-[go-swagger](https://zhuanlan.zhihu.com/p/556171256?)
+[go-swagger](https://goswagger.io/install.html)
 
-> 在项目根目录运行 simple-admin-core/
+> 在项目根目录运行 slash-admin/
 
 ```shell
 swagger generate spec --output=./core.yml --scan-models

@@ -1,3 +1,21 @@
 Name: core
 Host: 0.0.0.0
 Port: 8888
+Timeout: 30000
+
+Auth:
+  AccessSecret: jS6VKDtsJf3z1n2VKDtsJf3z1n2
+  AccessExpire: 259200
+
+Log:
+  ServiceName: core-api
+  Mode: file
+  Level: info
+  Compress: false
+  KeepDays: 7
+  StackCoolDownMillis: 100
+
+Captcha:
+  KeyLong: 5
+  ImgWidth: 240
+  ImgHeight: 80

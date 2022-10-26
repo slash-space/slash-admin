@@ -8,12 +8,16 @@ import (
 	"slash-admin/app/admin/cmd/api/internal/svc"
 )
 
-// swagger:route GET /user/perm user getUserPermCode
-// Get user's permission code | 获取用户权限码
+// swagger:route get /user/perm user GetUserPermCode
+//
+// "Get user's permission code | 获取用户权限码"
+//
+// "获取用户权限码"
+//
 // Responses:
-//   200: PermCodeResp
-//   401: SimpleMsg
-//   500: SimpleMsg
+//  200: PermCodeResp
+//
+//
 
 func GetUserPermCodeHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {

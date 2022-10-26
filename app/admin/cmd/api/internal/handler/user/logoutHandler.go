@@ -8,12 +8,16 @@ import (
 	"slash-admin/app/admin/cmd/api/internal/svc"
 )
 
-// swagger:route GET /user/logout user logout
-// Log out | 退出登陆
+// swagger:route get /user/logout user Logout
+//
+// "Log out | 退出登陆"
+//
+// "退出登陆"
+//
 // Responses:
-//   200: SimpleMsg
-//   401: SimpleMsg
-//   500: SimpleMsg
+//  200: SimpleMsg
+//
+//
 
 func LogoutHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {

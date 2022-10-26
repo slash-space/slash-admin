@@ -19,7 +19,7 @@ password:     simple-admin
 
 > Clone the core code 
 ```bash
-git clone https://github.com/suyuan32/simple-admin-core.git
+git clone https://github.com/suyuan32/slash-admin.git
 ```
 
 > Local development setting

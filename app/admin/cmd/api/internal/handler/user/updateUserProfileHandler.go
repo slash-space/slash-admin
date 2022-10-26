@@ -9,17 +9,23 @@ import (
 	"slash-admin/app/admin/cmd/api/internal/types"
 )
 
-// swagger:route POST /user/profile user updateUserProfile
-// Update user's profile | 更新用户个人信息
+// swagger:route post /user/profile user UpdateUserProfile
+//
+// "Update user's profile | 更新用户个人信息"
+//
+// "更新用户个人信息"
+//
 // Parameters:
 //  + name: body
 //    require: true
 //    in: body
 //    type: ProfileReq
+//
+//
 // Responses:
-//   200: SimpleMsg
-//   401: SimpleMsg
-//   500: SimpleMsg
+//  200: SimpleMsg
+//
+//
 
 func UpdateUserProfileHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {

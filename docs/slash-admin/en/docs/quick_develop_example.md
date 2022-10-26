@@ -1,5 +1,5 @@
 ## Back end example demo
-[Example](https://github.com/suyuan32/simple-admin-core/tree/example)
+[Example](https://github.com/suyuan32/slash-admin/tree/example)
 > Install goctls
 [Simple-admin-tool](slash-admin/zh-cn/docs/simple-admin-tools.md)
 
@@ -325,7 +325,7 @@ service core {
 > run in rpc directory
 
 ```shell
-goctls rpc protoc core.proto --proto_path=/home/ryan/GolandProjects/simple-admin-core/rpc/ --go_out=./types --go-grpc_out=./types --zrpc_out=./
+goctls rpc protoc core.proto --proto_path=/home/ryan/GolandProjects/slash-admin/rpc/ --go_out=./types --go-grpc_out=./types --zrpc_out=./
 ```
 
 proto_path better use absolute path
@@ -338,8 +338,8 @@ package logic
 import (
 	"context"
 
-	"github.com/suyuan32/simple-admin-core/rpc/internal/svc"
-	"github.com/suyuan32/simple-admin-core/rpc/types/core"
+	"github.com/suyuan32/slash-admin/rpc/internal/svc"
+	"github.com/suyuan32/slash-admin/rpc/types/core"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -474,10 +474,10 @@ package example
 
 import (
 	"context"
-	"github.com/suyuan32/simple-admin-core/rpc/types/core"
+	"github.com/suyuan32/slash-admin/rpc/types/core"
 
-	"github.com/suyuan32/simple-admin-core/api/internal/svc"
-	"github.com/suyuan32/simple-admin-core/api/internal/types"
+	"github.com/suyuan32/slash-admin/api/internal/svc"
+	"github.com/suyuan32/slash-admin/api/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

@@ -54,7 +54,7 @@ UploadConf:
 ```
 
 > You should use nginx to set PublicStorePath as static path for front end.
-> Make sure AccessSecret is the same as simple-admin-core' api set
+> Make sure AccessSecret is the same as slash-admin' api set
 > The configuration is similar as core
 > Run code the same as core
 

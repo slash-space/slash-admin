@@ -2,9 +2,9 @@
 
 > Environment setting
 
-[go-swagger](https://zhuanlan.zhihu.com/p/556171256?)
+[go-swagger](https://goswagger.io/install.html)
 
-> In the root of project run simple-admin-core/
+> In the root of project run slash-admin/
 
 ```shell
 swagger generate spec --output=./core.yml --scan-models

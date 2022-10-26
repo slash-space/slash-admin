@@ -44,7 +44,7 @@ kubectl apply -f core-api.yaml
 kubectl apply -f backend-ui.yaml
 ```
 
-> You can just run simple-admin-core/deploy/k8s/setup.sh to finish the job.
+> You can just run slash-admin/deploy/k8s/setup.sh to finish the job.
 
 ### Ingress Setting
 Reference [Official Document](https://minikube.sigs.k8s.io/docs/tutorials/nginx_tcp_udp_ingress/)
@@ -103,7 +103,7 @@ kubectl patch deployment ingress-nginx-controller --patch "$(cat ingress-patch.y
 
 ```
 
-> You can just run simple-admin-core/deploy/k8s/setup-ingress.sh to finish the job.
+> You can just run slash-admin/deploy/k8s/setup-ingress.sh to finish the job.
 
 > browse ingress IP address 
 

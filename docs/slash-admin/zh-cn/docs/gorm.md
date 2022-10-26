@@ -10,7 +10,7 @@
 	}
 ```
 
-[Init](https://github.com/suyuan32/simple-admin-core/blob/master/rpc/internal/svc/servicecontext.go)
+[Init](https://github.com/suyuan32/slash-admin/blob/master/rpc/internal/svc/servicecontext.go)
 
 > 定义 Model
 
@@ -29,7 +29,7 @@ type Api struct {
 
 ```
 
-[Model](https://github.com/suyuan32/simple-admin-core/tree/master/rpc/internal/model)
+[Model](https://github.com/suyuan32/slash-admin/tree/master/rpc/internal/model)
 
 > 获取数据
 
@@ -39,10 +39,10 @@ package logic
 import (
 	"context"
 
-	"github.com/suyuan32/simple-admin-core/common/logmessage"
-	"github.com/suyuan32/simple-admin-core/rpc/internal/model"
-	"github.com/suyuan32/simple-admin-core/rpc/internal/svc"
-	"github.com/suyuan32/simple-admin-core/rpc/types/core"
+	"github.com/suyuan32/slash-admin/common/logmessage"
+	"github.com/suyuan32/slash-admin/rpc/internal/model"
+	"github.com/suyuan32/slash-admin/rpc/internal/svc"
+	"github.com/suyuan32/slash-admin/rpc/types/core"
 
 	"github.com/zeromicro/go-zero/core/logx"
 	"google.golang.org/grpc/codes"
@@ -109,6 +109,6 @@ func (l *GetApiListLogic) GetApiList(in *core.ApiPageReq) (*core.ApiListResp, er
 
 > 使用 l.svc.DB.Model().Where().Find() 即可
 
-[GetApiList](https://github.com/suyuan32/simple-admin-core/blob/master/rpc/internal/logic/getapilistlogic.go)
+[GetApiList](https://github.com/suyuan32/slash-admin/blob/master/rpc/internal/logic/getapilistlogic.go)
 
 [GORM](https://gorm.io/)
