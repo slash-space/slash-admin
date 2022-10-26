@@ -19,3 +19,21 @@ Captcha:
   KeyLong: 5
   ImgWidth: 240
   ImgHeight: 80
+
+Redis:
+  Host: 127.0.0.1
+  Port: 6379
+  Pass:
+  Type: node
+
+Database:
+  User: root
+  Password: "123456"
+  DbName: slash_admin_enhance
+  SSLMode: "false"
+  Host: 127.0.0.1
+  Port: 3306
+  DbPath:
+  Type: mysql
+  MaxOpenConns: 100
+  Debug: true
