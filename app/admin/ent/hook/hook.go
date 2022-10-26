@@ -47,6 +47,32 @@ func (f SysDictionaryDetailFunc) Mutate(ctx context.Context, m ent.Mutation) (en
 	return f(ctx, mv)
 }
 
+// The SysMenuFunc type is an adapter to allow the use of ordinary
+// function as SysMenu mutator.
+type SysMenuFunc func(context.Context, *ent.SysMenuMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f SysMenuFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.SysMenuMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.SysMenuMutation", m)
+	}
+	return f(ctx, mv)
+}
+
+// The SysMenuParamFunc type is an adapter to allow the use of ordinary
+// function as SysMenuParam mutator.
+type SysMenuParamFunc func(context.Context, *ent.SysMenuParamMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f SysMenuParamFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.SysMenuParamMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.SysMenuParamMutation", m)
+	}
+	return f(ctx, mv)
+}
+
 // The SysOauthProviderFunc type is an adapter to allow the use of ordinary
 // function as SysOauthProvider mutator.
 type SysOauthProviderFunc func(context.Context, *ent.SysOauthProviderMutation) (ent.Value, error)

@@ -11,6 +11,8 @@ import (
 	"slash-admin/app/admin/ent/sysapi"
 	"slash-admin/app/admin/ent/sysdictionary"
 	"slash-admin/app/admin/ent/sysdictionarydetail"
+	"slash-admin/app/admin/ent/sysmenu"
+	"slash-admin/app/admin/ent/sysmenuparam"
 	"slash-admin/app/admin/ent/sysoauthprovider"
 	"slash-admin/app/admin/ent/sysrole"
 	"slash-admin/app/admin/ent/systoken"
@@ -937,6 +939,468 @@ func (sdd *SysDictionaryDetail) ToEdge(order *SysDictionaryDetailOrder) *SysDict
 	return &SysDictionaryDetailEdge{
 		Node:   sdd,
 		Cursor: order.Field.toCursor(sdd),
+	}
+}
+
+// SysMenuEdge is the edge representation of SysMenu.
+type SysMenuEdge struct {
+	Node   *SysMenu `json:"node"`
+	Cursor Cursor   `json:"cursor"`
+}
+
+// SysMenuConnection is the connection containing edges to SysMenu.
+type SysMenuConnection struct {
+	Edges      []*SysMenuEdge `json:"edges"`
+	PageInfo   PageInfo       `json:"pageInfo"`
+	TotalCount int            `json:"totalCount"`
+}
+
+func (c *SysMenuConnection) build(nodes []*SysMenu, pager *sysmenuPager, after *Cursor, first *int, before *Cursor, last *int) {
+	c.PageInfo.HasNextPage = before != nil
+	c.PageInfo.HasPreviousPage = after != nil
+	if first != nil && *first+1 == len(nodes) {
+		c.PageInfo.HasNextPage = true
+		nodes = nodes[:len(nodes)-1]
+	} else if last != nil && *last+1 == len(nodes) {
+		c.PageInfo.HasPreviousPage = true
+		nodes = nodes[:len(nodes)-1]
+	}
+	var nodeAt func(int) *SysMenu
+	if last != nil {
+		n := len(nodes) - 1
+		nodeAt = func(i int) *SysMenu {
+			return nodes[n-i]
+		}
+	} else {
+		nodeAt = func(i int) *SysMenu {
+			return nodes[i]
+		}
+	}
+	c.Edges = make([]*SysMenuEdge, len(nodes))
+	for i := range nodes {
+		node := nodeAt(i)
+		c.Edges[i] = &SysMenuEdge{
+			Node:   node,
+			Cursor: pager.toCursor(node),
+		}
+	}
+	if l := len(c.Edges); l > 0 {
+		c.PageInfo.StartCursor = &c.Edges[0].Cursor
+		c.PageInfo.EndCursor = &c.Edges[l-1].Cursor
+	}
+	if c.TotalCount == 0 {
+		c.TotalCount = len(nodes)
+	}
+}
+
+// SysMenuPaginateOption enables pagination customization.
+type SysMenuPaginateOption func(*sysmenuPager) error
+
+// WithSysMenuOrder configures pagination ordering.
+func WithSysMenuOrder(order *SysMenuOrder) SysMenuPaginateOption {
+	if order == nil {
+		order = DefaultSysMenuOrder
+	}
+	o := *order
+	return func(pager *sysmenuPager) error {
+		if err := o.Direction.Validate(); err != nil {
+			return err
+		}
+		if o.Field == nil {
+			o.Field = DefaultSysMenuOrder.Field
+		}
+		pager.order = &o
+		return nil
+	}
+}
+
+// WithSysMenuFilter configures pagination filter.
+func WithSysMenuFilter(filter func(*SysMenuQuery) (*SysMenuQuery, error)) SysMenuPaginateOption {
+	return func(pager *sysmenuPager) error {
+		if filter == nil {
+			return errors.New("SysMenuQuery filter cannot be nil")
+		}
+		pager.filter = filter
+		return nil
+	}
+}
+
+type sysmenuPager struct {
+	order  *SysMenuOrder
+	filter func(*SysMenuQuery) (*SysMenuQuery, error)
+}
+
+func newSysMenuPager(opts []SysMenuPaginateOption) (*sysmenuPager, error) {
+	pager := &sysmenuPager{}
+	for _, opt := range opts {
+		if err := opt(pager); err != nil {
+			return nil, err
+		}
+	}
+	if pager.order == nil {
+		pager.order = DefaultSysMenuOrder
+	}
+	return pager, nil
+}
+
+func (p *sysmenuPager) applyFilter(query *SysMenuQuery) (*SysMenuQuery, error) {
+	if p.filter != nil {
+		return p.filter(query)
+	}
+	return query, nil
+}
+
+func (p *sysmenuPager) toCursor(sm *SysMenu) Cursor {
+	return p.order.Field.toCursor(sm)
+}
+
+func (p *sysmenuPager) applyCursors(query *SysMenuQuery, after, before *Cursor) *SysMenuQuery {
+	for _, predicate := range cursorsToPredicates(
+		p.order.Direction, after, before,
+		p.order.Field.field, DefaultSysMenuOrder.Field.field,
+	) {
+		query = query.Where(predicate)
+	}
+	return query
+}
+
+func (p *sysmenuPager) applyOrder(query *SysMenuQuery, reverse bool) *SysMenuQuery {
+	direction := p.order.Direction
+	if reverse {
+		direction = direction.reverse()
+	}
+	query = query.Order(direction.orderFunc(p.order.Field.field))
+	if p.order.Field != DefaultSysMenuOrder.Field {
+		query = query.Order(direction.orderFunc(DefaultSysMenuOrder.Field.field))
+	}
+	return query
+}
+
+func (p *sysmenuPager) orderExpr(reverse bool) sql.Querier {
+	direction := p.order.Direction
+	if reverse {
+		direction = direction.reverse()
+	}
+	return sql.ExprFunc(func(b *sql.Builder) {
+		b.Ident(p.order.Field.field).Pad().WriteString(string(direction))
+		if p.order.Field != DefaultSysMenuOrder.Field {
+			b.Comma().Ident(DefaultSysMenuOrder.Field.field).Pad().WriteString(string(direction))
+		}
+	})
+}
+
+// Paginate executes the query and returns a relay based cursor connection to SysMenu.
+func (sm *SysMenuQuery) Paginate(
+	ctx context.Context, after *Cursor, first *int,
+	before *Cursor, last *int, opts ...SysMenuPaginateOption,
+) (*SysMenuConnection, error) {
+	if err := validateFirstLast(first, last); err != nil {
+		return nil, err
+	}
+	pager, err := newSysMenuPager(opts)
+	if err != nil {
+		return nil, err
+	}
+	if sm, err = pager.applyFilter(sm); err != nil {
+		return nil, err
+	}
+	conn := &SysMenuConnection{Edges: []*SysMenuEdge{}}
+	ignoredEdges := !hasCollectedField(ctx, edgesField)
+	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
+		hasPagination := after != nil || first != nil || before != nil || last != nil
+		if hasPagination || ignoredEdges {
+			if conn.TotalCount, err = sm.Count(ctx); err != nil {
+				return nil, err
+			}
+			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+		}
+	}
+	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
+		return conn, nil
+	}
+
+	sm = pager.applyCursors(sm, after, before)
+	sm = pager.applyOrder(sm, last != nil)
+	if limit := paginateLimit(first, last); limit != 0 {
+		sm.Limit(limit)
+	}
+	if field := collectedField(ctx, edgesField, nodeField); field != nil {
+		if err := sm.collectField(ctx, graphql.GetOperationContext(ctx), *field, []string{edgesField, nodeField}); err != nil {
+			return nil, err
+		}
+	}
+
+	nodes, err := sm.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	conn.build(nodes, pager, after, first, before, last)
+	return conn, nil
+}
+
+// SysMenuOrderField defines the ordering field of SysMenu.
+type SysMenuOrderField struct {
+	field    string
+	toCursor func(*SysMenu) Cursor
+}
+
+// SysMenuOrder defines the ordering of SysMenu.
+type SysMenuOrder struct {
+	Direction OrderDirection     `json:"direction"`
+	Field     *SysMenuOrderField `json:"field"`
+}
+
+// DefaultSysMenuOrder is the default ordering of SysMenu.
+var DefaultSysMenuOrder = &SysMenuOrder{
+	Direction: OrderDirectionAsc,
+	Field: &SysMenuOrderField{
+		field: sysmenu.FieldID,
+		toCursor: func(sm *SysMenu) Cursor {
+			return Cursor{ID: sm.ID}
+		},
+	},
+}
+
+// ToEdge converts SysMenu into SysMenuEdge.
+func (sm *SysMenu) ToEdge(order *SysMenuOrder) *SysMenuEdge {
+	if order == nil {
+		order = DefaultSysMenuOrder
+	}
+	return &SysMenuEdge{
+		Node:   sm,
+		Cursor: order.Field.toCursor(sm),
+	}
+}
+
+// SysMenuParamEdge is the edge representation of SysMenuParam.
+type SysMenuParamEdge struct {
+	Node   *SysMenuParam `json:"node"`
+	Cursor Cursor        `json:"cursor"`
+}
+
+// SysMenuParamConnection is the connection containing edges to SysMenuParam.
+type SysMenuParamConnection struct {
+	Edges      []*SysMenuParamEdge `json:"edges"`
+	PageInfo   PageInfo            `json:"pageInfo"`
+	TotalCount int                 `json:"totalCount"`
+}
+
+func (c *SysMenuParamConnection) build(nodes []*SysMenuParam, pager *sysmenuparamPager, after *Cursor, first *int, before *Cursor, last *int) {
+	c.PageInfo.HasNextPage = before != nil
+	c.PageInfo.HasPreviousPage = after != nil
+	if first != nil && *first+1 == len(nodes) {
+		c.PageInfo.HasNextPage = true
+		nodes = nodes[:len(nodes)-1]
+	} else if last != nil && *last+1 == len(nodes) {
+		c.PageInfo.HasPreviousPage = true
+		nodes = nodes[:len(nodes)-1]
+	}
+	var nodeAt func(int) *SysMenuParam
+	if last != nil {
+		n := len(nodes) - 1
+		nodeAt = func(i int) *SysMenuParam {
+			return nodes[n-i]
+		}
+	} else {
+		nodeAt = func(i int) *SysMenuParam {
+			return nodes[i]
+		}
+	}
+	c.Edges = make([]*SysMenuParamEdge, len(nodes))
+	for i := range nodes {
+		node := nodeAt(i)
+		c.Edges[i] = &SysMenuParamEdge{
+			Node:   node,
+			Cursor: pager.toCursor(node),
+		}
+	}
+	if l := len(c.Edges); l > 0 {
+		c.PageInfo.StartCursor = &c.Edges[0].Cursor
+		c.PageInfo.EndCursor = &c.Edges[l-1].Cursor
+	}
+	if c.TotalCount == 0 {
+		c.TotalCount = len(nodes)
+	}
+}
+
+// SysMenuParamPaginateOption enables pagination customization.
+type SysMenuParamPaginateOption func(*sysmenuparamPager) error
+
+// WithSysMenuParamOrder configures pagination ordering.
+func WithSysMenuParamOrder(order *SysMenuParamOrder) SysMenuParamPaginateOption {
+	if order == nil {
+		order = DefaultSysMenuParamOrder
+	}
+	o := *order
+	return func(pager *sysmenuparamPager) error {
+		if err := o.Direction.Validate(); err != nil {
+			return err
+		}
+		if o.Field == nil {
+			o.Field = DefaultSysMenuParamOrder.Field
+		}
+		pager.order = &o
+		return nil
+	}
+}
+
+// WithSysMenuParamFilter configures pagination filter.
+func WithSysMenuParamFilter(filter func(*SysMenuParamQuery) (*SysMenuParamQuery, error)) SysMenuParamPaginateOption {
+	return func(pager *sysmenuparamPager) error {
+		if filter == nil {
+			return errors.New("SysMenuParamQuery filter cannot be nil")
+		}
+		pager.filter = filter
+		return nil
+	}
+}
+
+type sysmenuparamPager struct {
+	order  *SysMenuParamOrder
+	filter func(*SysMenuParamQuery) (*SysMenuParamQuery, error)
+}
+
+func newSysMenuParamPager(opts []SysMenuParamPaginateOption) (*sysmenuparamPager, error) {
+	pager := &sysmenuparamPager{}
+	for _, opt := range opts {
+		if err := opt(pager); err != nil {
+			return nil, err
+		}
+	}
+	if pager.order == nil {
+		pager.order = DefaultSysMenuParamOrder
+	}
+	return pager, nil
+}
+
+func (p *sysmenuparamPager) applyFilter(query *SysMenuParamQuery) (*SysMenuParamQuery, error) {
+	if p.filter != nil {
+		return p.filter(query)
+	}
+	return query, nil
+}
+
+func (p *sysmenuparamPager) toCursor(smp *SysMenuParam) Cursor {
+	return p.order.Field.toCursor(smp)
+}
+
+func (p *sysmenuparamPager) applyCursors(query *SysMenuParamQuery, after, before *Cursor) *SysMenuParamQuery {
+	for _, predicate := range cursorsToPredicates(
+		p.order.Direction, after, before,
+		p.order.Field.field, DefaultSysMenuParamOrder.Field.field,
+	) {
+		query = query.Where(predicate)
+	}
+	return query
+}
+
+func (p *sysmenuparamPager) applyOrder(query *SysMenuParamQuery, reverse bool) *SysMenuParamQuery {
+	direction := p.order.Direction
+	if reverse {
+		direction = direction.reverse()
+	}
+	query = query.Order(direction.orderFunc(p.order.Field.field))
+	if p.order.Field != DefaultSysMenuParamOrder.Field {
+		query = query.Order(direction.orderFunc(DefaultSysMenuParamOrder.Field.field))
+	}
+	return query
+}
+
+func (p *sysmenuparamPager) orderExpr(reverse bool) sql.Querier {
+	direction := p.order.Direction
+	if reverse {
+		direction = direction.reverse()
+	}
+	return sql.ExprFunc(func(b *sql.Builder) {
+		b.Ident(p.order.Field.field).Pad().WriteString(string(direction))
+		if p.order.Field != DefaultSysMenuParamOrder.Field {
+			b.Comma().Ident(DefaultSysMenuParamOrder.Field.field).Pad().WriteString(string(direction))
+		}
+	})
+}
+
+// Paginate executes the query and returns a relay based cursor connection to SysMenuParam.
+func (smp *SysMenuParamQuery) Paginate(
+	ctx context.Context, after *Cursor, first *int,
+	before *Cursor, last *int, opts ...SysMenuParamPaginateOption,
+) (*SysMenuParamConnection, error) {
+	if err := validateFirstLast(first, last); err != nil {
+		return nil, err
+	}
+	pager, err := newSysMenuParamPager(opts)
+	if err != nil {
+		return nil, err
+	}
+	if smp, err = pager.applyFilter(smp); err != nil {
+		return nil, err
+	}
+	conn := &SysMenuParamConnection{Edges: []*SysMenuParamEdge{}}
+	ignoredEdges := !hasCollectedField(ctx, edgesField)
+	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
+		hasPagination := after != nil || first != nil || before != nil || last != nil
+		if hasPagination || ignoredEdges {
+			if conn.TotalCount, err = smp.Count(ctx); err != nil {
+				return nil, err
+			}
+			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+		}
+	}
+	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
+		return conn, nil
+	}
+
+	smp = pager.applyCursors(smp, after, before)
+	smp = pager.applyOrder(smp, last != nil)
+	if limit := paginateLimit(first, last); limit != 0 {
+		smp.Limit(limit)
+	}
+	if field := collectedField(ctx, edgesField, nodeField); field != nil {
+		if err := smp.collectField(ctx, graphql.GetOperationContext(ctx), *field, []string{edgesField, nodeField}); err != nil {
+			return nil, err
+		}
+	}
+
+	nodes, err := smp.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	conn.build(nodes, pager, after, first, before, last)
+	return conn, nil
+}
+
+// SysMenuParamOrderField defines the ordering field of SysMenuParam.
+type SysMenuParamOrderField struct {
+	field    string
+	toCursor func(*SysMenuParam) Cursor
+}
+
+// SysMenuParamOrder defines the ordering of SysMenuParam.
+type SysMenuParamOrder struct {
+	Direction OrderDirection          `json:"direction"`
+	Field     *SysMenuParamOrderField `json:"field"`
+}
+
+// DefaultSysMenuParamOrder is the default ordering of SysMenuParam.
+var DefaultSysMenuParamOrder = &SysMenuParamOrder{
+	Direction: OrderDirectionAsc,
+	Field: &SysMenuParamOrderField{
+		field: sysmenuparam.FieldID,
+		toCursor: func(smp *SysMenuParam) Cursor {
+			return Cursor{ID: smp.ID}
+		},
+	},
+}
+
+// ToEdge converts SysMenuParam into SysMenuParamEdge.
+func (smp *SysMenuParam) ToEdge(order *SysMenuParamOrder) *SysMenuParamEdge {
+	if order == nil {
+		order = DefaultSysMenuParamOrder
+	}
+	return &SysMenuParamEdge{
+		Node:   smp,
+		Cursor: order.Field.toCursor(smp),
 	}
 }
 

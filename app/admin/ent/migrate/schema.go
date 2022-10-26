@@ -9,8 +9,8 @@ import (
 )
 
 var (
-	// SysRoleColumns holds the columns for the "sys_role" table.
-	SysRoleColumns = []*schema.Column{
+	// SysAPIColumns holds the columns for the "sys_api" table.
+	SysAPIColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUint64, Increment: true},
 		{Name: "path", Type: field.TypeString},
 		{Name: "description", Type: field.TypeString},
@@ -20,11 +20,11 @@ var (
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
 	}
-	// SysRoleTable holds the schema information for the "sys_role" table.
-	SysRoleTable = &schema.Table{
-		Name:       "sys_role",
-		Columns:    SysRoleColumns,
-		PrimaryKey: []*schema.Column{SysRoleColumns[0]},
+	// SysAPITable holds the schema information for the "sys_api" table.
+	SysAPITable = &schema.Table{
+		Name:       "sys_api",
+		Columns:    SysAPIColumns,
+		PrimaryKey: []*schema.Column{SysAPIColumns[0]},
 	}
 	// SysDictionaryColumns holds the columns for the "sys_dictionary" table.
 	SysDictionaryColumns = []*schema.Column{
@@ -76,8 +76,62 @@ var (
 			},
 		},
 	}
-	// SysRoleColumns holds the columns for the "sys_role" table.
-	SysRoleColumns = []*schema.Column{
+	// SysMenuColumns holds the columns for the "sys_menu" table.
+	SysMenuColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUint64, Increment: true},
+		{Name: "menu_level", Type: field.TypeUint32},
+		{Name: "menu_type", Type: field.TypeUint32},
+		{Name: "parent_id", Type: field.TypeUint},
+		{Name: "path", Type: field.TypeString},
+		{Name: "name", Type: field.TypeString},
+		{Name: "redirect", Type: field.TypeString},
+		{Name: "component", Type: field.TypeString},
+		{Name: "order_no", Type: field.TypeUint32, Default: 0},
+		{Name: "disabled", Type: field.TypeBool, Default: false},
+		{Name: "meta", Type: field.TypeJSON},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
+	}
+	// SysMenuTable holds the schema information for the "sys_menu" table.
+	SysMenuTable = &schema.Table{
+		Name:       "sys_menu",
+		Columns:    SysMenuColumns,
+		PrimaryKey: []*schema.Column{SysMenuColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "sysmenu_deleted_at",
+				Unique:  false,
+				Columns: []*schema.Column{SysMenuColumns[13]},
+			},
+		},
+	}
+	// SysMenuParamColumns holds the columns for the "sys_menu_param" table.
+	SysMenuParamColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUint64, Increment: true},
+		{Name: "menu_id", Type: field.TypeUint64},
+		{Name: "type", Type: field.TypeString},
+		{Name: "key", Type: field.TypeString},
+		{Name: "value", Type: field.TypeString},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
+	}
+	// SysMenuParamTable holds the schema information for the "sys_menu_param" table.
+	SysMenuParamTable = &schema.Table{
+		Name:       "sys_menu_param",
+		Columns:    SysMenuParamColumns,
+		PrimaryKey: []*schema.Column{SysMenuParamColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "sysmenuparam_deleted_at",
+				Unique:  false,
+				Columns: []*schema.Column{SysMenuParamColumns[7]},
+			},
+		},
+	}
+	// SysOauthProviderColumns holds the columns for the "sys_oauth_provider" table.
+	SysOauthProviderColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUint64, Increment: true},
 		{Name: "name", Type: field.TypeString},
 		{Name: "client_id", Type: field.TypeString},
@@ -92,11 +146,18 @@ var (
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
 	}
-	// SysRoleTable holds the schema information for the "sys_role" table.
-	SysRoleTable = &schema.Table{
-		Name:       "sys_role",
-		Columns:    SysRoleColumns,
-		PrimaryKey: []*schema.Column{SysRoleColumns[0]},
+	// SysOauthProviderTable holds the schema information for the "sys_oauth_provider" table.
+	SysOauthProviderTable = &schema.Table{
+		Name:       "sys_oauth_provider",
+		Columns:    SysOauthProviderColumns,
+		PrimaryKey: []*schema.Column{SysOauthProviderColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "sysoauthprovider_deleted_at",
+				Unique:  false,
+				Columns: []*schema.Column{SysOauthProviderColumns[12]},
+			},
+		},
 	}
 	// SysRoleColumns holds the columns for the "sys_role" table.
 	SysRoleColumns = []*schema.Column{
@@ -117,11 +178,6 @@ var (
 		Columns:    SysRoleColumns,
 		PrimaryKey: []*schema.Column{SysRoleColumns[0]},
 		Indexes: []*schema.Index{
-			{
-				Name:    "sysoauthprovider_deleted_at",
-				Unique:  false,
-				Columns: []*schema.Column{SysRoleColumns[9]},
-			},
 			{
 				Name:    "sysrole_deleted_at",
 				Unique:  false,
@@ -198,10 +254,12 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
-		SysRoleTable,
+		SysAPITable,
 		SysDictionaryTable,
 		SysDictionaryDetailTable,
-		SysRoleTable,
+		SysMenuTable,
+		SysMenuParamTable,
+		SysOauthProviderTable,
 		SysRoleTable,
 		SysTokenTable,
 		SysUserTable,
@@ -209,8 +267,8 @@ var (
 )
 
 func init() {
-	SysRoleTable.Annotation = &entsql.Annotation{
-		Table: "sys_role",
+	SysAPITable.Annotation = &entsql.Annotation{
+		Table: "sys_api",
 	}
 	SysDictionaryTable.Annotation = &entsql.Annotation{
 		Table: "sys_dictionary",
@@ -218,8 +276,14 @@ func init() {
 	SysDictionaryDetailTable.Annotation = &entsql.Annotation{
 		Table: "sys_dictionary_detail",
 	}
-	SysRoleTable.Annotation = &entsql.Annotation{
-		Table: "sys_role",
+	SysMenuTable.Annotation = &entsql.Annotation{
+		Table: "sys_menu",
+	}
+	SysMenuParamTable.Annotation = &entsql.Annotation{
+		Table: "sys_menu_param",
+	}
+	SysOauthProviderTable.Annotation = &entsql.Annotation{
+		Table: "sys_oauth_provider",
 	}
 	SysRoleTable.Annotation = &entsql.Annotation{
 		Table: "sys_role",

@@ -4,6 +4,8 @@ package ent
 
 import (
 	"context"
+	stdsql "database/sql"
+	"fmt"
 	"sync"
 
 	"entgo.io/ent/dialect"
@@ -18,6 +20,10 @@ type Tx struct {
 	SysDictionary *SysDictionaryClient
 	// SysDictionaryDetail is the client for interacting with the SysDictionaryDetail builders.
 	SysDictionaryDetail *SysDictionaryDetailClient
+	// SysMenu is the client for interacting with the SysMenu builders.
+	SysMenu *SysMenuClient
+	// SysMenuParam is the client for interacting with the SysMenuParam builders.
+	SysMenuParam *SysMenuParamClient
 	// SysOauthProvider is the client for interacting with the SysOauthProvider builders.
 	SysOauthProvider *SysOauthProviderClient
 	// SysRole is the client for interacting with the SysRole builders.
@@ -160,6 +166,8 @@ func (tx *Tx) init() {
 	tx.SysApi = NewSysApiClient(tx.config)
 	tx.SysDictionary = NewSysDictionaryClient(tx.config)
 	tx.SysDictionaryDetail = NewSysDictionaryDetailClient(tx.config)
+	tx.SysMenu = NewSysMenuClient(tx.config)
+	tx.SysMenuParam = NewSysMenuParamClient(tx.config)
 	tx.SysOauthProvider = NewSysOauthProviderClient(tx.config)
 	tx.SysRole = NewSysRoleClient(tx.config)
 	tx.SysToken = NewSysTokenClient(tx.config)
@@ -226,3 +234,27 @@ func (tx *txDriver) Query(ctx context.Context, query string, args, v any) error 
 }
 
 var _ dialect.Driver = (*txDriver)(nil)
+
+// ExecContext allows calling the underlying ExecContext method of the transaction if it is supported by it.
+// See, database/sql#Tx.ExecContext for more information.
+func (tx *txDriver) ExecContext(ctx context.Context, query string, args ...any) (stdsql.Result, error) {
+	ex, ok := tx.tx.(interface {
+		ExecContext(context.Context, string, ...any) (stdsql.Result, error)
+	})
+	if !ok {
+		return nil, fmt.Errorf("Tx.ExecContext is not supported")
+	}
+	return ex.ExecContext(ctx, query, args...)
+}
+
+// QueryContext allows calling the underlying QueryContext method of the transaction if it is supported by it.
+// See, database/sql#Tx.QueryContext for more information.
+func (tx *txDriver) QueryContext(ctx context.Context, query string, args ...any) (*stdsql.Rows, error) {
+	q, ok := tx.tx.(interface {
+		QueryContext(context.Context, string, ...any) (*stdsql.Rows, error)
+	})
+	if !ok {
+		return nil, fmt.Errorf("Tx.QueryContext is not supported")
+	}
+	return q.QueryContext(ctx, query, args...)
+}

@@ -7,6 +7,8 @@ import (
 	"slash-admin/app/admin/ent/sysapi"
 	"slash-admin/app/admin/ent/sysdictionary"
 	"slash-admin/app/admin/ent/sysdictionarydetail"
+	"slash-admin/app/admin/ent/sysmenu"
+	"slash-admin/app/admin/ent/sysmenuparam"
 	"slash-admin/app/admin/ent/sysoauthprovider"
 	"slash-admin/app/admin/ent/sysrole"
 	"slash-admin/app/admin/ent/systoken"
@@ -62,6 +64,38 @@ func init() {
 	sysdictionarydetail.DefaultUpdatedAt = sysdictionarydetailDescUpdatedAt.Default.(func() time.Time)
 	// sysdictionarydetail.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	sysdictionarydetail.UpdateDefaultUpdatedAt = sysdictionarydetailDescUpdatedAt.UpdateDefault.(func() time.Time)
+	sysmenuFields := schema.SysMenu{}.Fields()
+	_ = sysmenuFields
+	// sysmenuDescOrderNo is the schema descriptor for order_no field.
+	sysmenuDescOrderNo := sysmenuFields[8].Descriptor()
+	// sysmenu.DefaultOrderNo holds the default value on creation for the order_no field.
+	sysmenu.DefaultOrderNo = sysmenuDescOrderNo.Default.(uint32)
+	// sysmenuDescDisabled is the schema descriptor for disabled field.
+	sysmenuDescDisabled := sysmenuFields[9].Descriptor()
+	// sysmenu.DefaultDisabled holds the default value on creation for the disabled field.
+	sysmenu.DefaultDisabled = sysmenuDescDisabled.Default.(bool)
+	// sysmenuDescCreatedAt is the schema descriptor for created_at field.
+	sysmenuDescCreatedAt := sysmenuFields[11].Descriptor()
+	// sysmenu.DefaultCreatedAt holds the default value on creation for the created_at field.
+	sysmenu.DefaultCreatedAt = sysmenuDescCreatedAt.Default.(func() time.Time)
+	// sysmenuDescUpdatedAt is the schema descriptor for updated_at field.
+	sysmenuDescUpdatedAt := sysmenuFields[12].Descriptor()
+	// sysmenu.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	sysmenu.DefaultUpdatedAt = sysmenuDescUpdatedAt.Default.(func() time.Time)
+	// sysmenu.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	sysmenu.UpdateDefaultUpdatedAt = sysmenuDescUpdatedAt.UpdateDefault.(func() time.Time)
+	sysmenuparamFields := schema.SysMenuParam{}.Fields()
+	_ = sysmenuparamFields
+	// sysmenuparamDescCreatedAt is the schema descriptor for created_at field.
+	sysmenuparamDescCreatedAt := sysmenuparamFields[5].Descriptor()
+	// sysmenuparam.DefaultCreatedAt holds the default value on creation for the created_at field.
+	sysmenuparam.DefaultCreatedAt = sysmenuparamDescCreatedAt.Default.(func() time.Time)
+	// sysmenuparamDescUpdatedAt is the schema descriptor for updated_at field.
+	sysmenuparamDescUpdatedAt := sysmenuparamFields[6].Descriptor()
+	// sysmenuparam.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	sysmenuparam.DefaultUpdatedAt = sysmenuparamDescUpdatedAt.Default.(func() time.Time)
+	// sysmenuparam.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	sysmenuparam.UpdateDefaultUpdatedAt = sysmenuparamDescUpdatedAt.UpdateDefault.(func() time.Time)
 	sysoauthproviderFields := schema.SysOauthProvider{}.Fields()
 	_ = sysoauthproviderFields
 	// sysoauthproviderDescCreatedAt is the schema descriptor for created_at field.

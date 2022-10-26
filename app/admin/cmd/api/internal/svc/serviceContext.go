@@ -1,6 +1,7 @@
 package svc
 
 import (
+	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/redis"
 	"github.com/zeromicro/go-zero/rest"
 	"slash-admin/app/admin/cmd/api/internal/config"
@@ -21,11 +22,12 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		entClient   *ent.Client
 		err         error
 	)
-
 	if redisClient, err = c.Redis.NewRedis(); err != nil {
+		logx.Errorf("初始化redis失败: ", err)
 		panic(err)
 	}
 	if entClient, err = c.Database.NewDatabase(c.Redis); err != nil {
+		logx.Errorf("初始化ent失败: ", err)
 		panic(err)
 	}
 

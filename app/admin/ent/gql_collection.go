@@ -139,6 +139,92 @@ func newSysDictionaryDetailPaginateArgs(rv map[string]interface{}) *sysdictionar
 }
 
 // CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (sm *SysMenuQuery) CollectFields(ctx context.Context, satisfies ...string) (*SysMenuQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return sm, nil
+	}
+	if err := sm.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return sm, nil
+}
+
+func (sm *SysMenuQuery) collectField(ctx context.Context, op *graphql.OperationContext, field graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	return nil
+}
+
+type sysmenuPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []SysMenuPaginateOption
+}
+
+func newSysMenuPaginateArgs(rv map[string]interface{}) *sysmenuPaginateArgs {
+	args := &sysmenuPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
+func (smp *SysMenuParamQuery) CollectFields(ctx context.Context, satisfies ...string) (*SysMenuParamQuery, error) {
+	fc := graphql.GetFieldContext(ctx)
+	if fc == nil {
+		return smp, nil
+	}
+	if err := smp.collectField(ctx, graphql.GetOperationContext(ctx), fc.Field, nil, satisfies...); err != nil {
+		return nil, err
+	}
+	return smp, nil
+}
+
+func (smp *SysMenuParamQuery) collectField(ctx context.Context, op *graphql.OperationContext, field graphql.CollectedField, path []string, satisfies ...string) error {
+	path = append([]string(nil), path...)
+	return nil
+}
+
+type sysmenuparamPaginateArgs struct {
+	first, last   *int
+	after, before *Cursor
+	opts          []SysMenuParamPaginateOption
+}
+
+func newSysMenuParamPaginateArgs(rv map[string]interface{}) *sysmenuparamPaginateArgs {
+	args := &sysmenuparamPaginateArgs{}
+	if rv == nil {
+		return args
+	}
+	if v := rv[firstField]; v != nil {
+		args.first = v.(*int)
+	}
+	if v := rv[lastField]; v != nil {
+		args.last = v.(*int)
+	}
+	if v := rv[afterField]; v != nil {
+		args.after = v.(*Cursor)
+	}
+	if v := rv[beforeField]; v != nil {
+		args.before = v.(*Cursor)
+	}
+	return args
+}
+
+// CollectFields tells the query-builder to eagerly load connected nodes by resolver context.
 func (sop *SysOauthProviderQuery) CollectFields(ctx context.Context, satisfies ...string) (*SysOauthProviderQuery, error) {
 	fc := graphql.GetFieldContext(ctx)
 	if fc == nil {

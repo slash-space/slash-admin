@@ -1,0 +1,42 @@
+{{ define "extension_mutation_update" }}
+{{- /*gotype: entgo.io/ent/entc/gen.Graph*/ -}}
+
+{{ template "header" $ }}
+{{ $pkg := base $.Config.Package }}
+{{ template "import" $ }}
+
+type JsonbMode string
+
+const (
+    JsonbReplace JsonbMode = "replace"
+    JsonbMerge   JsonbMode = "merge"
+)
+
+{{ range $n := $.Nodes }}
+    {{ $updateOneBuilder := $n.UpdateOneName }}
+    {{ $updateReceiver := receiver $updateOneBuilder }}
+    func ({{ $updateReceiver }} *{{ $updateOneBuilder }}) Copy(input *Update{{ $n.Name }}Input, jsonbMode JsonbMode) *{{ $updateOneBuilder }} {
+    {{- range $f := $n.Fields }}
+        {{ $field := $f.StructField }} {{ $set := print "Set" $field }}
+        if input.{{ $field }} != nil {
+        {{ if $annotation := $f.Annotations.JsonObject }}
+           if jsonbMode == JsonbMerge {
+            {{ $updateReceiver }}.Modify(func(s *sql.UpdateBuilder) {
+                 s.Set("{{$f.Column.Name}}", sql.ExprFunc(func(sb *sql.Builder) {
+                   sb.WriteString(`COALESCE("` + "{{$f.Column.Name}}" + `",'{}'::jsonb)|| `)
+                   sb.Arg(*input.{{ $field }} )
+                 }))
+               })
+           } else {
+           {{ $updateReceiver }}.{{ $set }}(*input.{{ $field }})
+           }
+        {{else}}
+            {{ $updateReceiver }}.{{ $set }}(*input.{{ $field }})
+        {{end}}
+        }
+    {{- end }}
+    return {{ $updateReceiver }}
+    }
+{{ end }}
+{{ end }}
+

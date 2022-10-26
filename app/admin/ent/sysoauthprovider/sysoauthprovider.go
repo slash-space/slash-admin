@@ -36,7 +36,7 @@ const (
 	// FieldDeletedAt holds the string denoting the deleted_at field in the database.
 	FieldDeletedAt = "deleted_at"
 	// Table holds the table name of the sysoauthprovider in the database.
-	Table = "sys_role"
+	Table = "sys_oauth_provider"
 )
 
 // Columns holds all SQL columns for sysoauthprovider fields.

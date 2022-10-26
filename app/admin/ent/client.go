@@ -13,6 +13,8 @@ import (
 	"slash-admin/app/admin/ent/sysapi"
 	"slash-admin/app/admin/ent/sysdictionary"
 	"slash-admin/app/admin/ent/sysdictionarydetail"
+	"slash-admin/app/admin/ent/sysmenu"
+	"slash-admin/app/admin/ent/sysmenuparam"
 	"slash-admin/app/admin/ent/sysoauthprovider"
 	"slash-admin/app/admin/ent/sysrole"
 	"slash-admin/app/admin/ent/systoken"
@@ -33,6 +35,10 @@ type Client struct {
 	SysDictionary *SysDictionaryClient
 	// SysDictionaryDetail is the client for interacting with the SysDictionaryDetail builders.
 	SysDictionaryDetail *SysDictionaryDetailClient
+	// SysMenu is the client for interacting with the SysMenu builders.
+	SysMenu *SysMenuClient
+	// SysMenuParam is the client for interacting with the SysMenuParam builders.
+	SysMenuParam *SysMenuParamClient
 	// SysOauthProvider is the client for interacting with the SysOauthProvider builders.
 	SysOauthProvider *SysOauthProviderClient
 	// SysRole is the client for interacting with the SysRole builders.
@@ -59,6 +65,8 @@ func (c *Client) init() {
 	c.SysApi = NewSysApiClient(c.config)
 	c.SysDictionary = NewSysDictionaryClient(c.config)
 	c.SysDictionaryDetail = NewSysDictionaryDetailClient(c.config)
+	c.SysMenu = NewSysMenuClient(c.config)
+	c.SysMenuParam = NewSysMenuParamClient(c.config)
 	c.SysOauthProvider = NewSysOauthProviderClient(c.config)
 	c.SysRole = NewSysRoleClient(c.config)
 	c.SysToken = NewSysTokenClient(c.config)
@@ -99,6 +107,8 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		SysApi:              NewSysApiClient(cfg),
 		SysDictionary:       NewSysDictionaryClient(cfg),
 		SysDictionaryDetail: NewSysDictionaryDetailClient(cfg),
+		SysMenu:             NewSysMenuClient(cfg),
+		SysMenuParam:        NewSysMenuParamClient(cfg),
 		SysOauthProvider:    NewSysOauthProviderClient(cfg),
 		SysRole:             NewSysRoleClient(cfg),
 		SysToken:            NewSysTokenClient(cfg),
@@ -125,6 +135,8 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		SysApi:              NewSysApiClient(cfg),
 		SysDictionary:       NewSysDictionaryClient(cfg),
 		SysDictionaryDetail: NewSysDictionaryDetailClient(cfg),
+		SysMenu:             NewSysMenuClient(cfg),
+		SysMenuParam:        NewSysMenuParamClient(cfg),
 		SysOauthProvider:    NewSysOauthProviderClient(cfg),
 		SysRole:             NewSysRoleClient(cfg),
 		SysToken:            NewSysTokenClient(cfg),
@@ -160,6 +172,8 @@ func (c *Client) Use(hooks ...Hook) {
 	c.SysApi.Use(hooks...)
 	c.SysDictionary.Use(hooks...)
 	c.SysDictionaryDetail.Use(hooks...)
+	c.SysMenu.Use(hooks...)
+	c.SysMenuParam.Use(hooks...)
 	c.SysOauthProvider.Use(hooks...)
 	c.SysRole.Use(hooks...)
 	c.SysToken.Use(hooks...)
@@ -434,6 +448,186 @@ func (c *SysDictionaryDetailClient) GetX(ctx context.Context, id uint64) *SysDic
 // Hooks returns the client hooks.
 func (c *SysDictionaryDetailClient) Hooks() []Hook {
 	return c.hooks.SysDictionaryDetail
+}
+
+// SysMenuClient is a client for the SysMenu schema.
+type SysMenuClient struct {
+	config
+}
+
+// NewSysMenuClient returns a client for the SysMenu from the given config.
+func NewSysMenuClient(c config) *SysMenuClient {
+	return &SysMenuClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `sysmenu.Hooks(f(g(h())))`.
+func (c *SysMenuClient) Use(hooks ...Hook) {
+	c.hooks.SysMenu = append(c.hooks.SysMenu, hooks...)
+}
+
+// Create returns a builder for creating a SysMenu entity.
+func (c *SysMenuClient) Create() *SysMenuCreate {
+	mutation := newSysMenuMutation(c.config, OpCreate)
+	return &SysMenuCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of SysMenu entities.
+func (c *SysMenuClient) CreateBulk(builders ...*SysMenuCreate) *SysMenuCreateBulk {
+	return &SysMenuCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for SysMenu.
+func (c *SysMenuClient) Update() *SysMenuUpdate {
+	mutation := newSysMenuMutation(c.config, OpUpdate)
+	return &SysMenuUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *SysMenuClient) UpdateOne(sm *SysMenu) *SysMenuUpdateOne {
+	mutation := newSysMenuMutation(c.config, OpUpdateOne, withSysMenu(sm))
+	return &SysMenuUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *SysMenuClient) UpdateOneID(id uint64) *SysMenuUpdateOne {
+	mutation := newSysMenuMutation(c.config, OpUpdateOne, withSysMenuID(id))
+	return &SysMenuUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for SysMenu.
+func (c *SysMenuClient) Delete() *SysMenuDelete {
+	mutation := newSysMenuMutation(c.config, OpDelete)
+	return &SysMenuDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *SysMenuClient) DeleteOne(sm *SysMenu) *SysMenuDeleteOne {
+	return c.DeleteOneID(sm.ID)
+}
+
+// DeleteOne returns a builder for deleting the given entity by its id.
+func (c *SysMenuClient) DeleteOneID(id uint64) *SysMenuDeleteOne {
+	builder := c.Delete().Where(sysmenu.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &SysMenuDeleteOne{builder}
+}
+
+// Query returns a query builder for SysMenu.
+func (c *SysMenuClient) Query() *SysMenuQuery {
+	return &SysMenuQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a SysMenu entity by its id.
+func (c *SysMenuClient) Get(ctx context.Context, id uint64) (*SysMenu, error) {
+	return c.Query().Where(sysmenu.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *SysMenuClient) GetX(ctx context.Context, id uint64) *SysMenu {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *SysMenuClient) Hooks() []Hook {
+	return c.hooks.SysMenu
+}
+
+// SysMenuParamClient is a client for the SysMenuParam schema.
+type SysMenuParamClient struct {
+	config
+}
+
+// NewSysMenuParamClient returns a client for the SysMenuParam from the given config.
+func NewSysMenuParamClient(c config) *SysMenuParamClient {
+	return &SysMenuParamClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `sysmenuparam.Hooks(f(g(h())))`.
+func (c *SysMenuParamClient) Use(hooks ...Hook) {
+	c.hooks.SysMenuParam = append(c.hooks.SysMenuParam, hooks...)
+}
+
+// Create returns a builder for creating a SysMenuParam entity.
+func (c *SysMenuParamClient) Create() *SysMenuParamCreate {
+	mutation := newSysMenuParamMutation(c.config, OpCreate)
+	return &SysMenuParamCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of SysMenuParam entities.
+func (c *SysMenuParamClient) CreateBulk(builders ...*SysMenuParamCreate) *SysMenuParamCreateBulk {
+	return &SysMenuParamCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for SysMenuParam.
+func (c *SysMenuParamClient) Update() *SysMenuParamUpdate {
+	mutation := newSysMenuParamMutation(c.config, OpUpdate)
+	return &SysMenuParamUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *SysMenuParamClient) UpdateOne(smp *SysMenuParam) *SysMenuParamUpdateOne {
+	mutation := newSysMenuParamMutation(c.config, OpUpdateOne, withSysMenuParam(smp))
+	return &SysMenuParamUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *SysMenuParamClient) UpdateOneID(id uint64) *SysMenuParamUpdateOne {
+	mutation := newSysMenuParamMutation(c.config, OpUpdateOne, withSysMenuParamID(id))
+	return &SysMenuParamUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for SysMenuParam.
+func (c *SysMenuParamClient) Delete() *SysMenuParamDelete {
+	mutation := newSysMenuParamMutation(c.config, OpDelete)
+	return &SysMenuParamDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *SysMenuParamClient) DeleteOne(smp *SysMenuParam) *SysMenuParamDeleteOne {
+	return c.DeleteOneID(smp.ID)
+}
+
+// DeleteOne returns a builder for deleting the given entity by its id.
+func (c *SysMenuParamClient) DeleteOneID(id uint64) *SysMenuParamDeleteOne {
+	builder := c.Delete().Where(sysmenuparam.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &SysMenuParamDeleteOne{builder}
+}
+
+// Query returns a query builder for SysMenuParam.
+func (c *SysMenuParamClient) Query() *SysMenuParamQuery {
+	return &SysMenuParamQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a SysMenuParam entity by its id.
+func (c *SysMenuParamClient) Get(ctx context.Context, id uint64) (*SysMenuParam, error) {
+	return c.Query().Where(sysmenuparam.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *SysMenuParamClient) GetX(ctx context.Context, id uint64) *SysMenuParam {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *SysMenuParamClient) Hooks() []Hook {
+	return c.hooks.SysMenuParam
 }
 
 // SysOauthProviderClient is a client for the SysOauthProvider schema.

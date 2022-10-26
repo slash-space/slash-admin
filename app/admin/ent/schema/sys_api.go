@@ -31,6 +31,6 @@ func (SysApi) Edges() []ent.Edge {
 
 func (SysApi) Annotations() []schema.Annotation {
 	return []schema.Annotation{
-		entsql.Annotation{Table: "sys_role"},
+		entsql.Annotation{Table: "sys_api"},
 	}
 }

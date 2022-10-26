@@ -8,6 +8,9 @@ import (
 	entsql "entgo.io/ent/dialect/sql"
 	"fmt"
 	"github.com/go-redis/redis/v8"
+	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/lib/pq"
+	_ "github.com/mattn/go-sqlite3"
 	"github.com/pkg/errors"
 	"github.com/zeromicro/go-zero/core/logx"
 	"os"
@@ -21,7 +24,7 @@ type DatabaseConf struct {
 	User         string `json:",optional"`
 	Password     string `json:",optional"`
 	DbName       string `json:",optional"`
-	SSLMode      string `json:",optional"`
+	SSLMode      bool   `json:",optional"`
 	Host         string `json:",optional"`
 	Port         int    `json:",optional"`
 	DbPath       string `json:",optional"`

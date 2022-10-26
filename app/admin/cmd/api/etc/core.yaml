@@ -1,6 +1,6 @@
 Name: core
 Host: 0.0.0.0
-Port: 8888
+Port: 9100
 Timeout: 30000
 
 Auth:
@@ -9,7 +9,7 @@ Auth:
 
 Log:
   ServiceName: core-api
-  Mode: file
+  Mode: console
   Level: info
   Compress: false
   KeepDays: 7
@@ -25,12 +25,13 @@ Redis:
   Port: 6379
   Pass:
   Type: node
+  TLS: false
 
 Database:
   User: root
   Password: "123456"
   DbName: slash_admin_enhance
-  SSLMode: "false"
+  SSLMode: false
   Host: 127.0.0.1
   Port: 3306
   DbPath:

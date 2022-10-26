@@ -15,6 +15,12 @@ type SysDictionary func(*sql.Selector)
 // SysDictionaryDetail is the predicate function for sysdictionarydetail builders.
 type SysDictionaryDetail func(*sql.Selector)
 
+// SysMenu is the predicate function for sysmenu builders.
+type SysMenu func(*sql.Selector)
+
+// SysMenuParam is the predicate function for sysmenuparam builders.
+type SysMenuParam func(*sql.Selector)
+
 // SysOauthProvider is the predicate function for sysoauthprovider builders.
 type SysOauthProvider func(*sql.Selector)
 

@@ -9,6 +9,8 @@ import (
 	"slash-admin/app/admin/ent/sysapi"
 	"slash-admin/app/admin/ent/sysdictionary"
 	"slash-admin/app/admin/ent/sysdictionarydetail"
+	"slash-admin/app/admin/ent/sysmenu"
+	"slash-admin/app/admin/ent/sysmenuparam"
 	"slash-admin/app/admin/ent/sysoauthprovider"
 	"slash-admin/app/admin/ent/sysrole"
 	"slash-admin/app/admin/ent/systoken"
@@ -40,6 +42,8 @@ func columnChecker(table string) func(string) error {
 		sysapi.Table:              sysapi.ValidColumn,
 		sysdictionary.Table:       sysdictionary.ValidColumn,
 		sysdictionarydetail.Table: sysdictionarydetail.ValidColumn,
+		sysmenu.Table:             sysmenu.ValidColumn,
+		sysmenuparam.Table:        sysmenuparam.ValidColumn,
 		sysoauthprovider.Table:    sysoauthprovider.ValidColumn,
 		sysrole.Table:             sysrole.ValidColumn,
 		systoken.Table:            systoken.ValidColumn,

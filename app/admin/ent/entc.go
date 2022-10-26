@@ -26,6 +26,7 @@ func main() {
 		Features: []gen.Feature{
 			gen.FeatureModifier,
 			gen.FeatureUpsert,
+			gen.FeatureExecQuery,
 		},
 	}, opts...); err != nil {
 		fmt.Println("running entgo codegen:", err)

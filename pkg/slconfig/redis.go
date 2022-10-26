@@ -6,16 +6,17 @@ import (
 )
 
 type RedisConf struct {
-	Host string
-	Port int
-	Pass string
-	Type string
-	TLS  bool
+	Host string `json:"Host"`
+	Port int    `json:"Port"`
+	Pass string `json:"Pass"`
+	Type string `json:"Type"`
+	TLS  bool   `json:"TLS"`
 }
 
 // NewRedis returns a Redis.
 func (rc RedisConf) NewRedis() (*redis.Redis, error) {
 	var opts []redis.Option
+
 	if rc.Type == redis.ClusterType {
 		opts = append(opts, redis.Cluster())
 	}
@@ -26,7 +27,9 @@ func (rc RedisConf) NewRedis() (*redis.Redis, error) {
 		opts = append(opts, redis.WithTLS())
 	}
 
-	client := redis.New(rc.Host, opts...)
+	addr := fmt.Sprintf("%s:%d", rc.Host, rc.Port)
+
+	client := redis.New(addr, opts...)
 
 	if client.Ping() {
 		return client, nil

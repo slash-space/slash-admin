@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="core-api" type="GoApplicationRunConfiguration" factoryName="Go Application">
+    <module name="slash-admin-enhance" />
+    <working_directory value="$PROJECT_DIR$/app/admin/cmd/api" />
+    <kind value="PACKAGE" />
+    <package value="slash-admin/app/admin/cmd/api" />
+    <directory value="$PROJECT_DIR$" />
+    <filePath value="$PROJECT_DIR$/app/admin/cmd/api/core.go" />
+    <method v="2" />
+  </configuration>
+</component>

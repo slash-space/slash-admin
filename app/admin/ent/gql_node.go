@@ -9,6 +9,8 @@ import (
 	"slash-admin/app/admin/ent/sysapi"
 	"slash-admin/app/admin/ent/sysdictionary"
 	"slash-admin/app/admin/ent/sysdictionarydetail"
+	"slash-admin/app/admin/ent/sysmenu"
+	"slash-admin/app/admin/ent/sysmenuparam"
 	"slash-admin/app/admin/ent/sysoauthprovider"
 	"slash-admin/app/admin/ent/sysrole"
 	"slash-admin/app/admin/ent/systoken"
@@ -262,6 +264,188 @@ func (sdd *SysDictionaryDetail) Node(ctx context.Context) (node *Node, err error
 		return nil, err
 	}
 	node.Fields[8] = &Field{
+		Type:  "time.Time",
+		Name:  "deleted_at",
+		Value: string(buf),
+	}
+	return node, nil
+}
+
+func (sm *SysMenu) Node(ctx context.Context) (node *Node, err error) {
+	node = &Node{
+		ID:     sm.ID,
+		Type:   "SysMenu",
+		Fields: make([]*Field, 13),
+		Edges:  make([]*Edge, 0),
+	}
+	var buf []byte
+	if buf, err = json.Marshal(sm.MenuLevel); err != nil {
+		return nil, err
+	}
+	node.Fields[0] = &Field{
+		Type:  "uint32",
+		Name:  "menu_level",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(sm.MenuType); err != nil {
+		return nil, err
+	}
+	node.Fields[1] = &Field{
+		Type:  "uint32",
+		Name:  "menu_type",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(sm.ParentID); err != nil {
+		return nil, err
+	}
+	node.Fields[2] = &Field{
+		Type:  "uint",
+		Name:  "parent_id",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(sm.Path); err != nil {
+		return nil, err
+	}
+	node.Fields[3] = &Field{
+		Type:  "string",
+		Name:  "path",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(sm.Name); err != nil {
+		return nil, err
+	}
+	node.Fields[4] = &Field{
+		Type:  "string",
+		Name:  "name",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(sm.Redirect); err != nil {
+		return nil, err
+	}
+	node.Fields[5] = &Field{
+		Type:  "string",
+		Name:  "redirect",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(sm.Component); err != nil {
+		return nil, err
+	}
+	node.Fields[6] = &Field{
+		Type:  "string",
+		Name:  "component",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(sm.OrderNo); err != nil {
+		return nil, err
+	}
+	node.Fields[7] = &Field{
+		Type:  "uint32",
+		Name:  "order_no",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(sm.Disabled); err != nil {
+		return nil, err
+	}
+	node.Fields[8] = &Field{
+		Type:  "bool",
+		Name:  "disabled",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(sm.Meta); err != nil {
+		return nil, err
+	}
+	node.Fields[9] = &Field{
+		Type:  "types.MenuMeta",
+		Name:  "meta",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(sm.CreatedAt); err != nil {
+		return nil, err
+	}
+	node.Fields[10] = &Field{
+		Type:  "time.Time",
+		Name:  "created_at",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(sm.UpdatedAt); err != nil {
+		return nil, err
+	}
+	node.Fields[11] = &Field{
+		Type:  "time.Time",
+		Name:  "updated_at",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(sm.DeletedAt); err != nil {
+		return nil, err
+	}
+	node.Fields[12] = &Field{
+		Type:  "time.Time",
+		Name:  "deleted_at",
+		Value: string(buf),
+	}
+	return node, nil
+}
+
+func (smp *SysMenuParam) Node(ctx context.Context) (node *Node, err error) {
+	node = &Node{
+		ID:     smp.ID,
+		Type:   "SysMenuParam",
+		Fields: make([]*Field, 7),
+		Edges:  make([]*Edge, 0),
+	}
+	var buf []byte
+	if buf, err = json.Marshal(smp.MenuID); err != nil {
+		return nil, err
+	}
+	node.Fields[0] = &Field{
+		Type:  "uint64",
+		Name:  "menu_id",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(smp.Type); err != nil {
+		return nil, err
+	}
+	node.Fields[1] = &Field{
+		Type:  "string",
+		Name:  "type",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(smp.Key); err != nil {
+		return nil, err
+	}
+	node.Fields[2] = &Field{
+		Type:  "string",
+		Name:  "key",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(smp.Value); err != nil {
+		return nil, err
+	}
+	node.Fields[3] = &Field{
+		Type:  "string",
+		Name:  "value",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(smp.CreatedAt); err != nil {
+		return nil, err
+	}
+	node.Fields[4] = &Field{
+		Type:  "time.Time",
+		Name:  "created_at",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(smp.UpdatedAt); err != nil {
+		return nil, err
+	}
+	node.Fields[5] = &Field{
+		Type:  "time.Time",
+		Name:  "updated_at",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(smp.DeletedAt); err != nil {
+		return nil, err
+	}
+	node.Fields[6] = &Field{
 		Type:  "time.Time",
 		Name:  "deleted_at",
 		Value: string(buf),
@@ -767,6 +951,30 @@ func (c *Client) noder(ctx context.Context, table string, id uint64) (Noder, err
 			return nil, err
 		}
 		return n, nil
+	case sysmenu.Table:
+		query := c.SysMenu.Query().
+			Where(sysmenu.ID(id))
+		query, err := query.CollectFields(ctx, "SysMenu")
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case sysmenuparam.Table:
+		query := c.SysMenuParam.Query().
+			Where(sysmenuparam.ID(id))
+		query, err := query.CollectFields(ctx, "SysMenuParam")
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
 	case sysoauthprovider.Table:
 		query := c.SysOauthProvider.Query().
 			Where(sysoauthprovider.ID(id))
@@ -924,6 +1132,38 @@ func (c *Client) noders(ctx context.Context, table string, ids []uint64) ([]Node
 		query := c.SysDictionaryDetail.Query().
 			Where(sysdictionarydetail.IDIn(ids...))
 		query, err := query.CollectFields(ctx, "SysDictionaryDetail")
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case sysmenu.Table:
+		query := c.SysMenu.Query().
+			Where(sysmenu.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "SysMenu")
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case sysmenuparam.Table:
+		query := c.SysMenuParam.Query().
+			Where(sysmenuparam.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "SysMenuParam")
 		if err != nil {
 			return nil, err
 		}

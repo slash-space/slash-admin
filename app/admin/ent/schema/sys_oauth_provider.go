@@ -54,6 +54,6 @@ func (SysOauthProvider) Indexes() []ent.Index {
 
 func (SysOauthProvider) Annotations() []schema.Annotation {
 	return []schema.Annotation{
-		entsql.Annotation{Table: "sys_role"},
+		entsql.Annotation{Table: "sys_oauth_provider"},
 	}
 }
