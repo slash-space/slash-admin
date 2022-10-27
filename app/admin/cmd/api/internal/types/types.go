@@ -20,12 +20,11 @@ type SimpleMsgResp struct {
 // swagger:model PageReq
 type PageReq struct {
 	// Page number | 第几页
-	// Required: true
-	PageNo uint64 `json:"pageNo" validate:"number"`
+	// Minimum: 1
+	PageNo uint64 `json:"pageNo,optional,default=1" validate:"number,min=1"`
 	// Page size | 单页数据行数
-	// Required: true
 	// Maximum: 100000
-	PageSize uint64 `json:"pageSize" validate:"number,max=100000"`
+	PageSize uint64 `json:"pageSize,optional,default=10," validate:"number,max=100"`
 }
 
 // Basic id request | 基础id参数请求
@@ -98,20 +97,15 @@ type RoleInfo struct {
 	// Max length: 20
 	DefaultRouter string `json:"defaultRouter" validate:"max=50"`
 	// Role status | 角色状态
-	// Required : true
-	// Maximum: 20
-	Status uint32 `json:"status" validate:"number,max=20"`
+	// Maximum: 10
+	Status uint8 `json:"status,default=0" validate:"number,max=10"`
 	// Role remark | 角色备注
-	// Required : true
 	// Max length: 200
-	Remark string `json:"remark" validate:"omitempty,max=200"`
+	Remark string `json:"remark,default=''" validate:"omitempty,max=200"`
 	// Role's sorting number | 角色排序
 	// Required : true
 	// Maximum: 1000
 	OrderNo uint32 `json:"orderNo" validate:"number,max=1000"`
-	// Create time | 创建日期
-	// Required: true
-	CreateAt int64 `json:"createAt" validate:"number"`
 }
 
 // The response data of role list | 角色列表数据
@@ -127,7 +121,6 @@ type RoleListResp struct {
 
 // The request params of setting role status | 设置角色状态参数
 // swagger:model SetStatusReq
-// swagger:model SetStatusReq
 type SetStatusReq struct {
 	// ID
 	// Required: true
@@ -135,6 +128,6 @@ type SetStatusReq struct {
 	Id uint64 `json:"id" validate:"number,max=1000"`
 	// Status code | 状态码
 	// Required: true
-	// Maximum: 20
-	Status uint32 `json:"status" validate:"number,max=20"`
+	// Maximum: 10
+	Status uint8 `json:"status" validate:"number,max=10"`
 }

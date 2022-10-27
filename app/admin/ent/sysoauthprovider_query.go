@@ -23,6 +23,7 @@ type SysOauthProviderQuery struct {
 	order      []OrderFunc
 	fields     []string
 	predicates []predicate.SysOauthProvider
+	loadTotal  []func(context.Context, []*SysOauthProvider) error
 	modifiers  []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -336,6 +337,11 @@ func (sopq *SysOauthProviderQuery) sqlAll(ctx context.Context, hooks ...queryHoo
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
+	}
+	for i := range sopq.loadTotal {
+		if err := sopq.loadTotal[i](ctx, nodes); err != nil {
+			return nil, err
+		}
 	}
 	return nodes, nil
 }

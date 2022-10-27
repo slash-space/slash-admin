@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	_, err := entgql.NewExtension()
+	ex, err := entgql.NewExtension()
 
 	if err != nil {
 		panic("creating entgql extension")
@@ -19,7 +19,7 @@ func main() {
 
 	opts := []entc.Option{
 		entc.TemplateDir("./template"),
-		//entc.Extensions(ex),
+		entc.Extensions(ex),
 	}
 
 	if err := entc.Generate("./schema", &gen.Config{

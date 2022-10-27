@@ -1,7 +1,10 @@
 package schema
 
 import (
+	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
+	"entgo.io/ent/dialect/entsql"
+	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
 )
@@ -32,5 +35,12 @@ func (CasbinRule) Edges() []ent.Edge {
 func (CasbinRule) Index() []ent.Index {
 	return []ent.Index{
 		index.Fields("Ptype", "V0", "V1", "V2", "V3", "V4", "V5").Unique(),
+	}
+}
+
+func (CasbinRule) Annotations() []schema.Annotation {
+	return []schema.Annotation{
+		entsql.Annotation{Table: "casbin_rule"},
+		entgql.Skip(entgql.SkipAll),
 	}
 }

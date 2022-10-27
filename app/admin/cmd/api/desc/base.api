@@ -24,13 +24,12 @@ type SimpleMsgResp {
 // The page request parameters | 列表请求参数
 type PageReq {
     // Page number | 第几页
-    // Required: true
-    PageNo uint64 `json:"pageNo" validate:"number"`
+    // Minimum: 1
+    PageNo uint64 `json:"pageNo,optional,default=1" validate:"number,min=1"`
 
     // Page size | 单页数据行数
-    // Required: true
     // Maximum: 100000
-    PageSize uint64 `json:"pageSize" validate:"number,max=100000"`
+    PageSize uint64 `json:"pageSize,optional,default=10," validate:"number,max=100"`
 }
 
 // Basic id request | 基础id参数请求

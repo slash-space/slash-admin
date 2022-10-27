@@ -9,8 +9,8 @@ import (
 )
 
 var (
-	// CasbinRulesColumns holds the columns for the "casbin_rules" table.
-	CasbinRulesColumns = []*schema.Column{
+	// CasbinRuleColumns holds the columns for the "casbin_rule" table.
+	CasbinRuleColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "ptype", Type: field.TypeString, Default: ""},
 		{Name: "v0", Type: field.TypeString, Default: ""},
@@ -20,11 +20,11 @@ var (
 		{Name: "v4", Type: field.TypeString, Default: ""},
 		{Name: "v5", Type: field.TypeString, Default: ""},
 	}
-	// CasbinRulesTable holds the schema information for the "casbin_rules" table.
-	CasbinRulesTable = &schema.Table{
-		Name:       "casbin_rules",
-		Columns:    CasbinRulesColumns,
-		PrimaryKey: []*schema.Column{CasbinRulesColumns[0]},
+	// CasbinRuleTable holds the schema information for the "casbin_rule" table.
+	CasbinRuleTable = &schema.Table{
+		Name:       "casbin_rule",
+		Columns:    CasbinRuleColumns,
+		PrimaryKey: []*schema.Column{CasbinRuleColumns[0]},
 	}
 	// SysAPIColumns holds the columns for the "sys_api" table.
 	SysAPIColumns = []*schema.Column{
@@ -304,7 +304,7 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
-		CasbinRulesTable,
+		CasbinRuleTable,
 		SysAPITable,
 		SysDictionaryTable,
 		SysDictionaryDetailTable,
@@ -319,6 +319,9 @@ var (
 )
 
 func init() {
+	CasbinRuleTable.Annotation = &entsql.Annotation{
+		Table: "casbin_rule",
+	}
 	SysAPITable.Annotation = &entsql.Annotation{
 		Table: "sys_api",
 	}

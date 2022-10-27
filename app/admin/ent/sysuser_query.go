@@ -23,6 +23,7 @@ type SysUserQuery struct {
 	order      []OrderFunc
 	fields     []string
 	predicates []predicate.SysUser
+	loadTotal  []func(context.Context, []*SysUser) error
 	modifiers  []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -336,6 +337,11 @@ func (suq *SysUserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Sys
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
+	}
+	for i := range suq.loadTotal {
+		if err := suq.loadTotal[i](ctx, nodes); err != nil {
+			return nil, err
+		}
 	}
 	return nodes, nil
 }

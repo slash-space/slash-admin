@@ -23,6 +23,7 @@ type SysDictionaryDetailQuery struct {
 	order      []OrderFunc
 	fields     []string
 	predicates []predicate.SysDictionaryDetail
+	loadTotal  []func(context.Context, []*SysDictionaryDetail) error
 	modifiers  []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -336,6 +337,11 @@ func (sddq *SysDictionaryDetailQuery) sqlAll(ctx context.Context, hooks ...query
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
+	}
+	for i := range sddq.loadTotal {
+		if err := sddq.loadTotal[i](ctx, nodes); err != nil {
+			return nil, err
+		}
 	}
 	return nodes, nil
 }

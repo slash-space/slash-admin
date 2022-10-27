@@ -23,6 +23,7 @@ type SysTokenQuery struct {
 	order      []OrderFunc
 	fields     []string
 	predicates []predicate.SysToken
+	loadTotal  []func(context.Context, []*SysToken) error
 	modifiers  []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -336,6 +337,11 @@ func (stq *SysTokenQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Sy
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
+	}
+	for i := range stq.loadTotal {
+		if err := stq.loadTotal[i](ctx, nodes); err != nil {
+			return nil, err
+		}
 	}
 	return nodes, nil
 }

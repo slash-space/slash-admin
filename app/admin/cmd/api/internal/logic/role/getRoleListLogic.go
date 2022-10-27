@@ -24,7 +24,7 @@ func NewGetRoleListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetRo
 }
 
 func (l *GetRoleListLogic) GetRoleList(req *types.PageReq) (resp *types.RoleListResp, err error) {
-	// todo: add your logic here and delete this line
+	l.svcCtx.EntClient.SysRole.Query().Where()
 
 	return
 }
