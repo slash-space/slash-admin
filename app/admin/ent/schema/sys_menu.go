@@ -19,14 +19,14 @@ type SysMenu struct {
 func (SysMenu) Fields() []ent.Field {
 	return []ent.Field{
 		field.Uint64("id"),
-		field.Uint32("menu_level").Comment("menu level"),
-		field.Uint32("menu_type").Comment("menu type: 0. group 1. menu"),
 		field.Uint64("parent_id").Optional().Comment("parent menu ID"),
+		field.Uint8("menu_level").Comment("menu level"),
+		field.Uint8("menu_type").Comment("menu type: 0. group 1. menu"),
 		field.String("path").Comment("index path"),
 		field.String("name").Comment("index name"),
 		field.String("redirect").Optional().Default("").Comment("redirect path"),
 		field.String("component").Comment("the path of vue file"),
-		field.Uint32("order_no").Default(0).Comment("numbers for sorting"),
+		field.Uint8("order_no").Default(0).Comment("numbers for sorting"),
 		field.Bool("disabled").Default(false).Comment("if true, disable"),
 		field.String("meta").
 			Optional().

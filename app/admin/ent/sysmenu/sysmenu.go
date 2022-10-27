@@ -11,12 +11,12 @@ const (
 	Label = "sys_menu"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldParentID holds the string denoting the parent_id field in the database.
+	FieldParentID = "parent_id"
 	// FieldMenuLevel holds the string denoting the menu_level field in the database.
 	FieldMenuLevel = "menu_level"
 	// FieldMenuType holds the string denoting the menu_type field in the database.
 	FieldMenuType = "menu_type"
-	// FieldParentID holds the string denoting the parent_id field in the database.
-	FieldParentID = "parent_id"
 	// FieldPath holds the string denoting the path field in the database.
 	FieldPath = "path"
 	// FieldName holds the string denoting the name field in the database.
@@ -63,9 +63,9 @@ const (
 // Columns holds all SQL columns for sysmenu fields.
 var Columns = []string{
 	FieldID,
+	FieldParentID,
 	FieldMenuLevel,
 	FieldMenuType,
-	FieldParentID,
 	FieldPath,
 	FieldName,
 	FieldRedirect,
@@ -98,7 +98,7 @@ var (
 	// DefaultRedirect holds the default value on creation for the "redirect" field.
 	DefaultRedirect string
 	// DefaultOrderNo holds the default value on creation for the "order_no" field.
-	DefaultOrderNo uint32
+	DefaultOrderNo uint8
 	// DefaultDisabled holds the default value on creation for the "disabled" field.
 	DefaultDisabled bool
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.

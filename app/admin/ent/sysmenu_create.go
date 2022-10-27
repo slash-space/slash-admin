@@ -24,18 +24,6 @@ type SysMenuCreate struct {
 	conflict []sql.ConflictOption
 }
 
-// SetMenuLevel sets the "menu_level" field.
-func (smc *SysMenuCreate) SetMenuLevel(u uint32) *SysMenuCreate {
-	smc.mutation.SetMenuLevel(u)
-	return smc
-}
-
-// SetMenuType sets the "menu_type" field.
-func (smc *SysMenuCreate) SetMenuType(u uint32) *SysMenuCreate {
-	smc.mutation.SetMenuType(u)
-	return smc
-}
-
 // SetParentID sets the "parent_id" field.
 func (smc *SysMenuCreate) SetParentID(u uint64) *SysMenuCreate {
 	smc.mutation.SetParentID(u)
@@ -47,6 +35,18 @@ func (smc *SysMenuCreate) SetNillableParentID(u *uint64) *SysMenuCreate {
 	if u != nil {
 		smc.SetParentID(*u)
 	}
+	return smc
+}
+
+// SetMenuLevel sets the "menu_level" field.
+func (smc *SysMenuCreate) SetMenuLevel(u uint8) *SysMenuCreate {
+	smc.mutation.SetMenuLevel(u)
+	return smc
+}
+
+// SetMenuType sets the "menu_type" field.
+func (smc *SysMenuCreate) SetMenuType(u uint8) *SysMenuCreate {
+	smc.mutation.SetMenuType(u)
 	return smc
 }
 
@@ -83,13 +83,13 @@ func (smc *SysMenuCreate) SetComponent(s string) *SysMenuCreate {
 }
 
 // SetOrderNo sets the "order_no" field.
-func (smc *SysMenuCreate) SetOrderNo(u uint32) *SysMenuCreate {
+func (smc *SysMenuCreate) SetOrderNo(u uint8) *SysMenuCreate {
 	smc.mutation.SetOrderNo(u)
 	return smc
 }
 
 // SetNillableOrderNo sets the "order_no" field if the given value is not nil.
-func (smc *SysMenuCreate) SetNillableOrderNo(u *uint32) *SysMenuCreate {
+func (smc *SysMenuCreate) SetNillableOrderNo(u *uint8) *SysMenuCreate {
 	if u != nil {
 		smc.SetOrderNo(*u)
 	}
@@ -371,7 +371,7 @@ func (smc *SysMenuCreate) createSpec() (*SysMenu, *sqlgraph.CreateSpec) {
 	}
 	if value, ok := smc.mutation.MenuLevel(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
+			Type:   field.TypeUint8,
 			Value:  value,
 			Column: sysmenu.FieldMenuLevel,
 		})
@@ -379,7 +379,7 @@ func (smc *SysMenuCreate) createSpec() (*SysMenu, *sqlgraph.CreateSpec) {
 	}
 	if value, ok := smc.mutation.MenuType(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
+			Type:   field.TypeUint8,
 			Value:  value,
 			Column: sysmenu.FieldMenuType,
 		})
@@ -419,7 +419,7 @@ func (smc *SysMenuCreate) createSpec() (*SysMenu, *sqlgraph.CreateSpec) {
 	}
 	if value, ok := smc.mutation.OrderNo(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
+			Type:   field.TypeUint8,
 			Value:  value,
 			Column: sysmenu.FieldOrderNo,
 		})
@@ -530,7 +530,7 @@ func (smc *SysMenuCreate) createSpec() (*SysMenu, *sqlgraph.CreateSpec) {
 // of the `INSERT` statement. For example:
 //
 //	client.SysMenu.Create().
-//		SetMenuLevel(v).
+//		SetParentID(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -539,7 +539,7 @@ func (smc *SysMenuCreate) createSpec() (*SysMenu, *sqlgraph.CreateSpec) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.SysMenuUpsert) {
-//			SetMenuLevel(v+v).
+//			SetParentID(v+v).
 //		}).
 //		Exec(ctx)
 func (smc *SysMenuCreate) OnConflict(opts ...sql.ConflictOption) *SysMenuUpsertOne {
@@ -575,42 +575,6 @@ type (
 	}
 )
 
-// SetMenuLevel sets the "menu_level" field.
-func (u *SysMenuUpsert) SetMenuLevel(v uint32) *SysMenuUpsert {
-	u.Set(sysmenu.FieldMenuLevel, v)
-	return u
-}
-
-// UpdateMenuLevel sets the "menu_level" field to the value that was provided on create.
-func (u *SysMenuUpsert) UpdateMenuLevel() *SysMenuUpsert {
-	u.SetExcluded(sysmenu.FieldMenuLevel)
-	return u
-}
-
-// AddMenuLevel adds v to the "menu_level" field.
-func (u *SysMenuUpsert) AddMenuLevel(v uint32) *SysMenuUpsert {
-	u.Add(sysmenu.FieldMenuLevel, v)
-	return u
-}
-
-// SetMenuType sets the "menu_type" field.
-func (u *SysMenuUpsert) SetMenuType(v uint32) *SysMenuUpsert {
-	u.Set(sysmenu.FieldMenuType, v)
-	return u
-}
-
-// UpdateMenuType sets the "menu_type" field to the value that was provided on create.
-func (u *SysMenuUpsert) UpdateMenuType() *SysMenuUpsert {
-	u.SetExcluded(sysmenu.FieldMenuType)
-	return u
-}
-
-// AddMenuType adds v to the "menu_type" field.
-func (u *SysMenuUpsert) AddMenuType(v uint32) *SysMenuUpsert {
-	u.Add(sysmenu.FieldMenuType, v)
-	return u
-}
-
 // SetParentID sets the "parent_id" field.
 func (u *SysMenuUpsert) SetParentID(v uint64) *SysMenuUpsert {
 	u.Set(sysmenu.FieldParentID, v)
@@ -626,6 +590,42 @@ func (u *SysMenuUpsert) UpdateParentID() *SysMenuUpsert {
 // ClearParentID clears the value of the "parent_id" field.
 func (u *SysMenuUpsert) ClearParentID() *SysMenuUpsert {
 	u.SetNull(sysmenu.FieldParentID)
+	return u
+}
+
+// SetMenuLevel sets the "menu_level" field.
+func (u *SysMenuUpsert) SetMenuLevel(v uint8) *SysMenuUpsert {
+	u.Set(sysmenu.FieldMenuLevel, v)
+	return u
+}
+
+// UpdateMenuLevel sets the "menu_level" field to the value that was provided on create.
+func (u *SysMenuUpsert) UpdateMenuLevel() *SysMenuUpsert {
+	u.SetExcluded(sysmenu.FieldMenuLevel)
+	return u
+}
+
+// AddMenuLevel adds v to the "menu_level" field.
+func (u *SysMenuUpsert) AddMenuLevel(v uint8) *SysMenuUpsert {
+	u.Add(sysmenu.FieldMenuLevel, v)
+	return u
+}
+
+// SetMenuType sets the "menu_type" field.
+func (u *SysMenuUpsert) SetMenuType(v uint8) *SysMenuUpsert {
+	u.Set(sysmenu.FieldMenuType, v)
+	return u
+}
+
+// UpdateMenuType sets the "menu_type" field to the value that was provided on create.
+func (u *SysMenuUpsert) UpdateMenuType() *SysMenuUpsert {
+	u.SetExcluded(sysmenu.FieldMenuType)
+	return u
+}
+
+// AddMenuType adds v to the "menu_type" field.
+func (u *SysMenuUpsert) AddMenuType(v uint8) *SysMenuUpsert {
+	u.Add(sysmenu.FieldMenuType, v)
 	return u
 }
 
@@ -684,7 +684,7 @@ func (u *SysMenuUpsert) UpdateComponent() *SysMenuUpsert {
 }
 
 // SetOrderNo sets the "order_no" field.
-func (u *SysMenuUpsert) SetOrderNo(v uint32) *SysMenuUpsert {
+func (u *SysMenuUpsert) SetOrderNo(v uint8) *SysMenuUpsert {
 	u.Set(sysmenu.FieldOrderNo, v)
 	return u
 }
@@ -696,7 +696,7 @@ func (u *SysMenuUpsert) UpdateOrderNo() *SysMenuUpsert {
 }
 
 // AddOrderNo adds v to the "order_no" field.
-func (u *SysMenuUpsert) AddOrderNo(v uint32) *SysMenuUpsert {
+func (u *SysMenuUpsert) AddOrderNo(v uint8) *SysMenuUpsert {
 	u.Add(sysmenu.FieldOrderNo, v)
 	return u
 }
@@ -821,48 +821,6 @@ func (u *SysMenuUpsertOne) Update(set func(*SysMenuUpsert)) *SysMenuUpsertOne {
 	return u
 }
 
-// SetMenuLevel sets the "menu_level" field.
-func (u *SysMenuUpsertOne) SetMenuLevel(v uint32) *SysMenuUpsertOne {
-	return u.Update(func(s *SysMenuUpsert) {
-		s.SetMenuLevel(v)
-	})
-}
-
-// AddMenuLevel adds v to the "menu_level" field.
-func (u *SysMenuUpsertOne) AddMenuLevel(v uint32) *SysMenuUpsertOne {
-	return u.Update(func(s *SysMenuUpsert) {
-		s.AddMenuLevel(v)
-	})
-}
-
-// UpdateMenuLevel sets the "menu_level" field to the value that was provided on create.
-func (u *SysMenuUpsertOne) UpdateMenuLevel() *SysMenuUpsertOne {
-	return u.Update(func(s *SysMenuUpsert) {
-		s.UpdateMenuLevel()
-	})
-}
-
-// SetMenuType sets the "menu_type" field.
-func (u *SysMenuUpsertOne) SetMenuType(v uint32) *SysMenuUpsertOne {
-	return u.Update(func(s *SysMenuUpsert) {
-		s.SetMenuType(v)
-	})
-}
-
-// AddMenuType adds v to the "menu_type" field.
-func (u *SysMenuUpsertOne) AddMenuType(v uint32) *SysMenuUpsertOne {
-	return u.Update(func(s *SysMenuUpsert) {
-		s.AddMenuType(v)
-	})
-}
-
-// UpdateMenuType sets the "menu_type" field to the value that was provided on create.
-func (u *SysMenuUpsertOne) UpdateMenuType() *SysMenuUpsertOne {
-	return u.Update(func(s *SysMenuUpsert) {
-		s.UpdateMenuType()
-	})
-}
-
 // SetParentID sets the "parent_id" field.
 func (u *SysMenuUpsertOne) SetParentID(v uint64) *SysMenuUpsertOne {
 	return u.Update(func(s *SysMenuUpsert) {
@@ -881,6 +839,48 @@ func (u *SysMenuUpsertOne) UpdateParentID() *SysMenuUpsertOne {
 func (u *SysMenuUpsertOne) ClearParentID() *SysMenuUpsertOne {
 	return u.Update(func(s *SysMenuUpsert) {
 		s.ClearParentID()
+	})
+}
+
+// SetMenuLevel sets the "menu_level" field.
+func (u *SysMenuUpsertOne) SetMenuLevel(v uint8) *SysMenuUpsertOne {
+	return u.Update(func(s *SysMenuUpsert) {
+		s.SetMenuLevel(v)
+	})
+}
+
+// AddMenuLevel adds v to the "menu_level" field.
+func (u *SysMenuUpsertOne) AddMenuLevel(v uint8) *SysMenuUpsertOne {
+	return u.Update(func(s *SysMenuUpsert) {
+		s.AddMenuLevel(v)
+	})
+}
+
+// UpdateMenuLevel sets the "menu_level" field to the value that was provided on create.
+func (u *SysMenuUpsertOne) UpdateMenuLevel() *SysMenuUpsertOne {
+	return u.Update(func(s *SysMenuUpsert) {
+		s.UpdateMenuLevel()
+	})
+}
+
+// SetMenuType sets the "menu_type" field.
+func (u *SysMenuUpsertOne) SetMenuType(v uint8) *SysMenuUpsertOne {
+	return u.Update(func(s *SysMenuUpsert) {
+		s.SetMenuType(v)
+	})
+}
+
+// AddMenuType adds v to the "menu_type" field.
+func (u *SysMenuUpsertOne) AddMenuType(v uint8) *SysMenuUpsertOne {
+	return u.Update(func(s *SysMenuUpsert) {
+		s.AddMenuType(v)
+	})
+}
+
+// UpdateMenuType sets the "menu_type" field to the value that was provided on create.
+func (u *SysMenuUpsertOne) UpdateMenuType() *SysMenuUpsertOne {
+	return u.Update(func(s *SysMenuUpsert) {
+		s.UpdateMenuType()
 	})
 }
 
@@ -948,14 +948,14 @@ func (u *SysMenuUpsertOne) UpdateComponent() *SysMenuUpsertOne {
 }
 
 // SetOrderNo sets the "order_no" field.
-func (u *SysMenuUpsertOne) SetOrderNo(v uint32) *SysMenuUpsertOne {
+func (u *SysMenuUpsertOne) SetOrderNo(v uint8) *SysMenuUpsertOne {
 	return u.Update(func(s *SysMenuUpsert) {
 		s.SetOrderNo(v)
 	})
 }
 
 // AddOrderNo adds v to the "order_no" field.
-func (u *SysMenuUpsertOne) AddOrderNo(v uint32) *SysMenuUpsertOne {
+func (u *SysMenuUpsertOne) AddOrderNo(v uint8) *SysMenuUpsertOne {
 	return u.Update(func(s *SysMenuUpsert) {
 		s.AddOrderNo(v)
 	})
@@ -1183,7 +1183,7 @@ func (smcb *SysMenuCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.SysMenuUpsert) {
-//			SetMenuLevel(v+v).
+//			SetParentID(v+v).
 //		}).
 //		Exec(ctx)
 func (smcb *SysMenuCreateBulk) OnConflict(opts ...sql.ConflictOption) *SysMenuUpsertBulk {
@@ -1262,48 +1262,6 @@ func (u *SysMenuUpsertBulk) Update(set func(*SysMenuUpsert)) *SysMenuUpsertBulk 
 	return u
 }
 
-// SetMenuLevel sets the "menu_level" field.
-func (u *SysMenuUpsertBulk) SetMenuLevel(v uint32) *SysMenuUpsertBulk {
-	return u.Update(func(s *SysMenuUpsert) {
-		s.SetMenuLevel(v)
-	})
-}
-
-// AddMenuLevel adds v to the "menu_level" field.
-func (u *SysMenuUpsertBulk) AddMenuLevel(v uint32) *SysMenuUpsertBulk {
-	return u.Update(func(s *SysMenuUpsert) {
-		s.AddMenuLevel(v)
-	})
-}
-
-// UpdateMenuLevel sets the "menu_level" field to the value that was provided on create.
-func (u *SysMenuUpsertBulk) UpdateMenuLevel() *SysMenuUpsertBulk {
-	return u.Update(func(s *SysMenuUpsert) {
-		s.UpdateMenuLevel()
-	})
-}
-
-// SetMenuType sets the "menu_type" field.
-func (u *SysMenuUpsertBulk) SetMenuType(v uint32) *SysMenuUpsertBulk {
-	return u.Update(func(s *SysMenuUpsert) {
-		s.SetMenuType(v)
-	})
-}
-
-// AddMenuType adds v to the "menu_type" field.
-func (u *SysMenuUpsertBulk) AddMenuType(v uint32) *SysMenuUpsertBulk {
-	return u.Update(func(s *SysMenuUpsert) {
-		s.AddMenuType(v)
-	})
-}
-
-// UpdateMenuType sets the "menu_type" field to the value that was provided on create.
-func (u *SysMenuUpsertBulk) UpdateMenuType() *SysMenuUpsertBulk {
-	return u.Update(func(s *SysMenuUpsert) {
-		s.UpdateMenuType()
-	})
-}
-
 // SetParentID sets the "parent_id" field.
 func (u *SysMenuUpsertBulk) SetParentID(v uint64) *SysMenuUpsertBulk {
 	return u.Update(func(s *SysMenuUpsert) {
@@ -1322,6 +1280,48 @@ func (u *SysMenuUpsertBulk) UpdateParentID() *SysMenuUpsertBulk {
 func (u *SysMenuUpsertBulk) ClearParentID() *SysMenuUpsertBulk {
 	return u.Update(func(s *SysMenuUpsert) {
 		s.ClearParentID()
+	})
+}
+
+// SetMenuLevel sets the "menu_level" field.
+func (u *SysMenuUpsertBulk) SetMenuLevel(v uint8) *SysMenuUpsertBulk {
+	return u.Update(func(s *SysMenuUpsert) {
+		s.SetMenuLevel(v)
+	})
+}
+
+// AddMenuLevel adds v to the "menu_level" field.
+func (u *SysMenuUpsertBulk) AddMenuLevel(v uint8) *SysMenuUpsertBulk {
+	return u.Update(func(s *SysMenuUpsert) {
+		s.AddMenuLevel(v)
+	})
+}
+
+// UpdateMenuLevel sets the "menu_level" field to the value that was provided on create.
+func (u *SysMenuUpsertBulk) UpdateMenuLevel() *SysMenuUpsertBulk {
+	return u.Update(func(s *SysMenuUpsert) {
+		s.UpdateMenuLevel()
+	})
+}
+
+// SetMenuType sets the "menu_type" field.
+func (u *SysMenuUpsertBulk) SetMenuType(v uint8) *SysMenuUpsertBulk {
+	return u.Update(func(s *SysMenuUpsert) {
+		s.SetMenuType(v)
+	})
+}
+
+// AddMenuType adds v to the "menu_type" field.
+func (u *SysMenuUpsertBulk) AddMenuType(v uint8) *SysMenuUpsertBulk {
+	return u.Update(func(s *SysMenuUpsert) {
+		s.AddMenuType(v)
+	})
+}
+
+// UpdateMenuType sets the "menu_type" field to the value that was provided on create.
+func (u *SysMenuUpsertBulk) UpdateMenuType() *SysMenuUpsertBulk {
+	return u.Update(func(s *SysMenuUpsert) {
+		s.UpdateMenuType()
 	})
 }
 
@@ -1389,14 +1389,14 @@ func (u *SysMenuUpsertBulk) UpdateComponent() *SysMenuUpsertBulk {
 }
 
 // SetOrderNo sets the "order_no" field.
-func (u *SysMenuUpsertBulk) SetOrderNo(v uint32) *SysMenuUpsertBulk {
+func (u *SysMenuUpsertBulk) SetOrderNo(v uint8) *SysMenuUpsertBulk {
 	return u.Update(func(s *SysMenuUpsert) {
 		s.SetOrderNo(v)
 	})
 }
 
 // AddOrderNo adds v to the "order_no" field.
-func (u *SysMenuUpsertBulk) AddOrderNo(v uint32) *SysMenuUpsertBulk {
+func (u *SysMenuUpsertBulk) AddOrderNo(v uint8) *SysMenuUpsertBulk {
 	return u.Update(func(s *SysMenuUpsert) {
 		s.AddOrderNo(v)
 	})

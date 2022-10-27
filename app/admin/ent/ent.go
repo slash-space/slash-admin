@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"slash-admin/app/admin/ent/casbinrule"
 	"slash-admin/app/admin/ent/sysapi"
 	"slash-admin/app/admin/ent/sysdictionary"
 	"slash-admin/app/admin/ent/sysdictionarydetail"
@@ -39,6 +40,7 @@ type OrderFunc func(*sql.Selector)
 // columnChecker returns a function indicates if the column exists in the given column.
 func columnChecker(table string) func(string) error {
 	checks := map[string]func(string) bool{
+		casbinrule.Table:          casbinrule.ValidColumn,
 		sysapi.Table:              sysapi.ValidColumn,
 		sysdictionary.Table:       sysdictionary.ValidColumn,
 		sysdictionarydetail.Table: sysdictionarydetail.ValidColumn,

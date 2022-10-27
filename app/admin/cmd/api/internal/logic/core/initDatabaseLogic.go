@@ -2,18 +2,28 @@ package core
 
 import (
 	"context"
+	"fmt"
+	"github.com/casbin/casbin/v2"
+	cabinModel "github.com/casbin/casbin/v2/model"
 	"github.com/google/uuid"
 	"github.com/zeromicro/go-zero/core/errorx"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/redis"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+	"log"
 	"net/http"
 	"slash-admin/app/admin/cmd/api/internal/globalkey"
 	"slash-admin/app/admin/cmd/api/internal/svc"
 	"slash-admin/app/admin/cmd/api/internal/types"
 	"slash-admin/app/admin/ent"
+	entcasbin "slash-admin/app/admin/ent/casbin"
 	"slash-admin/app/admin/ent/migrate"
+	"slash-admin/app/admin/ent/sysrole"
 	pType "slash-admin/pkg/types"
 	"slash-admin/pkg/utils"
+	"strconv"
+	"strings"
 )
 
 type InitDatabaseLogic struct {
@@ -101,21 +111,23 @@ func (l *InitDatabaseLogic) InitDatabase() (resp *types.SimpleMsgResp, err error
 		l.svcCtx.RedisClient.Setex(globalkey.InitDatabaseErrorMsg, err.Error(), 300)
 		return nil, errorx.NewApiError(http.StatusInternalServerError, errorx.DatabaseError)
 	}
-	// todo
-	//err = l.insertRoleMenuAuthorityData()
-	//if err != nil {
-	//	logx.Errorw(logmessage.DatabaseError, logx.Field("detail", err.Error()))
-	//	l.svcCtx.Redis.Setex("database_error_msg", err.Error(), 300)
-	//	return nil, status.Error(codes.Internal, err.Error())
-	//}
-	//err = l.insertCasbinPoliciesData()
-	//if err != nil {
-	//	logx.Errorw(logmessage.DatabaseError, logx.Field("detail", err.Error()))
-	//	l.svcCtx.Redis.Setex("database_error_msg", err.Error(), 300)
-	//	return nil, status.Error(codes.Internal, err.Error())
-	//}
+
+	err = l.insertRoleMenuAuthorityData()
+	if err != nil {
+		logx.Errorw(errorx.DatabaseError, logx.Field("detail", err.Error()))
+
+		l.svcCtx.RedisClient.Setex(globalkey.InitDatabaseErrorMsg, err.Error(), 300)
+		return nil, errorx.NewApiError(http.StatusInternalServerError, errorx.DatabaseError)
+	}
 
 	err = l.insertApiData()
+	if err != nil {
+		logx.Errorw(errorx.DatabaseError, logx.Field("detail", err.Error()))
+		l.svcCtx.RedisClient.Setex(globalkey.InitDatabaseErrorMsg, err.Error(), 300)
+		return nil, errorx.NewApiError(http.StatusInternalServerError, errorx.DatabaseError)
+	}
+
+	err = l.insertCasbinPoliciesData()
 	if err != nil {
 		logx.Errorw(errorx.DatabaseError, logx.Field("detail", err.Error()))
 		l.svcCtx.RedisClient.Setex(globalkey.InitDatabaseErrorMsg, err.Error(), 300)
@@ -150,6 +162,7 @@ func (l *InitDatabaseLogic) insertUserData() error {
 func (l *InitDatabaseLogic) insertRoleData() error {
 	var roles = []ent.CreateSysRoleInput{
 		{
+			ID:            utils.Wrap[uint64](globalkey.RoleAdminID),
 			Name:          utils.Wrap("sys.role.admin"),
 			Value:         utils.Wrap("admin"),
 			DefaultRouter: utils.Wrap("dashboard"),
@@ -157,6 +170,7 @@ func (l *InitDatabaseLogic) insertRoleData() error {
 			OrderNo:       utils.Wrap[uint32](1),
 		},
 		{
+			ID:            utils.Wrap[uint64](globalkey.RoleStuffID),
 			Name:          utils.Wrap("sys.role.stuff"),
 			Value:         utils.Wrap("stuff"),
 			DefaultRouter: utils.Wrap("dashboard"),
@@ -164,6 +178,7 @@ func (l *InitDatabaseLogic) insertRoleData() error {
 			OrderNo:       utils.Wrap[uint32](2),
 		},
 		{
+			ID:            utils.Wrap[uint64](globalkey.RoleMemberID),
 			Name:          utils.Wrap("sys.role.member"),
 			Value:         utils.Wrap("member"),
 			DefaultRouter: utils.Wrap("dashboard"),
@@ -509,13 +524,13 @@ func (l *InitDatabaseLogic) insertMenuData() error {
 	menus := []ent.CreateSysMenuInput{
 		{
 			ID:        utils.Wrap[uint64](1),
-			MenuLevel: utils.Wrap[uint32](0),
-			MenuType:  utils.Wrap[uint32](0),
-			ParentID:  utils.Wrap[uint](1),
+			MenuLevel: utils.Wrap[uint8](0),
+			MenuType:  utils.Wrap[uint8](0),
+			ParentID:  utils.Wrap[uint64](1),
 			Path:      utils.Wrap(""),
 			Name:      utils.Wrap("root"),
 			Component: utils.Wrap(""),
-			OrderNo:   utils.Wrap[uint32](0),
+			OrderNo:   utils.Wrap[uint8](0),
 			Disabled:  utils.Wrap(false),
 			Meta: &pType.MenuMeta{
 				Title:              "",
@@ -531,13 +546,13 @@ func (l *InitDatabaseLogic) insertMenuData() error {
 			},
 		},
 		{
-			MenuLevel: utils.Wrap[uint32](1),
-			MenuType:  utils.Wrap[uint32](0),
-			ParentID:  utils.Wrap[uint](1),
+			MenuLevel: utils.Wrap[uint8](1),
+			MenuType:  utils.Wrap[uint8](0),
+			ParentID:  utils.Wrap[uint64](1),
 			Path:      utils.Wrap("/dashboard"),
 			Name:      utils.Wrap("Dashboard"),
 			Component: utils.Wrap("/dashboard/workbench/index"),
-			OrderNo:   utils.Wrap[uint32](0),
+			OrderNo:   utils.Wrap[uint8](0),
 			Disabled:  utils.Wrap(false),
 			Meta: &pType.MenuMeta{
 				Title:              "routes.dashboard.dashboard",
@@ -555,13 +570,13 @@ func (l *InitDatabaseLogic) insertMenuData() error {
 			},
 		},
 		{
-			MenuLevel: utils.Wrap[uint32](1),
-			MenuType:  utils.Wrap[uint32](0),
-			ParentID:  utils.Wrap[uint](1),
+			MenuLevel: utils.Wrap[uint8](1),
+			MenuType:  utils.Wrap[uint8](0),
+			ParentID:  utils.Wrap[uint64](1),
 			Path:      utils.Wrap(""),
 			Name:      utils.Wrap("System Management"),
 			Component: utils.Wrap("LAYOUT"),
-			OrderNo:   utils.Wrap[uint32](1),
+			OrderNo:   utils.Wrap[uint8](1),
 			Disabled:  utils.Wrap(false),
 			Meta: &pType.MenuMeta{
 				Title:              "routes.system.systemManagementTitle",
@@ -577,13 +592,13 @@ func (l *InitDatabaseLogic) insertMenuData() error {
 			},
 		},
 		{
-			MenuLevel: utils.Wrap[uint32](2),
-			MenuType:  utils.Wrap[uint32](1),
-			ParentID:  utils.Wrap[uint](3),
+			MenuLevel: utils.Wrap[uint8](2),
+			MenuType:  utils.Wrap[uint8](1),
+			ParentID:  utils.Wrap[uint64](3),
 			Path:      utils.Wrap("/menu"),
 			Name:      utils.Wrap("MenuManagement"),
 			Component: utils.Wrap("/sys/menu/index"),
-			OrderNo:   utils.Wrap[uint32](1),
+			OrderNo:   utils.Wrap[uint8](1),
 			Disabled:  utils.Wrap(false),
 			Meta: &pType.MenuMeta{
 				Title:              "routes.system.menuManagementTitle",
@@ -599,13 +614,13 @@ func (l *InitDatabaseLogic) insertMenuData() error {
 			},
 		},
 		{
-			MenuLevel: utils.Wrap[uint32](2),
-			MenuType:  utils.Wrap[uint32](1),
-			ParentID:  utils.Wrap[uint](3),
+			MenuLevel: utils.Wrap[uint8](2),
+			MenuType:  utils.Wrap[uint8](1),
+			ParentID:  utils.Wrap[uint64](3),
 			Path:      utils.Wrap("/role"),
 			Name:      utils.Wrap("Role Management"),
 			Component: utils.Wrap("/sys/role/index"),
-			OrderNo:   utils.Wrap[uint32](2),
+			OrderNo:   utils.Wrap[uint8](2),
 			Disabled:  utils.Wrap(false),
 			Meta: &pType.MenuMeta{
 				Title:              "routes.system.roleManagementTitle",
@@ -621,13 +636,13 @@ func (l *InitDatabaseLogic) insertMenuData() error {
 			},
 		},
 		{
-			MenuLevel: utils.Wrap[uint32](2),
-			MenuType:  utils.Wrap[uint32](1),
-			ParentID:  utils.Wrap[uint](3),
+			MenuLevel: utils.Wrap[uint8](2),
+			MenuType:  utils.Wrap[uint8](1),
+			ParentID:  utils.Wrap[uint64](3),
 			Path:      utils.Wrap("/api"),
 			Name:      utils.Wrap("API Management"),
 			Component: utils.Wrap("/sys/api/index"),
-			OrderNo:   utils.Wrap[uint32](4),
+			OrderNo:   utils.Wrap[uint8](4),
 			Disabled:  utils.Wrap(false),
 			Meta: &pType.MenuMeta{
 				Title:              "routes.system.apiManagementTitle",
@@ -643,13 +658,13 @@ func (l *InitDatabaseLogic) insertMenuData() error {
 			},
 		},
 		{
-			MenuLevel: utils.Wrap[uint32](2),
-			MenuType:  utils.Wrap[uint32](1),
-			ParentID:  utils.Wrap[uint](3),
+			MenuLevel: utils.Wrap[uint8](2),
+			MenuType:  utils.Wrap[uint8](1),
+			ParentID:  utils.Wrap[uint64](3),
 			Path:      utils.Wrap("/user"),
 			Name:      utils.Wrap("User Management"),
 			Component: utils.Wrap("/sys/user/index"),
-			OrderNo:   utils.Wrap[uint32](3),
+			OrderNo:   utils.Wrap[uint8](3),
 			Disabled:  utils.Wrap(false),
 			Meta: &pType.MenuMeta{
 				Title:              "routes.system.userManagementTitle",
@@ -665,13 +680,13 @@ func (l *InitDatabaseLogic) insertMenuData() error {
 			},
 		},
 		{
-			MenuLevel: utils.Wrap[uint32](1),
-			MenuType:  utils.Wrap[uint32](1),
-			ParentID:  utils.Wrap[uint](1),
+			MenuLevel: utils.Wrap[uint8](1),
+			MenuType:  utils.Wrap[uint8](1),
+			ParentID:  utils.Wrap[uint64](1),
 			Path:      utils.Wrap("/file"),
 			Name:      utils.Wrap("File Management"),
 			Component: utils.Wrap("/file/index"),
-			OrderNo:   utils.Wrap[uint32](2),
+			OrderNo:   utils.Wrap[uint8](2),
 			Disabled:  utils.Wrap(false),
 			Meta: &pType.MenuMeta{
 				Title:              "routes.system.fileManagementTitle",
@@ -687,13 +702,13 @@ func (l *InitDatabaseLogic) insertMenuData() error {
 			},
 		},
 		{
-			MenuLevel: utils.Wrap[uint32](2),
-			MenuType:  utils.Wrap[uint32](1),
-			ParentID:  utils.Wrap[uint](3),
+			MenuLevel: utils.Wrap[uint8](2),
+			MenuType:  utils.Wrap[uint8](1),
+			ParentID:  utils.Wrap[uint64](3),
 			Path:      utils.Wrap("/dictionary"),
 			Name:      utils.Wrap("Dictionary Management"),
 			Component: utils.Wrap("/sys/dictionary/index"),
-			OrderNo:   utils.Wrap[uint32](5),
+			OrderNo:   utils.Wrap[uint8](5),
 			Disabled:  utils.Wrap(false),
 			Meta: &pType.MenuMeta{
 				Title:              "routes.system.dictionaryManagementTitle",
@@ -709,13 +724,13 @@ func (l *InitDatabaseLogic) insertMenuData() error {
 			},
 		},
 		{
-			MenuLevel: utils.Wrap[uint32](1),
-			MenuType:  utils.Wrap[uint32](0),
-			ParentID:  utils.Wrap[uint](1),
+			MenuLevel: utils.Wrap[uint8](1),
+			MenuType:  utils.Wrap[uint8](0),
+			ParentID:  utils.Wrap[uint64](1),
 			Path:      utils.Wrap(""),
 			Name:      utils.Wrap("Other Pages"),
 			Component: utils.Wrap("LAYOUT"),
-			OrderNo:   utils.Wrap[uint32](4),
+			OrderNo:   utils.Wrap[uint8](4),
 			Disabled:  utils.Wrap(false),
 			Meta: &pType.MenuMeta{
 				Title:              "routes.system.otherPages",
@@ -731,13 +746,13 @@ func (l *InitDatabaseLogic) insertMenuData() error {
 			},
 		},
 		{
-			MenuLevel: utils.Wrap[uint32](2),
-			MenuType:  utils.Wrap[uint32](1),
-			ParentID:  utils.Wrap[uint](10),
+			MenuLevel: utils.Wrap[uint8](2),
+			MenuType:  utils.Wrap[uint8](1),
+			ParentID:  utils.Wrap[uint64](10),
 			Path:      utils.Wrap("/dictionary/detail"),
 			Name:      utils.Wrap("Dictionary Detail"),
 			Component: utils.Wrap("/sys/dictionary/detail"),
-			OrderNo:   utils.Wrap[uint32](1),
+			OrderNo:   utils.Wrap[uint8](1),
 			Disabled:  utils.Wrap(false),
 			Meta: &pType.MenuMeta{
 				Title:              "routes.system.dictionaryDetailManagementTitle",
@@ -753,13 +768,13 @@ func (l *InitDatabaseLogic) insertMenuData() error {
 			},
 		},
 		{
-			MenuLevel: utils.Wrap[uint32](1),
-			MenuType:  utils.Wrap[uint32](1),
-			ParentID:  utils.Wrap[uint](10),
+			MenuLevel: utils.Wrap[uint8](1),
+			MenuType:  utils.Wrap[uint8](1),
+			ParentID:  utils.Wrap[uint64](10),
 			Path:      utils.Wrap("/profile"),
 			Name:      utils.Wrap("Profile"),
 			Component: utils.Wrap("/sys/profile/index"),
-			OrderNo:   utils.Wrap[uint32](3),
+			OrderNo:   utils.Wrap[uint8](3),
 			Disabled:  utils.Wrap(false),
 			Meta: &pType.MenuMeta{
 				Title:              "routes.system.userProfileTitle",
@@ -775,13 +790,13 @@ func (l *InitDatabaseLogic) insertMenuData() error {
 			},
 		},
 		{
-			MenuLevel: utils.Wrap[uint32](2),
-			MenuType:  utils.Wrap[uint32](1),
-			ParentID:  utils.Wrap[uint](3),
+			MenuLevel: utils.Wrap[uint8](2),
+			MenuType:  utils.Wrap[uint8](1),
+			ParentID:  utils.Wrap[uint64](3),
 			Path:      utils.Wrap("/oauth"),
 			Name:      utils.Wrap("Oauth Management"),
 			Component: utils.Wrap("/sys/oauth/index"),
-			OrderNo:   utils.Wrap[uint32](6),
+			OrderNo:   utils.Wrap[uint8](6),
 			Disabled:  utils.Wrap(false),
 			Meta: &pType.MenuMeta{
 				Title:              "routes.system.oauthManagement",
@@ -797,13 +812,13 @@ func (l *InitDatabaseLogic) insertMenuData() error {
 			},
 		},
 		{
-			MenuLevel: utils.Wrap[uint32](2),
-			MenuType:  utils.Wrap[uint32](1),
-			ParentID:  utils.Wrap[uint](3),
+			MenuLevel: utils.Wrap[uint8](2),
+			MenuType:  utils.Wrap[uint8](1),
+			ParentID:  utils.Wrap[uint64](3),
 			Path:      utils.Wrap("/token"),
 			Name:      utils.Wrap("Token Management"),
 			Component: utils.Wrap("/sys/token/index"),
-			OrderNo:   utils.Wrap[uint32](7),
+			OrderNo:   utils.Wrap[uint8](7),
 			Disabled:  utils.Wrap(false),
 			Meta: &pType.MenuMeta{
 				Title:              "routes.system.tokenManagement",
@@ -829,30 +844,94 @@ func (l *InitDatabaseLogic) insertMenuData() error {
 }
 
 // insert admin menu authority
-//
-//func (l *InitDatabaseLogic) insertRoleMenuAuthorityData() error {
-//	var menus []model.Menu
-//	result := l.svcCtx.DB.Find(&menus)
-//	if result.Error != nil {
-//		logx.Errorw(logmessage.DatabaseError, logx.Field("detail", result.Error.Error()))
-//		return status.Error(codes.Internal, result.Error.Error())
-//	}
-//
-//	var insertString strings.Builder
-//	insertString.WriteString("insert into role_menus values ")
-//	for i := 0; i < len(menus); i++ {
-//		if i != len(menus)-1 {
-//			insertString.WriteString(fmt.Sprintf("(%d, %d),", menus[i].ID, 1))
-//		} else {
-//			insertString.WriteString(fmt.Sprintf("(%d, %d);", menus[i].ID, 1))
-//		}
-//	}
-//
-//	result = l.svcCtx.DB.Exec(insertString.String())
-//	if result.Error != nil {
-//		logx.Errorw(logmessage.DatabaseError, logx.Field("detail", result.Error.Error()))
-//		return status.Error(codes.Internal, result.Error.Error())
-//	} else {
-//		return nil
-//	}
-//}
+func (l *InitDatabaseLogic) insertRoleMenuAuthorityData() error {
+	allMenus, err := l.svcCtx.EntClient.SysMenu.Query().All(l.ctx)
+
+	if err != nil {
+		return err
+	}
+
+	var insertString strings.Builder
+	insertString.WriteString(fmt.Sprintf(`insert into %s values `, sysrole.MenusTable))
+
+	// super admin has all menu authority
+	for i := 0; i < len(allMenus); i++ {
+		if i != len(allMenus)-1 {
+			insertString.WriteString(fmt.Sprintf("(%d, %d),", allMenus[i].ID, globalkey.RoleAdminID))
+		} else {
+			insertString.WriteString(fmt.Sprintf("(%d, %d);", allMenus[i].ID, globalkey.RoleAdminID))
+		}
+	}
+
+	_, err = l.svcCtx.EntClient.ExecContext(l.ctx, insertString.String())
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (l *InitDatabaseLogic) insertCasbinPoliciesData() error {
+	apis, err := l.svcCtx.EntClient.SysApi.Query().All(l.ctx)
+	if err != nil {
+		logx.Errorw(errorx.DatabaseError, logx.Field("detail", err.Error()))
+		return err
+	}
+
+	var policies [][]string
+	// super admin has all api authority
+	for _, v := range apis {
+		policies = append(policies, []string{strconv.Itoa(globalkey.RoleAdminID), v.Path, v.Method})
+	}
+
+	csb := getCasbin(l.svcCtx.EntClient)
+	addResult, err := csb.AddPolicies(policies)
+
+	if err != nil {
+		return status.Error(codes.Internal, err.Error())
+	}
+	if addResult {
+		return nil
+	} else {
+		return status.Error(codes.Internal, err.Error())
+	}
+}
+
+func getCasbin(client *ent.Client) *casbin.SyncedEnforcer {
+	var syncedEnforcer *casbin.SyncedEnforcer
+	a, _ := entcasbin.NewAdapterWithClient(client)
+
+	text := `
+		[request_definition]
+		r = sub, obj, act
+		
+		[policy_definition]
+		p = sub, obj, act
+		
+		[role_definition]
+		g = _, _
+		
+		[policy_effect]
+		e = some(where (p.eft == allow))
+		
+		[matchers]
+		m = r.sub == p.sub && keyMatch2(r.obj,p.obj) && r.act == p.act
+		`
+	m, err := cabinModel.NewModelFromString(text)
+	if err != nil {
+		log.Fatal("InitCasbin: import model fail!", err)
+		return nil
+	}
+	syncedEnforcer, err = casbin.NewSyncedEnforcer(m, a)
+	if err != nil {
+		log.Fatal("InitCasbin: NewSyncedEnforcer fail!", err)
+		return nil
+	}
+	err = syncedEnforcer.LoadPolicy()
+	if err != nil {
+		log.Fatal("InitCasbin: LoadPolicy fail!", err)
+		return nil
+	}
+	return syncedEnforcer
+}

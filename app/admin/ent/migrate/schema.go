@@ -9,6 +9,23 @@ import (
 )
 
 var (
+	// CasbinRulesColumns holds the columns for the "casbin_rules" table.
+	CasbinRulesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "ptype", Type: field.TypeString, Default: ""},
+		{Name: "v0", Type: field.TypeString, Default: ""},
+		{Name: "v1", Type: field.TypeString, Default: ""},
+		{Name: "v2", Type: field.TypeString, Default: ""},
+		{Name: "v3", Type: field.TypeString, Default: ""},
+		{Name: "v4", Type: field.TypeString, Default: ""},
+		{Name: "v5", Type: field.TypeString, Default: ""},
+	}
+	// CasbinRulesTable holds the schema information for the "casbin_rules" table.
+	CasbinRulesTable = &schema.Table{
+		Name:       "casbin_rules",
+		Columns:    CasbinRulesColumns,
+		PrimaryKey: []*schema.Column{CasbinRulesColumns[0]},
+	}
 	// SysAPIColumns holds the columns for the "sys_api" table.
 	SysAPIColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUint64, Increment: true},
@@ -79,13 +96,13 @@ var (
 	// SysMenuColumns holds the columns for the "sys_menu" table.
 	SysMenuColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUint64, Increment: true},
-		{Name: "menu_level", Type: field.TypeUint32},
-		{Name: "menu_type", Type: field.TypeUint32},
+		{Name: "menu_level", Type: field.TypeUint8},
+		{Name: "menu_type", Type: field.TypeUint8},
 		{Name: "path", Type: field.TypeString},
 		{Name: "name", Type: field.TypeString},
 		{Name: "redirect", Type: field.TypeString, Nullable: true, Default: ""},
 		{Name: "component", Type: field.TypeString},
-		{Name: "order_no", Type: field.TypeUint32, Default: 0},
+		{Name: "order_no", Type: field.TypeUint8, Default: 0},
 		{Name: "disabled", Type: field.TypeBool, Default: false},
 		{Name: "meta", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"mysql": "JSON"}},
 		{Name: "created_at", Type: field.TypeTime},
@@ -287,6 +304,7 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		CasbinRulesTable,
 		SysAPITable,
 		SysDictionaryTable,
 		SysDictionaryDetailTable,

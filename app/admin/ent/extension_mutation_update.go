@@ -161,6 +161,12 @@ func (sdduo *SysDictionaryDetailUpdateOne) Copy(input *UpdateSysDictionaryDetail
 
 func (smuo *SysMenuUpdateOne) Copy(input *UpdateSysMenuInput, jsonbMode JsonbMode) *SysMenuUpdateOne {
 
+	if input.ParentID != nil {
+
+		smuo.SetParentID(*input.ParentID)
+
+	}
+
 	if input.MenuLevel != nil {
 
 		smuo.SetMenuLevel(*input.MenuLevel)
@@ -170,12 +176,6 @@ func (smuo *SysMenuUpdateOne) Copy(input *UpdateSysMenuInput, jsonbMode JsonbMod
 	if input.MenuType != nil {
 
 		smuo.SetMenuType(*input.MenuType)
-
-	}
-
-	if input.ParentID != nil {
-
-		smuo.SetParentID(*input.ParentID)
 
 	}
 

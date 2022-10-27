@@ -14,6 +14,8 @@ import (
 // Tx is a transactional client that is created by calling Client.Tx().
 type Tx struct {
 	config
+	// CasbinRule is the client for interacting with the CasbinRule builders.
+	CasbinRule *CasbinRuleClient
 	// SysApi is the client for interacting with the SysApi builders.
 	SysApi *SysApiClient
 	// SysDictionary is the client for interacting with the SysDictionary builders.
@@ -163,6 +165,7 @@ func (tx *Tx) Client() *Client {
 }
 
 func (tx *Tx) init() {
+	tx.CasbinRule = NewCasbinRuleClient(tx.config)
 	tx.SysApi = NewSysApiClient(tx.config)
 	tx.SysDictionary = NewSysDictionaryClient(tx.config)
 	tx.SysDictionaryDetail = NewSysDictionaryDetailClient(tx.config)
@@ -181,7 +184,7 @@ func (tx *Tx) init() {
 // of them in order to commit or rollback the transaction.
 //
 // If a closed transaction is embedded in one of the generated entities, and the entity
-// applies a query, for example: SysApi.QueryXXX(), the query will be executed
+// applies a query, for example: CasbinRule.QueryXXX(), the query will be executed
 // through the driver which created this transaction.
 //
 // Note that txDriver is not goroutine safe.

@@ -17,12 +17,12 @@ type SysMenu struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID uint64 `json:"id,omitempty"`
-	// menu level
-	MenuLevel uint32 `json:"menu_level,omitempty"`
-	// menu type: 0. group 1. menu
-	MenuType uint32 `json:"menu_type,omitempty"`
 	// parent menu ID
 	ParentID uint64 `json:"parent_id,omitempty"`
+	// menu level
+	MenuLevel uint8 `json:"menu_level,omitempty"`
+	// menu type: 0. group 1. menu
+	MenuType uint8 `json:"menu_type,omitempty"`
 	// index path
 	Path string `json:"path,omitempty"`
 	// index name
@@ -32,7 +32,7 @@ type SysMenu struct {
 	// the path of vue file
 	Component string `json:"component,omitempty"`
 	// numbers for sorting
-	OrderNo uint32 `json:"order_no,omitempty"`
+	OrderNo uint8 `json:"order_no,omitempty"`
 	// if true, disable
 	Disabled bool `json:"disabled,omitempty"`
 	// extra parameters
@@ -59,11 +59,6 @@ type SysMenuEdges struct {
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [3]bool
-	// totalCount holds the count of the edges above.
-	totalCount [3]map[string]int
-
-	namedRoles    map[string][]*SysRole
-	namedChildren map[string][]*SysMenu
 }
 
 // RolesOrErr returns the Roles value or an error if the edge
@@ -104,7 +99,7 @@ func (*SysMenu) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case sysmenu.FieldDisabled:
 			values[i] = new(sql.NullBool)
-		case sysmenu.FieldID, sysmenu.FieldMenuLevel, sysmenu.FieldMenuType, sysmenu.FieldParentID, sysmenu.FieldOrderNo:
+		case sysmenu.FieldID, sysmenu.FieldParentID, sysmenu.FieldMenuLevel, sysmenu.FieldMenuType, sysmenu.FieldOrderNo:
 			values[i] = new(sql.NullInt64)
 		case sysmenu.FieldPath, sysmenu.FieldName, sysmenu.FieldRedirect, sysmenu.FieldComponent:
 			values[i] = new(sql.NullString)
@@ -133,23 +128,23 @@ func (sm *SysMenu) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			sm.ID = uint64(value.Int64)
-		case sysmenu.FieldMenuLevel:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field menu_level", values[i])
-			} else if value.Valid {
-				sm.MenuLevel = uint32(value.Int64)
-			}
-		case sysmenu.FieldMenuType:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field menu_type", values[i])
-			} else if value.Valid {
-				sm.MenuType = uint32(value.Int64)
-			}
 		case sysmenu.FieldParentID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field parent_id", values[i])
 			} else if value.Valid {
 				sm.ParentID = uint64(value.Int64)
+			}
+		case sysmenu.FieldMenuLevel:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field menu_level", values[i])
+			} else if value.Valid {
+				sm.MenuLevel = uint8(value.Int64)
+			}
+		case sysmenu.FieldMenuType:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field menu_type", values[i])
+			} else if value.Valid {
+				sm.MenuType = uint8(value.Int64)
 			}
 		case sysmenu.FieldPath:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -179,7 +174,7 @@ func (sm *SysMenu) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field order_no", values[i])
 			} else if value.Valid {
-				sm.OrderNo = uint32(value.Int64)
+				sm.OrderNo = uint8(value.Int64)
 			}
 		case sysmenu.FieldDisabled:
 			if value, ok := values[i].(*sql.NullBool); !ok {
@@ -255,14 +250,14 @@ func (sm *SysMenu) String() string {
 	var builder strings.Builder
 	builder.WriteString("SysMenu(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", sm.ID))
+	builder.WriteString("parent_id=")
+	builder.WriteString(fmt.Sprintf("%v", sm.ParentID))
+	builder.WriteString(", ")
 	builder.WriteString("menu_level=")
 	builder.WriteString(fmt.Sprintf("%v", sm.MenuLevel))
 	builder.WriteString(", ")
 	builder.WriteString("menu_type=")
 	builder.WriteString(fmt.Sprintf("%v", sm.MenuType))
-	builder.WriteString(", ")
-	builder.WriteString("parent_id=")
-	builder.WriteString(fmt.Sprintf("%v", sm.ParentID))
 	builder.WriteString(", ")
 	builder.WriteString("path=")
 	builder.WriteString(sm.Path)
@@ -297,54 +292,6 @@ func (sm *SysMenu) String() string {
 	}
 	builder.WriteByte(')')
 	return builder.String()
-}
-
-// NamedRoles returns the Roles named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (sm *SysMenu) NamedRoles(name string) ([]*SysRole, error) {
-	if sm.Edges.namedRoles == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := sm.Edges.namedRoles[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (sm *SysMenu) appendNamedRoles(name string, edges ...*SysRole) {
-	if sm.Edges.namedRoles == nil {
-		sm.Edges.namedRoles = make(map[string][]*SysRole)
-	}
-	if len(edges) == 0 {
-		sm.Edges.namedRoles[name] = []*SysRole{}
-	} else {
-		sm.Edges.namedRoles[name] = append(sm.Edges.namedRoles[name], edges...)
-	}
-}
-
-// NamedChildren returns the Children named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (sm *SysMenu) NamedChildren(name string) ([]*SysMenu, error) {
-	if sm.Edges.namedChildren == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := sm.Edges.namedChildren[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (sm *SysMenu) appendNamedChildren(name string, edges ...*SysMenu) {
-	if sm.Edges.namedChildren == nil {
-		sm.Edges.namedChildren = make(map[string][]*SysMenu)
-	}
-	if len(edges) == 0 {
-		sm.Edges.namedChildren[name] = []*SysMenu{}
-	} else {
-		sm.Edges.namedChildren[name] = append(sm.Edges.namedChildren[name], edges...)
-	}
 }
 
 // SysMenus is a parsable slice of SysMenu.

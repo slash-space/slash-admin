@@ -120,16 +120,16 @@ func (smc *SysMenuCreate) Copy(input *CreateSysMenuInput) *SysMenuCreate {
 		smc.SetID(*input.ID)
 	}
 
+	if input.ParentID != nil {
+		smc.SetParentID(*input.ParentID)
+	}
+
 	if input.MenuLevel != nil {
 		smc.SetMenuLevel(*input.MenuLevel)
 	}
 
 	if input.MenuType != nil {
 		smc.SetMenuType(*input.MenuType)
-	}
-
-	if input.ParentID != nil {
-		smc.SetParentID(*input.ParentID)
 	}
 
 	if input.Path != nil {

@@ -79,14 +79,14 @@ type CreateSysDictionaryDetailInput struct {
 
 type UpdateSysMenuInput struct {
 	ID        *uint64
-	MenuLevel *uint32
-	MenuType  *uint32
 	ParentID  *uint64
+	MenuLevel *uint8
+	MenuType  *uint8
 	Path      *string
 	Name      *string
 	Redirect  *string
 	Component *string
-	OrderNo   *uint32
+	OrderNo   *uint8
 	Disabled  *bool
 	Meta      *types.MenuMeta
 	CreatedAt *time.Time
@@ -96,14 +96,14 @@ type UpdateSysMenuInput struct {
 
 type CreateSysMenuInput struct {
 	ID        *uint64
-	MenuLevel *uint32
-	MenuType  *uint32
 	ParentID  *uint64
+	MenuLevel *uint8
+	MenuType  *uint8
 	Path      *string
 	Name      *string
 	Redirect  *string
 	Component *string
-	OrderNo   *uint32
+	OrderNo   *uint8
 	Disabled  *bool
 	Meta      *types.MenuMeta
 	CreatedAt *time.Time

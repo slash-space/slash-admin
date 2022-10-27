@@ -31,32 +31,6 @@ func (smu *SysMenuUpdate) Where(ps ...predicate.SysMenu) *SysMenuUpdate {
 	return smu
 }
 
-// SetMenuLevel sets the "menu_level" field.
-func (smu *SysMenuUpdate) SetMenuLevel(u uint32) *SysMenuUpdate {
-	smu.mutation.ResetMenuLevel()
-	smu.mutation.SetMenuLevel(u)
-	return smu
-}
-
-// AddMenuLevel adds u to the "menu_level" field.
-func (smu *SysMenuUpdate) AddMenuLevel(u int32) *SysMenuUpdate {
-	smu.mutation.AddMenuLevel(u)
-	return smu
-}
-
-// SetMenuType sets the "menu_type" field.
-func (smu *SysMenuUpdate) SetMenuType(u uint32) *SysMenuUpdate {
-	smu.mutation.ResetMenuType()
-	smu.mutation.SetMenuType(u)
-	return smu
-}
-
-// AddMenuType adds u to the "menu_type" field.
-func (smu *SysMenuUpdate) AddMenuType(u int32) *SysMenuUpdate {
-	smu.mutation.AddMenuType(u)
-	return smu
-}
-
 // SetParentID sets the "parent_id" field.
 func (smu *SysMenuUpdate) SetParentID(u uint64) *SysMenuUpdate {
 	smu.mutation.SetParentID(u)
@@ -74,6 +48,32 @@ func (smu *SysMenuUpdate) SetNillableParentID(u *uint64) *SysMenuUpdate {
 // ClearParentID clears the value of the "parent_id" field.
 func (smu *SysMenuUpdate) ClearParentID() *SysMenuUpdate {
 	smu.mutation.ClearParentID()
+	return smu
+}
+
+// SetMenuLevel sets the "menu_level" field.
+func (smu *SysMenuUpdate) SetMenuLevel(u uint8) *SysMenuUpdate {
+	smu.mutation.ResetMenuLevel()
+	smu.mutation.SetMenuLevel(u)
+	return smu
+}
+
+// AddMenuLevel adds u to the "menu_level" field.
+func (smu *SysMenuUpdate) AddMenuLevel(u int8) *SysMenuUpdate {
+	smu.mutation.AddMenuLevel(u)
+	return smu
+}
+
+// SetMenuType sets the "menu_type" field.
+func (smu *SysMenuUpdate) SetMenuType(u uint8) *SysMenuUpdate {
+	smu.mutation.ResetMenuType()
+	smu.mutation.SetMenuType(u)
+	return smu
+}
+
+// AddMenuType adds u to the "menu_type" field.
+func (smu *SysMenuUpdate) AddMenuType(u int8) *SysMenuUpdate {
+	smu.mutation.AddMenuType(u)
 	return smu
 }
 
@@ -116,14 +116,14 @@ func (smu *SysMenuUpdate) SetComponent(s string) *SysMenuUpdate {
 }
 
 // SetOrderNo sets the "order_no" field.
-func (smu *SysMenuUpdate) SetOrderNo(u uint32) *SysMenuUpdate {
+func (smu *SysMenuUpdate) SetOrderNo(u uint8) *SysMenuUpdate {
 	smu.mutation.ResetOrderNo()
 	smu.mutation.SetOrderNo(u)
 	return smu
 }
 
 // SetNillableOrderNo sets the "order_no" field if the given value is not nil.
-func (smu *SysMenuUpdate) SetNillableOrderNo(u *uint32) *SysMenuUpdate {
+func (smu *SysMenuUpdate) SetNillableOrderNo(u *uint8) *SysMenuUpdate {
 	if u != nil {
 		smu.SetOrderNo(*u)
 	}
@@ -131,7 +131,7 @@ func (smu *SysMenuUpdate) SetNillableOrderNo(u *uint32) *SysMenuUpdate {
 }
 
 // AddOrderNo adds u to the "order_no" field.
-func (smu *SysMenuUpdate) AddOrderNo(u int32) *SysMenuUpdate {
+func (smu *SysMenuUpdate) AddOrderNo(u int8) *SysMenuUpdate {
 	smu.mutation.AddOrderNo(u)
 	return smu
 }
@@ -387,28 +387,28 @@ func (smu *SysMenuUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := smu.mutation.MenuLevel(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
+			Type:   field.TypeUint8,
 			Value:  value,
 			Column: sysmenu.FieldMenuLevel,
 		})
 	}
 	if value, ok := smu.mutation.AddedMenuLevel(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
+			Type:   field.TypeUint8,
 			Value:  value,
 			Column: sysmenu.FieldMenuLevel,
 		})
 	}
 	if value, ok := smu.mutation.MenuType(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
+			Type:   field.TypeUint8,
 			Value:  value,
 			Column: sysmenu.FieldMenuType,
 		})
 	}
 	if value, ok := smu.mutation.AddedMenuType(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
+			Type:   field.TypeUint8,
 			Value:  value,
 			Column: sysmenu.FieldMenuType,
 		})
@@ -449,14 +449,14 @@ func (smu *SysMenuUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := smu.mutation.OrderNo(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
+			Type:   field.TypeUint8,
 			Value:  value,
 			Column: sysmenu.FieldOrderNo,
 		})
 	}
 	if value, ok := smu.mutation.AddedOrderNo(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
+			Type:   field.TypeUint8,
 			Value:  value,
 			Column: sysmenu.FieldOrderNo,
 		})
@@ -672,32 +672,6 @@ type SysMenuUpdateOne struct {
 	modifiers []func(*sql.UpdateBuilder)
 }
 
-// SetMenuLevel sets the "menu_level" field.
-func (smuo *SysMenuUpdateOne) SetMenuLevel(u uint32) *SysMenuUpdateOne {
-	smuo.mutation.ResetMenuLevel()
-	smuo.mutation.SetMenuLevel(u)
-	return smuo
-}
-
-// AddMenuLevel adds u to the "menu_level" field.
-func (smuo *SysMenuUpdateOne) AddMenuLevel(u int32) *SysMenuUpdateOne {
-	smuo.mutation.AddMenuLevel(u)
-	return smuo
-}
-
-// SetMenuType sets the "menu_type" field.
-func (smuo *SysMenuUpdateOne) SetMenuType(u uint32) *SysMenuUpdateOne {
-	smuo.mutation.ResetMenuType()
-	smuo.mutation.SetMenuType(u)
-	return smuo
-}
-
-// AddMenuType adds u to the "menu_type" field.
-func (smuo *SysMenuUpdateOne) AddMenuType(u int32) *SysMenuUpdateOne {
-	smuo.mutation.AddMenuType(u)
-	return smuo
-}
-
 // SetParentID sets the "parent_id" field.
 func (smuo *SysMenuUpdateOne) SetParentID(u uint64) *SysMenuUpdateOne {
 	smuo.mutation.SetParentID(u)
@@ -715,6 +689,32 @@ func (smuo *SysMenuUpdateOne) SetNillableParentID(u *uint64) *SysMenuUpdateOne {
 // ClearParentID clears the value of the "parent_id" field.
 func (smuo *SysMenuUpdateOne) ClearParentID() *SysMenuUpdateOne {
 	smuo.mutation.ClearParentID()
+	return smuo
+}
+
+// SetMenuLevel sets the "menu_level" field.
+func (smuo *SysMenuUpdateOne) SetMenuLevel(u uint8) *SysMenuUpdateOne {
+	smuo.mutation.ResetMenuLevel()
+	smuo.mutation.SetMenuLevel(u)
+	return smuo
+}
+
+// AddMenuLevel adds u to the "menu_level" field.
+func (smuo *SysMenuUpdateOne) AddMenuLevel(u int8) *SysMenuUpdateOne {
+	smuo.mutation.AddMenuLevel(u)
+	return smuo
+}
+
+// SetMenuType sets the "menu_type" field.
+func (smuo *SysMenuUpdateOne) SetMenuType(u uint8) *SysMenuUpdateOne {
+	smuo.mutation.ResetMenuType()
+	smuo.mutation.SetMenuType(u)
+	return smuo
+}
+
+// AddMenuType adds u to the "menu_type" field.
+func (smuo *SysMenuUpdateOne) AddMenuType(u int8) *SysMenuUpdateOne {
+	smuo.mutation.AddMenuType(u)
 	return smuo
 }
 
@@ -757,14 +757,14 @@ func (smuo *SysMenuUpdateOne) SetComponent(s string) *SysMenuUpdateOne {
 }
 
 // SetOrderNo sets the "order_no" field.
-func (smuo *SysMenuUpdateOne) SetOrderNo(u uint32) *SysMenuUpdateOne {
+func (smuo *SysMenuUpdateOne) SetOrderNo(u uint8) *SysMenuUpdateOne {
 	smuo.mutation.ResetOrderNo()
 	smuo.mutation.SetOrderNo(u)
 	return smuo
 }
 
 // SetNillableOrderNo sets the "order_no" field if the given value is not nil.
-func (smuo *SysMenuUpdateOne) SetNillableOrderNo(u *uint32) *SysMenuUpdateOne {
+func (smuo *SysMenuUpdateOne) SetNillableOrderNo(u *uint8) *SysMenuUpdateOne {
 	if u != nil {
 		smuo.SetOrderNo(*u)
 	}
@@ -772,7 +772,7 @@ func (smuo *SysMenuUpdateOne) SetNillableOrderNo(u *uint32) *SysMenuUpdateOne {
 }
 
 // AddOrderNo adds u to the "order_no" field.
-func (smuo *SysMenuUpdateOne) AddOrderNo(u int32) *SysMenuUpdateOne {
+func (smuo *SysMenuUpdateOne) AddOrderNo(u int8) *SysMenuUpdateOne {
 	smuo.mutation.AddOrderNo(u)
 	return smuo
 }
@@ -1058,28 +1058,28 @@ func (smuo *SysMenuUpdateOne) sqlSave(ctx context.Context) (_node *SysMenu, err 
 	}
 	if value, ok := smuo.mutation.MenuLevel(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
+			Type:   field.TypeUint8,
 			Value:  value,
 			Column: sysmenu.FieldMenuLevel,
 		})
 	}
 	if value, ok := smuo.mutation.AddedMenuLevel(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
+			Type:   field.TypeUint8,
 			Value:  value,
 			Column: sysmenu.FieldMenuLevel,
 		})
 	}
 	if value, ok := smuo.mutation.MenuType(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
+			Type:   field.TypeUint8,
 			Value:  value,
 			Column: sysmenu.FieldMenuType,
 		})
 	}
 	if value, ok := smuo.mutation.AddedMenuType(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
+			Type:   field.TypeUint8,
 			Value:  value,
 			Column: sysmenu.FieldMenuType,
 		})
@@ -1120,14 +1120,14 @@ func (smuo *SysMenuUpdateOne) sqlSave(ctx context.Context) (_node *SysMenu, err 
 	}
 	if value, ok := smuo.mutation.OrderNo(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
+			Type:   field.TypeUint8,
 			Value:  value,
 			Column: sysmenu.FieldOrderNo,
 		})
 	}
 	if value, ok := smuo.mutation.AddedOrderNo(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
+			Type:   field.TypeUint8,
 			Value:  value,
 			Column: sysmenu.FieldOrderNo,
 		})

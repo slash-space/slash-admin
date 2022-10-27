@@ -8,6 +8,19 @@ import (
 	"slash-admin/app/admin/ent"
 )
 
+// The CasbinRuleFunc type is an adapter to allow the use of ordinary
+// function as CasbinRule mutator.
+type CasbinRuleFunc func(context.Context, *ent.CasbinRuleMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f CasbinRuleFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.CasbinRuleMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.CasbinRuleMutation", m)
+	}
+	return f(ctx, mv)
+}
+
 // The SysApiFunc type is an adapter to allow the use of ordinary
 // function as SysApi mutator.
 type SysApiFunc func(context.Context, *ent.SysApiMutation) (ent.Value, error)

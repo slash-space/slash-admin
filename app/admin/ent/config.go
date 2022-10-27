@@ -28,6 +28,7 @@ type config struct {
 
 // hooks per client, for fast access.
 type hooks struct {
+	CasbinRule          []ent.Hook
 	SysApi              []ent.Hook
 	SysDictionary       []ent.Hook
 	SysDictionaryDetail []ent.Hook

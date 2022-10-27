@@ -47,10 +47,6 @@ type SysRoleEdges struct {
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [1]bool
-	// totalCount holds the count of the edges above.
-	totalCount [1]map[string]int
-
-	namedMenus map[string][]*SysMenu
 }
 
 // MenusOrErr returns the Menus value or an error if the edge
@@ -214,30 +210,6 @@ func (sr *SysRole) String() string {
 	}
 	builder.WriteByte(')')
 	return builder.String()
-}
-
-// NamedMenus returns the Menus named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (sr *SysRole) NamedMenus(name string) ([]*SysMenu, error) {
-	if sr.Edges.namedMenus == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := sr.Edges.namedMenus[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (sr *SysRole) appendNamedMenus(name string, edges ...*SysMenu) {
-	if sr.Edges.namedMenus == nil {
-		sr.Edges.namedMenus = make(map[string][]*SysMenu)
-	}
-	if len(edges) == 0 {
-		sr.Edges.namedMenus[name] = []*SysMenu{}
-	} else {
-		sr.Edges.namedMenus[name] = append(sr.Edges.namedMenus[name], edges...)
-	}
 }
 
 // SysRoles is a parsable slice of SysRole.

@@ -13,6 +13,7 @@ const (
 )
 
 {{ range $n := $.Nodes }}
+    {{- if ne $n.Name "CasbinRule" }}
     {{ $updateOneBuilder := $n.UpdateOneName }}
     {{ $updateReceiver := receiver $updateOneBuilder }}
     func ({{ $updateReceiver }} *{{ $updateOneBuilder }}) Copy(input *Update{{ $n.Name }}Input, jsonbMode JsonbMode) *{{ $updateOneBuilder }} {
@@ -37,6 +38,7 @@ const (
     {{- end }}
     return {{ $updateReceiver }}
     }
+{{ end }}
 {{ end }}
 {{ end }}
 

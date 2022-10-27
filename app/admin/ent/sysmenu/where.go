@@ -82,24 +82,24 @@ func IDLTE(id uint64) predicate.SysMenu {
 	})
 }
 
+// ParentID applies equality check predicate on the "parent_id" field. It's identical to ParentIDEQ.
+func ParentID(v uint64) predicate.SysMenu {
+	return predicate.SysMenu(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldParentID), v))
+	})
+}
+
 // MenuLevel applies equality check predicate on the "menu_level" field. It's identical to MenuLevelEQ.
-func MenuLevel(v uint32) predicate.SysMenu {
+func MenuLevel(v uint8) predicate.SysMenu {
 	return predicate.SysMenu(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldMenuLevel), v))
 	})
 }
 
 // MenuType applies equality check predicate on the "menu_type" field. It's identical to MenuTypeEQ.
-func MenuType(v uint32) predicate.SysMenu {
+func MenuType(v uint8) predicate.SysMenu {
 	return predicate.SysMenu(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldMenuType), v))
-	})
-}
-
-// ParentID applies equality check predicate on the "parent_id" field. It's identical to ParentIDEQ.
-func ParentID(v uint64) predicate.SysMenu {
-	return predicate.SysMenu(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldParentID), v))
 	})
 }
 
@@ -132,7 +132,7 @@ func Component(v string) predicate.SysMenu {
 }
 
 // OrderNo applies equality check predicate on the "order_no" field. It's identical to OrderNoEQ.
-func OrderNo(v uint32) predicate.SysMenu {
+func OrderNo(v uint8) predicate.SysMenu {
 	return predicate.SysMenu(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldOrderNo), v))
 	})
@@ -170,134 +170,6 @@ func UpdatedAt(v time.Time) predicate.SysMenu {
 func DeletedAt(v time.Time) predicate.SysMenu {
 	return predicate.SysMenu(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldDeletedAt), v))
-	})
-}
-
-// MenuLevelEQ applies the EQ predicate on the "menu_level" field.
-func MenuLevelEQ(v uint32) predicate.SysMenu {
-	return predicate.SysMenu(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldMenuLevel), v))
-	})
-}
-
-// MenuLevelNEQ applies the NEQ predicate on the "menu_level" field.
-func MenuLevelNEQ(v uint32) predicate.SysMenu {
-	return predicate.SysMenu(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldMenuLevel), v))
-	})
-}
-
-// MenuLevelIn applies the In predicate on the "menu_level" field.
-func MenuLevelIn(vs ...uint32) predicate.SysMenu {
-	v := make([]any, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.SysMenu(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldMenuLevel), v...))
-	})
-}
-
-// MenuLevelNotIn applies the NotIn predicate on the "menu_level" field.
-func MenuLevelNotIn(vs ...uint32) predicate.SysMenu {
-	v := make([]any, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.SysMenu(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldMenuLevel), v...))
-	})
-}
-
-// MenuLevelGT applies the GT predicate on the "menu_level" field.
-func MenuLevelGT(v uint32) predicate.SysMenu {
-	return predicate.SysMenu(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldMenuLevel), v))
-	})
-}
-
-// MenuLevelGTE applies the GTE predicate on the "menu_level" field.
-func MenuLevelGTE(v uint32) predicate.SysMenu {
-	return predicate.SysMenu(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldMenuLevel), v))
-	})
-}
-
-// MenuLevelLT applies the LT predicate on the "menu_level" field.
-func MenuLevelLT(v uint32) predicate.SysMenu {
-	return predicate.SysMenu(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldMenuLevel), v))
-	})
-}
-
-// MenuLevelLTE applies the LTE predicate on the "menu_level" field.
-func MenuLevelLTE(v uint32) predicate.SysMenu {
-	return predicate.SysMenu(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldMenuLevel), v))
-	})
-}
-
-// MenuTypeEQ applies the EQ predicate on the "menu_type" field.
-func MenuTypeEQ(v uint32) predicate.SysMenu {
-	return predicate.SysMenu(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldMenuType), v))
-	})
-}
-
-// MenuTypeNEQ applies the NEQ predicate on the "menu_type" field.
-func MenuTypeNEQ(v uint32) predicate.SysMenu {
-	return predicate.SysMenu(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldMenuType), v))
-	})
-}
-
-// MenuTypeIn applies the In predicate on the "menu_type" field.
-func MenuTypeIn(vs ...uint32) predicate.SysMenu {
-	v := make([]any, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.SysMenu(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldMenuType), v...))
-	})
-}
-
-// MenuTypeNotIn applies the NotIn predicate on the "menu_type" field.
-func MenuTypeNotIn(vs ...uint32) predicate.SysMenu {
-	v := make([]any, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.SysMenu(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldMenuType), v...))
-	})
-}
-
-// MenuTypeGT applies the GT predicate on the "menu_type" field.
-func MenuTypeGT(v uint32) predicate.SysMenu {
-	return predicate.SysMenu(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldMenuType), v))
-	})
-}
-
-// MenuTypeGTE applies the GTE predicate on the "menu_type" field.
-func MenuTypeGTE(v uint32) predicate.SysMenu {
-	return predicate.SysMenu(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldMenuType), v))
-	})
-}
-
-// MenuTypeLT applies the LT predicate on the "menu_type" field.
-func MenuTypeLT(v uint32) predicate.SysMenu {
-	return predicate.SysMenu(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldMenuType), v))
-	})
-}
-
-// MenuTypeLTE applies the LTE predicate on the "menu_type" field.
-func MenuTypeLTE(v uint32) predicate.SysMenu {
-	return predicate.SysMenu(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldMenuType), v))
 	})
 }
 
@@ -348,6 +220,134 @@ func ParentIDIsNil() predicate.SysMenu {
 func ParentIDNotNil() predicate.SysMenu {
 	return predicate.SysMenu(func(s *sql.Selector) {
 		s.Where(sql.NotNull(s.C(FieldParentID)))
+	})
+}
+
+// MenuLevelEQ applies the EQ predicate on the "menu_level" field.
+func MenuLevelEQ(v uint8) predicate.SysMenu {
+	return predicate.SysMenu(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldMenuLevel), v))
+	})
+}
+
+// MenuLevelNEQ applies the NEQ predicate on the "menu_level" field.
+func MenuLevelNEQ(v uint8) predicate.SysMenu {
+	return predicate.SysMenu(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldMenuLevel), v))
+	})
+}
+
+// MenuLevelIn applies the In predicate on the "menu_level" field.
+func MenuLevelIn(vs ...uint8) predicate.SysMenu {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.SysMenu(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldMenuLevel), v...))
+	})
+}
+
+// MenuLevelNotIn applies the NotIn predicate on the "menu_level" field.
+func MenuLevelNotIn(vs ...uint8) predicate.SysMenu {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.SysMenu(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldMenuLevel), v...))
+	})
+}
+
+// MenuLevelGT applies the GT predicate on the "menu_level" field.
+func MenuLevelGT(v uint8) predicate.SysMenu {
+	return predicate.SysMenu(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldMenuLevel), v))
+	})
+}
+
+// MenuLevelGTE applies the GTE predicate on the "menu_level" field.
+func MenuLevelGTE(v uint8) predicate.SysMenu {
+	return predicate.SysMenu(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldMenuLevel), v))
+	})
+}
+
+// MenuLevelLT applies the LT predicate on the "menu_level" field.
+func MenuLevelLT(v uint8) predicate.SysMenu {
+	return predicate.SysMenu(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldMenuLevel), v))
+	})
+}
+
+// MenuLevelLTE applies the LTE predicate on the "menu_level" field.
+func MenuLevelLTE(v uint8) predicate.SysMenu {
+	return predicate.SysMenu(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldMenuLevel), v))
+	})
+}
+
+// MenuTypeEQ applies the EQ predicate on the "menu_type" field.
+func MenuTypeEQ(v uint8) predicate.SysMenu {
+	return predicate.SysMenu(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldMenuType), v))
+	})
+}
+
+// MenuTypeNEQ applies the NEQ predicate on the "menu_type" field.
+func MenuTypeNEQ(v uint8) predicate.SysMenu {
+	return predicate.SysMenu(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldMenuType), v))
+	})
+}
+
+// MenuTypeIn applies the In predicate on the "menu_type" field.
+func MenuTypeIn(vs ...uint8) predicate.SysMenu {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.SysMenu(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldMenuType), v...))
+	})
+}
+
+// MenuTypeNotIn applies the NotIn predicate on the "menu_type" field.
+func MenuTypeNotIn(vs ...uint8) predicate.SysMenu {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.SysMenu(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldMenuType), v...))
+	})
+}
+
+// MenuTypeGT applies the GT predicate on the "menu_type" field.
+func MenuTypeGT(v uint8) predicate.SysMenu {
+	return predicate.SysMenu(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldMenuType), v))
+	})
+}
+
+// MenuTypeGTE applies the GTE predicate on the "menu_type" field.
+func MenuTypeGTE(v uint8) predicate.SysMenu {
+	return predicate.SysMenu(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldMenuType), v))
+	})
+}
+
+// MenuTypeLT applies the LT predicate on the "menu_type" field.
+func MenuTypeLT(v uint8) predicate.SysMenu {
+	return predicate.SysMenu(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldMenuType), v))
+	})
+}
+
+// MenuTypeLTE applies the LTE predicate on the "menu_type" field.
+func MenuTypeLTE(v uint8) predicate.SysMenu {
+	return predicate.SysMenu(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldMenuType), v))
 	})
 }
 
@@ -762,21 +762,21 @@ func ComponentContainsFold(v string) predicate.SysMenu {
 }
 
 // OrderNoEQ applies the EQ predicate on the "order_no" field.
-func OrderNoEQ(v uint32) predicate.SysMenu {
+func OrderNoEQ(v uint8) predicate.SysMenu {
 	return predicate.SysMenu(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldOrderNo), v))
 	})
 }
 
 // OrderNoNEQ applies the NEQ predicate on the "order_no" field.
-func OrderNoNEQ(v uint32) predicate.SysMenu {
+func OrderNoNEQ(v uint8) predicate.SysMenu {
 	return predicate.SysMenu(func(s *sql.Selector) {
 		s.Where(sql.NEQ(s.C(FieldOrderNo), v))
 	})
 }
 
 // OrderNoIn applies the In predicate on the "order_no" field.
-func OrderNoIn(vs ...uint32) predicate.SysMenu {
+func OrderNoIn(vs ...uint8) predicate.SysMenu {
 	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -787,7 +787,7 @@ func OrderNoIn(vs ...uint32) predicate.SysMenu {
 }
 
 // OrderNoNotIn applies the NotIn predicate on the "order_no" field.
-func OrderNoNotIn(vs ...uint32) predicate.SysMenu {
+func OrderNoNotIn(vs ...uint8) predicate.SysMenu {
 	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -798,28 +798,28 @@ func OrderNoNotIn(vs ...uint32) predicate.SysMenu {
 }
 
 // OrderNoGT applies the GT predicate on the "order_no" field.
-func OrderNoGT(v uint32) predicate.SysMenu {
+func OrderNoGT(v uint8) predicate.SysMenu {
 	return predicate.SysMenu(func(s *sql.Selector) {
 		s.Where(sql.GT(s.C(FieldOrderNo), v))
 	})
 }
 
 // OrderNoGTE applies the GTE predicate on the "order_no" field.
-func OrderNoGTE(v uint32) predicate.SysMenu {
+func OrderNoGTE(v uint8) predicate.SysMenu {
 	return predicate.SysMenu(func(s *sql.Selector) {
 		s.Where(sql.GTE(s.C(FieldOrderNo), v))
 	})
 }
 
 // OrderNoLT applies the LT predicate on the "order_no" field.
-func OrderNoLT(v uint32) predicate.SysMenu {
+func OrderNoLT(v uint8) predicate.SysMenu {
 	return predicate.SysMenu(func(s *sql.Selector) {
 		s.Where(sql.LT(s.C(FieldOrderNo), v))
 	})
 }
 
 // OrderNoLTE applies the LTE predicate on the "order_no" field.
-func OrderNoLTE(v uint32) predicate.SysMenu {
+func OrderNoLTE(v uint8) predicate.SysMenu {
 	return predicate.SysMenu(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldOrderNo), v))
 	})

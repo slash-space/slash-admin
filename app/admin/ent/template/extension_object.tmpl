@@ -6,6 +6,7 @@
 {{ template "import" $ }}
 
 {{- range $n := $.Nodes }}
+    {{- if ne $n.Name "CasbinRule" }}
     {{- $input := $n.Name }}
     {{ $fields := $n.Fields }}
     type Update{{ $input }}Input struct {
@@ -23,3 +24,4 @@
     }
 {{- end }}
 {{ end }}
+{{- end }}
