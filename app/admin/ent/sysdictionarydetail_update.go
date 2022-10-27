@@ -102,6 +102,20 @@ func (sddu *SysDictionaryDetailUpdate) AddOrderNo(u int32) *SysDictionaryDetailU
 	return sddu
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (sddu *SysDictionaryDetailUpdate) SetCreatedAt(t time.Time) *SysDictionaryDetailUpdate {
+	sddu.mutation.SetCreatedAt(t)
+	return sddu
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (sddu *SysDictionaryDetailUpdate) SetNillableCreatedAt(t *time.Time) *SysDictionaryDetailUpdate {
+	if t != nil {
+		sddu.SetCreatedAt(*t)
+	}
+	return sddu
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (sddu *SysDictionaryDetailUpdate) SetUpdatedAt(t time.Time) *SysDictionaryDetailUpdate {
 	sddu.mutation.SetUpdatedAt(t)
@@ -282,6 +296,13 @@ func (sddu *SysDictionaryDetailUpdate) sqlSave(ctx context.Context) (n int, err 
 			Column: sysdictionarydetail.FieldOrderNo,
 		})
 	}
+	if value, ok := sddu.mutation.CreatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: sysdictionarydetail.FieldCreatedAt,
+		})
+	}
 	if value, ok := sddu.mutation.UpdatedAt(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
@@ -392,6 +413,20 @@ func (sdduo *SysDictionaryDetailUpdateOne) SetNillableOrderNo(u *uint32) *SysDic
 // AddOrderNo adds u to the "order_no" field.
 func (sdduo *SysDictionaryDetailUpdateOne) AddOrderNo(u int32) *SysDictionaryDetailUpdateOne {
 	sdduo.mutation.AddOrderNo(u)
+	return sdduo
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (sdduo *SysDictionaryDetailUpdateOne) SetCreatedAt(t time.Time) *SysDictionaryDetailUpdateOne {
+	sdduo.mutation.SetCreatedAt(t)
+	return sdduo
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (sdduo *SysDictionaryDetailUpdateOne) SetNillableCreatedAt(t *time.Time) *SysDictionaryDetailUpdateOne {
+	if t != nil {
+		sdduo.SetCreatedAt(*t)
+	}
 	return sdduo
 }
 
@@ -603,6 +638,13 @@ func (sdduo *SysDictionaryDetailUpdateOne) sqlSave(ctx context.Context) (_node *
 			Type:   field.TypeUint32,
 			Value:  value,
 			Column: sysdictionarydetail.FieldOrderNo,
+		})
+	}
+	if value, ok := sdduo.mutation.CreatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: sysdictionarydetail.FieldCreatedAt,
 		})
 	}
 	if value, ok := sdduo.mutation.UpdatedAt(); ok {

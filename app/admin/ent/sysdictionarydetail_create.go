@@ -485,6 +485,18 @@ func (u *SysDictionaryDetailUpsert) AddOrderNo(v uint32) *SysDictionaryDetailUps
 	return u
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (u *SysDictionaryDetailUpsert) SetCreatedAt(v time.Time) *SysDictionaryDetailUpsert {
+	u.Set(sysdictionarydetail.FieldCreatedAt, v)
+	return u
+}
+
+// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
+func (u *SysDictionaryDetailUpsert) UpdateCreatedAt() *SysDictionaryDetailUpsert {
+	u.SetExcluded(sysdictionarydetail.FieldCreatedAt)
+	return u
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (u *SysDictionaryDetailUpsert) SetUpdatedAt(v time.Time) *SysDictionaryDetailUpsert {
 	u.Set(sysdictionarydetail.FieldUpdatedAt, v)
@@ -531,9 +543,6 @@ func (u *SysDictionaryDetailUpsertOne) UpdateNewValues() *SysDictionaryDetailUps
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
 		if _, exists := u.create.mutation.ID(); exists {
 			s.SetIgnore(sysdictionarydetail.FieldID)
-		}
-		if _, exists := u.create.mutation.CreatedAt(); exists {
-			s.SetIgnore(sysdictionarydetail.FieldCreatedAt)
 		}
 	}))
 	return u
@@ -668,6 +677,20 @@ func (u *SysDictionaryDetailUpsertOne) AddOrderNo(v uint32) *SysDictionaryDetail
 func (u *SysDictionaryDetailUpsertOne) UpdateOrderNo() *SysDictionaryDetailUpsertOne {
 	return u.Update(func(s *SysDictionaryDetailUpsert) {
 		s.UpdateOrderNo()
+	})
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (u *SysDictionaryDetailUpsertOne) SetCreatedAt(v time.Time) *SysDictionaryDetailUpsertOne {
+	return u.Update(func(s *SysDictionaryDetailUpsert) {
+		s.SetCreatedAt(v)
+	})
+}
+
+// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
+func (u *SysDictionaryDetailUpsertOne) UpdateCreatedAt() *SysDictionaryDetailUpsertOne {
+	return u.Update(func(s *SysDictionaryDetailUpsert) {
+		s.UpdateCreatedAt()
 	})
 }
 
@@ -884,9 +907,6 @@ func (u *SysDictionaryDetailUpsertBulk) UpdateNewValues() *SysDictionaryDetailUp
 			if _, exists := b.mutation.ID(); exists {
 				s.SetIgnore(sysdictionarydetail.FieldID)
 			}
-			if _, exists := b.mutation.CreatedAt(); exists {
-				s.SetIgnore(sysdictionarydetail.FieldCreatedAt)
-			}
 		}
 	}))
 	return u
@@ -1021,6 +1041,20 @@ func (u *SysDictionaryDetailUpsertBulk) AddOrderNo(v uint32) *SysDictionaryDetai
 func (u *SysDictionaryDetailUpsertBulk) UpdateOrderNo() *SysDictionaryDetailUpsertBulk {
 	return u.Update(func(s *SysDictionaryDetailUpsert) {
 		s.UpdateOrderNo()
+	})
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (u *SysDictionaryDetailUpsertBulk) SetCreatedAt(v time.Time) *SysDictionaryDetailUpsertBulk {
+	return u.Update(func(s *SysDictionaryDetailUpsert) {
+		s.SetCreatedAt(v)
+	})
+}
+
+// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
+func (u *SysDictionaryDetailUpsertBulk) UpdateCreatedAt() *SysDictionaryDetailUpsertBulk {
+	return u.Update(func(s *SysDictionaryDetailUpsert) {
+		s.UpdateCreatedAt()
 	})
 }
 

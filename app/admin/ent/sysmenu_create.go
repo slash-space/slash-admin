@@ -59,6 +59,14 @@ func (smc *SysMenuCreate) SetRedirect(s string) *SysMenuCreate {
 	return smc
 }
 
+// SetNillableRedirect sets the "redirect" field if the given value is not nil.
+func (smc *SysMenuCreate) SetNillableRedirect(s *string) *SysMenuCreate {
+	if s != nil {
+		smc.SetRedirect(*s)
+	}
+	return smc
+}
+
 // SetComponent sets the "component" field.
 func (smc *SysMenuCreate) SetComponent(s string) *SysMenuCreate {
 	smc.mutation.SetComponent(s)
@@ -96,6 +104,14 @@ func (smc *SysMenuCreate) SetNillableDisabled(b *bool) *SysMenuCreate {
 // SetMeta sets the "meta" field.
 func (smc *SysMenuCreate) SetMeta(tm types.MenuMeta) *SysMenuCreate {
 	smc.mutation.SetMeta(tm)
+	return smc
+}
+
+// SetNillableMeta sets the "meta" field if the given value is not nil.
+func (smc *SysMenuCreate) SetNillableMeta(tm *types.MenuMeta) *SysMenuCreate {
+	if tm != nil {
+		smc.SetMeta(*tm)
+	}
 	return smc
 }
 
@@ -224,6 +240,10 @@ func (smc *SysMenuCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (smc *SysMenuCreate) defaults() {
+	if _, ok := smc.mutation.Redirect(); !ok {
+		v := sysmenu.DefaultRedirect
+		smc.mutation.SetRedirect(v)
+	}
 	if _, ok := smc.mutation.OrderNo(); !ok {
 		v := sysmenu.DefaultOrderNo
 		smc.mutation.SetOrderNo(v)
@@ -259,9 +279,6 @@ func (smc *SysMenuCreate) check() error {
 	if _, ok := smc.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "SysMenu.name"`)}
 	}
-	if _, ok := smc.mutation.Redirect(); !ok {
-		return &ValidationError{Name: "redirect", err: errors.New(`ent: missing required field "SysMenu.redirect"`)}
-	}
 	if _, ok := smc.mutation.Component(); !ok {
 		return &ValidationError{Name: "component", err: errors.New(`ent: missing required field "SysMenu.component"`)}
 	}
@@ -270,9 +287,6 @@ func (smc *SysMenuCreate) check() error {
 	}
 	if _, ok := smc.mutation.Disabled(); !ok {
 		return &ValidationError{Name: "disabled", err: errors.New(`ent: missing required field "SysMenu.disabled"`)}
-	}
-	if _, ok := smc.mutation.Meta(); !ok {
-		return &ValidationError{Name: "meta", err: errors.New(`ent: missing required field "SysMenu.meta"`)}
 	}
 	if _, ok := smc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "SysMenu.created_at"`)}
@@ -388,7 +402,7 @@ func (smc *SysMenuCreate) createSpec() (*SysMenu, *sqlgraph.CreateSpec) {
 	}
 	if value, ok := smc.mutation.Meta(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeJSON,
+			Type:   field.TypeString,
 			Value:  value,
 			Column: sysmenu.FieldMeta,
 		})
@@ -560,6 +574,12 @@ func (u *SysMenuUpsert) UpdateRedirect() *SysMenuUpsert {
 	return u
 }
 
+// ClearRedirect clears the value of the "redirect" field.
+func (u *SysMenuUpsert) ClearRedirect() *SysMenuUpsert {
+	u.SetNull(sysmenu.FieldRedirect)
+	return u
+}
+
 // SetComponent sets the "component" field.
 func (u *SysMenuUpsert) SetComponent(v string) *SysMenuUpsert {
 	u.Set(sysmenu.FieldComponent, v)
@@ -614,6 +634,24 @@ func (u *SysMenuUpsert) UpdateMeta() *SysMenuUpsert {
 	return u
 }
 
+// ClearMeta clears the value of the "meta" field.
+func (u *SysMenuUpsert) ClearMeta() *SysMenuUpsert {
+	u.SetNull(sysmenu.FieldMeta)
+	return u
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (u *SysMenuUpsert) SetCreatedAt(v time.Time) *SysMenuUpsert {
+	u.Set(sysmenu.FieldCreatedAt, v)
+	return u
+}
+
+// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
+func (u *SysMenuUpsert) UpdateCreatedAt() *SysMenuUpsert {
+	u.SetExcluded(sysmenu.FieldCreatedAt)
+	return u
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (u *SysMenuUpsert) SetUpdatedAt(v time.Time) *SysMenuUpsert {
 	u.Set(sysmenu.FieldUpdatedAt, v)
@@ -660,9 +698,6 @@ func (u *SysMenuUpsertOne) UpdateNewValues() *SysMenuUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
 		if _, exists := u.create.mutation.ID(); exists {
 			s.SetIgnore(sysmenu.FieldID)
-		}
-		if _, exists := u.create.mutation.CreatedAt(); exists {
-			s.SetIgnore(sysmenu.FieldCreatedAt)
 		}
 	}))
 	return u
@@ -800,6 +835,13 @@ func (u *SysMenuUpsertOne) UpdateRedirect() *SysMenuUpsertOne {
 	})
 }
 
+// ClearRedirect clears the value of the "redirect" field.
+func (u *SysMenuUpsertOne) ClearRedirect() *SysMenuUpsertOne {
+	return u.Update(func(s *SysMenuUpsert) {
+		s.ClearRedirect()
+	})
+}
+
 // SetComponent sets the "component" field.
 func (u *SysMenuUpsertOne) SetComponent(v string) *SysMenuUpsertOne {
 	return u.Update(func(s *SysMenuUpsert) {
@@ -860,6 +902,27 @@ func (u *SysMenuUpsertOne) SetMeta(v types.MenuMeta) *SysMenuUpsertOne {
 func (u *SysMenuUpsertOne) UpdateMeta() *SysMenuUpsertOne {
 	return u.Update(func(s *SysMenuUpsert) {
 		s.UpdateMeta()
+	})
+}
+
+// ClearMeta clears the value of the "meta" field.
+func (u *SysMenuUpsertOne) ClearMeta() *SysMenuUpsertOne {
+	return u.Update(func(s *SysMenuUpsert) {
+		s.ClearMeta()
+	})
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (u *SysMenuUpsertOne) SetCreatedAt(v time.Time) *SysMenuUpsertOne {
+	return u.Update(func(s *SysMenuUpsert) {
+		s.SetCreatedAt(v)
+	})
+}
+
+// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
+func (u *SysMenuUpsertOne) UpdateCreatedAt() *SysMenuUpsertOne {
+	return u.Update(func(s *SysMenuUpsert) {
+		s.UpdateCreatedAt()
 	})
 }
 
@@ -1076,9 +1139,6 @@ func (u *SysMenuUpsertBulk) UpdateNewValues() *SysMenuUpsertBulk {
 			if _, exists := b.mutation.ID(); exists {
 				s.SetIgnore(sysmenu.FieldID)
 			}
-			if _, exists := b.mutation.CreatedAt(); exists {
-				s.SetIgnore(sysmenu.FieldCreatedAt)
-			}
 		}
 	}))
 	return u
@@ -1216,6 +1276,13 @@ func (u *SysMenuUpsertBulk) UpdateRedirect() *SysMenuUpsertBulk {
 	})
 }
 
+// ClearRedirect clears the value of the "redirect" field.
+func (u *SysMenuUpsertBulk) ClearRedirect() *SysMenuUpsertBulk {
+	return u.Update(func(s *SysMenuUpsert) {
+		s.ClearRedirect()
+	})
+}
+
 // SetComponent sets the "component" field.
 func (u *SysMenuUpsertBulk) SetComponent(v string) *SysMenuUpsertBulk {
 	return u.Update(func(s *SysMenuUpsert) {
@@ -1276,6 +1343,27 @@ func (u *SysMenuUpsertBulk) SetMeta(v types.MenuMeta) *SysMenuUpsertBulk {
 func (u *SysMenuUpsertBulk) UpdateMeta() *SysMenuUpsertBulk {
 	return u.Update(func(s *SysMenuUpsert) {
 		s.UpdateMeta()
+	})
+}
+
+// ClearMeta clears the value of the "meta" field.
+func (u *SysMenuUpsertBulk) ClearMeta() *SysMenuUpsertBulk {
+	return u.Update(func(s *SysMenuUpsert) {
+		s.ClearMeta()
+	})
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (u *SysMenuUpsertBulk) SetCreatedAt(v time.Time) *SysMenuUpsertBulk {
+	return u.Update(func(s *SysMenuUpsert) {
+		s.SetCreatedAt(v)
+	})
+}
+
+// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
+func (u *SysMenuUpsertBulk) UpdateCreatedAt() *SysMenuUpsertBulk {
+	return u.Update(func(s *SysMenuUpsert) {
+		s.UpdateCreatedAt()
 	})
 }
 

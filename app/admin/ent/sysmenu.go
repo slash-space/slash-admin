@@ -3,7 +3,6 @@
 package ent
 
 import (
-	"encoding/json"
 	"fmt"
 	"slash-admin/app/admin/ent/sysmenu"
 	"slash-admin/pkg/types"
@@ -139,10 +138,8 @@ func (sm *SysMenu) assignValues(columns []string, values []any) error {
 		case sysmenu.FieldMeta:
 			if value, ok := values[i].(*types.MenuMeta); !ok {
 				return fmt.Errorf("unexpected type %T for field meta", values[i])
-			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &sm.Meta); err != nil {
-					return fmt.Errorf("unmarshal field meta: %w", err)
-				}
+			} else if value != nil {
+				sm.Meta = *value
 			}
 		case sysmenu.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {

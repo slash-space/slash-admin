@@ -4,6 +4,7 @@ package sysmenu
 
 import (
 	"slash-admin/app/admin/ent/predicate"
+	"slash-admin/pkg/types"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
@@ -140,6 +141,13 @@ func OrderNo(v uint32) predicate.SysMenu {
 func Disabled(v bool) predicate.SysMenu {
 	return predicate.SysMenu(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldDisabled), v))
+	})
+}
+
+// Meta applies equality check predicate on the "meta" field. It's identical to MetaEQ.
+func Meta(v types.MenuMeta) predicate.SysMenu {
+	return predicate.SysMenu(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldMeta), v))
 	})
 }
 
@@ -639,6 +647,20 @@ func RedirectHasSuffix(v string) predicate.SysMenu {
 	})
 }
 
+// RedirectIsNil applies the IsNil predicate on the "redirect" field.
+func RedirectIsNil() predicate.SysMenu {
+	return predicate.SysMenu(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldRedirect)))
+	})
+}
+
+// RedirectNotNil applies the NotNil predicate on the "redirect" field.
+func RedirectNotNil() predicate.SysMenu {
+	return predicate.SysMenu(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldRedirect)))
+	})
+}
+
 // RedirectEqualFold applies the EqualFold predicate on the "redirect" field.
 func RedirectEqualFold(v string) predicate.SysMenu {
 	return predicate.SysMenu(func(s *sql.Selector) {
@@ -827,6 +849,84 @@ func DisabledEQ(v bool) predicate.SysMenu {
 func DisabledNEQ(v bool) predicate.SysMenu {
 	return predicate.SysMenu(func(s *sql.Selector) {
 		s.Where(sql.NEQ(s.C(FieldDisabled), v))
+	})
+}
+
+// MetaEQ applies the EQ predicate on the "meta" field.
+func MetaEQ(v types.MenuMeta) predicate.SysMenu {
+	return predicate.SysMenu(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldMeta), v))
+	})
+}
+
+// MetaNEQ applies the NEQ predicate on the "meta" field.
+func MetaNEQ(v types.MenuMeta) predicate.SysMenu {
+	return predicate.SysMenu(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldMeta), v))
+	})
+}
+
+// MetaIn applies the In predicate on the "meta" field.
+func MetaIn(vs ...types.MenuMeta) predicate.SysMenu {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.SysMenu(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldMeta), v...))
+	})
+}
+
+// MetaNotIn applies the NotIn predicate on the "meta" field.
+func MetaNotIn(vs ...types.MenuMeta) predicate.SysMenu {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.SysMenu(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldMeta), v...))
+	})
+}
+
+// MetaGT applies the GT predicate on the "meta" field.
+func MetaGT(v types.MenuMeta) predicate.SysMenu {
+	return predicate.SysMenu(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldMeta), v))
+	})
+}
+
+// MetaGTE applies the GTE predicate on the "meta" field.
+func MetaGTE(v types.MenuMeta) predicate.SysMenu {
+	return predicate.SysMenu(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldMeta), v))
+	})
+}
+
+// MetaLT applies the LT predicate on the "meta" field.
+func MetaLT(v types.MenuMeta) predicate.SysMenu {
+	return predicate.SysMenu(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldMeta), v))
+	})
+}
+
+// MetaLTE applies the LTE predicate on the "meta" field.
+func MetaLTE(v types.MenuMeta) predicate.SysMenu {
+	return predicate.SysMenu(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldMeta), v))
+	})
+}
+
+// MetaIsNil applies the IsNil predicate on the "meta" field.
+func MetaIsNil() predicate.SysMenu {
+	return predicate.SysMenu(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldMeta)))
+	})
+}
+
+// MetaNotNil applies the NotNil predicate on the "meta" field.
+func MetaNotNil() predicate.SysMenu {
+	return predicate.SysMenu(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldMeta)))
 	})
 }
 

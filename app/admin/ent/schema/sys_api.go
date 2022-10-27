@@ -19,7 +19,7 @@ func (SysApi) Fields() []ent.Field {
 		field.String("description").Comment("API description"),
 		field.String("api_group").Comment("API group"),
 		field.String("method").Default("POST").Comment("HTTP method"),
-		field.Time("created_at").Immutable().Default(time.Now),
+		field.Time("created_at").Default(time.Now),
 		field.Time("updated_at").Default(time.Now).UpdateDefault(time.Now),
 		field.Time("deleted_at").Optional().Nillable(),
 	}

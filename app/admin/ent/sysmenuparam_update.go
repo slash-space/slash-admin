@@ -60,6 +60,20 @@ func (smpu *SysMenuParamUpdate) SetValue(s string) *SysMenuParamUpdate {
 	return smpu
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (smpu *SysMenuParamUpdate) SetCreatedAt(t time.Time) *SysMenuParamUpdate {
+	smpu.mutation.SetCreatedAt(t)
+	return smpu
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (smpu *SysMenuParamUpdate) SetNillableCreatedAt(t *time.Time) *SysMenuParamUpdate {
+	if t != nil {
+		smpu.SetCreatedAt(*t)
+	}
+	return smpu
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (smpu *SysMenuParamUpdate) SetUpdatedAt(t time.Time) *SysMenuParamUpdate {
 	smpu.mutation.SetUpdatedAt(t)
@@ -213,6 +227,13 @@ func (smpu *SysMenuParamUpdate) sqlSave(ctx context.Context) (n int, err error) 
 			Column: sysmenuparam.FieldValue,
 		})
 	}
+	if value, ok := smpu.mutation.CreatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: sysmenuparam.FieldCreatedAt,
+		})
+	}
 	if value, ok := smpu.mutation.UpdatedAt(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
@@ -282,6 +303,20 @@ func (smpuo *SysMenuParamUpdateOne) SetKey(s string) *SysMenuParamUpdateOne {
 // SetValue sets the "value" field.
 func (smpuo *SysMenuParamUpdateOne) SetValue(s string) *SysMenuParamUpdateOne {
 	smpuo.mutation.SetValue(s)
+	return smpuo
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (smpuo *SysMenuParamUpdateOne) SetCreatedAt(t time.Time) *SysMenuParamUpdateOne {
+	smpuo.mutation.SetCreatedAt(t)
+	return smpuo
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (smpuo *SysMenuParamUpdateOne) SetNillableCreatedAt(t *time.Time) *SysMenuParamUpdateOne {
+	if t != nil {
+		smpuo.SetCreatedAt(*t)
+	}
 	return smpuo
 }
 
@@ -466,6 +501,13 @@ func (smpuo *SysMenuParamUpdateOne) sqlSave(ctx context.Context) (_node *SysMenu
 			Type:   field.TypeString,
 			Value:  value,
 			Column: sysmenuparam.FieldValue,
+		})
+	}
+	if value, ok := smpuo.mutation.CreatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: sysmenuparam.FieldCreatedAt,
 		})
 	}
 	if value, ok := smpuo.mutation.UpdatedAt(); ok {

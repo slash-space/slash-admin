@@ -81,6 +81,20 @@ func (stu *SysTokenUpdate) SetExpiredAt(t time.Time) *SysTokenUpdate {
 	return stu
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (stu *SysTokenUpdate) SetCreatedAt(t time.Time) *SysTokenUpdate {
+	stu.mutation.SetCreatedAt(t)
+	return stu
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (stu *SysTokenUpdate) SetNillableCreatedAt(t *time.Time) *SysTokenUpdate {
+	if t != nil {
+		stu.SetCreatedAt(*t)
+	}
+	return stu
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (stu *SysTokenUpdate) SetUpdatedAt(t time.Time) *SysTokenUpdate {
 	stu.mutation.SetUpdatedAt(t)
@@ -247,6 +261,13 @@ func (stu *SysTokenUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: systoken.FieldExpiredAt,
 		})
 	}
+	if value, ok := stu.mutation.CreatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: systoken.FieldCreatedAt,
+		})
+	}
 	if value, ok := stu.mutation.UpdatedAt(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
@@ -336,6 +357,20 @@ func (stuo *SysTokenUpdateOne) ClearStatus() *SysTokenUpdateOne {
 // SetExpiredAt sets the "expired_at" field.
 func (stuo *SysTokenUpdateOne) SetExpiredAt(t time.Time) *SysTokenUpdateOne {
 	stuo.mutation.SetExpiredAt(t)
+	return stuo
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (stuo *SysTokenUpdateOne) SetCreatedAt(t time.Time) *SysTokenUpdateOne {
+	stuo.mutation.SetCreatedAt(t)
+	return stuo
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (stuo *SysTokenUpdateOne) SetNillableCreatedAt(t *time.Time) *SysTokenUpdateOne {
+	if t != nil {
+		stuo.SetCreatedAt(*t)
+	}
 	return stuo
 }
 
@@ -533,6 +568,13 @@ func (stuo *SysTokenUpdateOne) sqlSave(ctx context.Context) (_node *SysToken, er
 			Type:   field.TypeTime,
 			Value:  value,
 			Column: systoken.FieldExpiredAt,
+		})
+	}
+	if value, ok := stuo.mutation.CreatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: systoken.FieldCreatedAt,
 		})
 	}
 	if value, ok := stuo.mutation.UpdatedAt(); ok {

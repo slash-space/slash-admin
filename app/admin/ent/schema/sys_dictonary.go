@@ -28,7 +28,7 @@ func (SysDictionary) Fields() []ent.Field {
 			Comment("0=禁用 1=开启"),
 
 		field.String("desc").Comment("the descriptions of dictionary"),
-		field.Time("created_at").Immutable().Default(time.Now),
+		field.Time("created_at").Default(time.Now),
 		field.Time("updated_at").Default(time.Now).UpdateDefault(time.Now),
 		field.Time("deleted_at").Optional().Nillable(),
 	}

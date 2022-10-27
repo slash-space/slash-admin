@@ -90,6 +90,20 @@ func (sopu *SysOauthProviderUpdate) SetInfoURL(s string) *SysOauthProviderUpdate
 	return sopu
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (sopu *SysOauthProviderUpdate) SetCreatedAt(t time.Time) *SysOauthProviderUpdate {
+	sopu.mutation.SetCreatedAt(t)
+	return sopu
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (sopu *SysOauthProviderUpdate) SetNillableCreatedAt(t *time.Time) *SysOauthProviderUpdate {
+	if t != nil {
+		sopu.SetCreatedAt(*t)
+	}
+	return sopu
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (sopu *SysOauthProviderUpdate) SetUpdatedAt(t time.Time) *SysOauthProviderUpdate {
 	sopu.mutation.SetUpdatedAt(t)
@@ -278,6 +292,13 @@ func (sopu *SysOauthProviderUpdate) sqlSave(ctx context.Context) (n int, err err
 			Column: sysoauthprovider.FieldInfoURL,
 		})
 	}
+	if value, ok := sopu.mutation.CreatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: sysoauthprovider.FieldCreatedAt,
+		})
+	}
 	if value, ok := sopu.mutation.UpdatedAt(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
@@ -377,6 +398,20 @@ func (sopuo *SysOauthProviderUpdateOne) AddAuthStyle(u int8) *SysOauthProviderUp
 // SetInfoURL sets the "info_url" field.
 func (sopuo *SysOauthProviderUpdateOne) SetInfoURL(s string) *SysOauthProviderUpdateOne {
 	sopuo.mutation.SetInfoURL(s)
+	return sopuo
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (sopuo *SysOauthProviderUpdateOne) SetCreatedAt(t time.Time) *SysOauthProviderUpdateOne {
+	sopuo.mutation.SetCreatedAt(t)
+	return sopuo
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (sopuo *SysOauthProviderUpdateOne) SetNillableCreatedAt(t *time.Time) *SysOauthProviderUpdateOne {
+	if t != nil {
+		sopuo.SetCreatedAt(*t)
+	}
 	return sopuo
 }
 
@@ -596,6 +631,13 @@ func (sopuo *SysOauthProviderUpdateOne) sqlSave(ctx context.Context) (_node *Sys
 			Type:   field.TypeString,
 			Value:  value,
 			Column: sysoauthprovider.FieldInfoURL,
+		})
+	}
+	if value, ok := sopuo.mutation.CreatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: sysoauthprovider.FieldCreatedAt,
 		})
 	}
 	if value, ok := sopuo.mutation.UpdatedAt(); ok {

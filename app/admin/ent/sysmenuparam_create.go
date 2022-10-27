@@ -397,6 +397,18 @@ func (u *SysMenuParamUpsert) UpdateValue() *SysMenuParamUpsert {
 	return u
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (u *SysMenuParamUpsert) SetCreatedAt(v time.Time) *SysMenuParamUpsert {
+	u.Set(sysmenuparam.FieldCreatedAt, v)
+	return u
+}
+
+// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
+func (u *SysMenuParamUpsert) UpdateCreatedAt() *SysMenuParamUpsert {
+	u.SetExcluded(sysmenuparam.FieldCreatedAt)
+	return u
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (u *SysMenuParamUpsert) SetUpdatedAt(v time.Time) *SysMenuParamUpsert {
 	u.Set(sysmenuparam.FieldUpdatedAt, v)
@@ -443,9 +455,6 @@ func (u *SysMenuParamUpsertOne) UpdateNewValues() *SysMenuParamUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
 		if _, exists := u.create.mutation.ID(); exists {
 			s.SetIgnore(sysmenuparam.FieldID)
-		}
-		if _, exists := u.create.mutation.CreatedAt(); exists {
-			s.SetIgnore(sysmenuparam.FieldCreatedAt)
 		}
 	}))
 	return u
@@ -538,6 +547,20 @@ func (u *SysMenuParamUpsertOne) SetValue(v string) *SysMenuParamUpsertOne {
 func (u *SysMenuParamUpsertOne) UpdateValue() *SysMenuParamUpsertOne {
 	return u.Update(func(s *SysMenuParamUpsert) {
 		s.UpdateValue()
+	})
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (u *SysMenuParamUpsertOne) SetCreatedAt(v time.Time) *SysMenuParamUpsertOne {
+	return u.Update(func(s *SysMenuParamUpsert) {
+		s.SetCreatedAt(v)
+	})
+}
+
+// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
+func (u *SysMenuParamUpsertOne) UpdateCreatedAt() *SysMenuParamUpsertOne {
+	return u.Update(func(s *SysMenuParamUpsert) {
+		s.UpdateCreatedAt()
 	})
 }
 
@@ -754,9 +777,6 @@ func (u *SysMenuParamUpsertBulk) UpdateNewValues() *SysMenuParamUpsertBulk {
 			if _, exists := b.mutation.ID(); exists {
 				s.SetIgnore(sysmenuparam.FieldID)
 			}
-			if _, exists := b.mutation.CreatedAt(); exists {
-				s.SetIgnore(sysmenuparam.FieldCreatedAt)
-			}
 		}
 	}))
 	return u
@@ -849,6 +869,20 @@ func (u *SysMenuParamUpsertBulk) SetValue(v string) *SysMenuParamUpsertBulk {
 func (u *SysMenuParamUpsertBulk) UpdateValue() *SysMenuParamUpsertBulk {
 	return u.Update(func(s *SysMenuParamUpsert) {
 		s.UpdateValue()
+	})
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (u *SysMenuParamUpsertBulk) SetCreatedAt(v time.Time) *SysMenuParamUpsertBulk {
+	return u.Update(func(s *SysMenuParamUpsert) {
+		s.SetCreatedAt(v)
+	})
+}
+
+// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
+func (u *SysMenuParamUpsertBulk) UpdateCreatedAt() *SysMenuParamUpsertBulk {
+	return u.Update(func(s *SysMenuParamUpsert) {
+		s.UpdateCreatedAt()
 	})
 }
 

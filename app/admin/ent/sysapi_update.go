@@ -61,6 +61,20 @@ func (sau *SysApiUpdate) SetNillableMethod(s *string) *SysApiUpdate {
 	return sau
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (sau *SysApiUpdate) SetCreatedAt(t time.Time) *SysApiUpdate {
+	sau.mutation.SetCreatedAt(t)
+	return sau
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (sau *SysApiUpdate) SetNillableCreatedAt(t *time.Time) *SysApiUpdate {
+	if t != nil {
+		sau.SetCreatedAt(*t)
+	}
+	return sau
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (sau *SysApiUpdate) SetUpdatedAt(t time.Time) *SysApiUpdate {
 	sau.mutation.SetUpdatedAt(t)
@@ -207,6 +221,13 @@ func (sau *SysApiUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: sysapi.FieldMethod,
 		})
 	}
+	if value, ok := sau.mutation.CreatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: sysapi.FieldCreatedAt,
+		})
+	}
 	if value, ok := sau.mutation.UpdatedAt(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
@@ -276,6 +297,20 @@ func (sauo *SysApiUpdateOne) SetMethod(s string) *SysApiUpdateOne {
 func (sauo *SysApiUpdateOne) SetNillableMethod(s *string) *SysApiUpdateOne {
 	if s != nil {
 		sauo.SetMethod(*s)
+	}
+	return sauo
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (sauo *SysApiUpdateOne) SetCreatedAt(t time.Time) *SysApiUpdateOne {
+	sauo.mutation.SetCreatedAt(t)
+	return sauo
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (sauo *SysApiUpdateOne) SetNillableCreatedAt(t *time.Time) *SysApiUpdateOne {
+	if t != nil {
+		sauo.SetCreatedAt(*t)
 	}
 	return sauo
 }
@@ -454,6 +489,13 @@ func (sauo *SysApiUpdateOne) sqlSave(ctx context.Context) (_node *SysApi, err er
 			Type:   field.TypeString,
 			Value:  value,
 			Column: sysapi.FieldMethod,
+		})
+	}
+	if value, ok := sauo.mutation.CreatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: sysapi.FieldCreatedAt,
 		})
 	}
 	if value, ok := sauo.mutation.UpdatedAt(); ok {

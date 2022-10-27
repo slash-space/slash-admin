@@ -29,7 +29,7 @@ func (SysToken) Fields() []ent.Field {
 			Comment("0=禁用 1=正常"),
 
 		field.Time("expired_at").Comment(" 过期时间"),
-		field.Time("created_at").Immutable().Default(time.Now),
+		field.Time("created_at").Default(time.Now),
 		field.Time("updated_at").Default(time.Now).UpdateDefault(time.Now),
 		field.Time("deleted_at").Optional().Nillable(),
 	}

@@ -542,6 +542,18 @@ func (u *SysOauthProviderUpsert) UpdateInfoURL() *SysOauthProviderUpsert {
 	return u
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (u *SysOauthProviderUpsert) SetCreatedAt(v time.Time) *SysOauthProviderUpsert {
+	u.Set(sysoauthprovider.FieldCreatedAt, v)
+	return u
+}
+
+// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
+func (u *SysOauthProviderUpsert) UpdateCreatedAt() *SysOauthProviderUpsert {
+	u.SetExcluded(sysoauthprovider.FieldCreatedAt)
+	return u
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (u *SysOauthProviderUpsert) SetUpdatedAt(v time.Time) *SysOauthProviderUpsert {
 	u.Set(sysoauthprovider.FieldUpdatedAt, v)
@@ -588,9 +600,6 @@ func (u *SysOauthProviderUpsertOne) UpdateNewValues() *SysOauthProviderUpsertOne
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
 		if _, exists := u.create.mutation.ID(); exists {
 			s.SetIgnore(sysoauthprovider.FieldID)
-		}
-		if _, exists := u.create.mutation.CreatedAt(); exists {
-			s.SetIgnore(sysoauthprovider.FieldCreatedAt)
 		}
 	}))
 	return u
@@ -753,6 +762,20 @@ func (u *SysOauthProviderUpsertOne) SetInfoURL(v string) *SysOauthProviderUpsert
 func (u *SysOauthProviderUpsertOne) UpdateInfoURL() *SysOauthProviderUpsertOne {
 	return u.Update(func(s *SysOauthProviderUpsert) {
 		s.UpdateInfoURL()
+	})
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (u *SysOauthProviderUpsertOne) SetCreatedAt(v time.Time) *SysOauthProviderUpsertOne {
+	return u.Update(func(s *SysOauthProviderUpsert) {
+		s.SetCreatedAt(v)
+	})
+}
+
+// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
+func (u *SysOauthProviderUpsertOne) UpdateCreatedAt() *SysOauthProviderUpsertOne {
+	return u.Update(func(s *SysOauthProviderUpsert) {
+		s.UpdateCreatedAt()
 	})
 }
 
@@ -969,9 +992,6 @@ func (u *SysOauthProviderUpsertBulk) UpdateNewValues() *SysOauthProviderUpsertBu
 			if _, exists := b.mutation.ID(); exists {
 				s.SetIgnore(sysoauthprovider.FieldID)
 			}
-			if _, exists := b.mutation.CreatedAt(); exists {
-				s.SetIgnore(sysoauthprovider.FieldCreatedAt)
-			}
 		}
 	}))
 	return u
@@ -1134,6 +1154,20 @@ func (u *SysOauthProviderUpsertBulk) SetInfoURL(v string) *SysOauthProviderUpser
 func (u *SysOauthProviderUpsertBulk) UpdateInfoURL() *SysOauthProviderUpsertBulk {
 	return u.Update(func(s *SysOauthProviderUpsert) {
 		s.UpdateInfoURL()
+	})
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (u *SysOauthProviderUpsertBulk) SetCreatedAt(v time.Time) *SysOauthProviderUpsertBulk {
+	return u.Update(func(s *SysOauthProviderUpsert) {
+		s.SetCreatedAt(v)
+	})
+}
+
+// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
+func (u *SysOauthProviderUpsertBulk) UpdateCreatedAt() *SysOauthProviderUpsertBulk {
+	return u.Update(func(s *SysOauthProviderUpsert) {
+		s.UpdateCreatedAt()
 	})
 }
 

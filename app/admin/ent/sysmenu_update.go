@@ -87,6 +87,20 @@ func (smu *SysMenuUpdate) SetRedirect(s string) *SysMenuUpdate {
 	return smu
 }
 
+// SetNillableRedirect sets the "redirect" field if the given value is not nil.
+func (smu *SysMenuUpdate) SetNillableRedirect(s *string) *SysMenuUpdate {
+	if s != nil {
+		smu.SetRedirect(*s)
+	}
+	return smu
+}
+
+// ClearRedirect clears the value of the "redirect" field.
+func (smu *SysMenuUpdate) ClearRedirect() *SysMenuUpdate {
+	smu.mutation.ClearRedirect()
+	return smu
+}
+
 // SetComponent sets the "component" field.
 func (smu *SysMenuUpdate) SetComponent(s string) *SysMenuUpdate {
 	smu.mutation.SetComponent(s)
@@ -131,6 +145,34 @@ func (smu *SysMenuUpdate) SetNillableDisabled(b *bool) *SysMenuUpdate {
 // SetMeta sets the "meta" field.
 func (smu *SysMenuUpdate) SetMeta(tm types.MenuMeta) *SysMenuUpdate {
 	smu.mutation.SetMeta(tm)
+	return smu
+}
+
+// SetNillableMeta sets the "meta" field if the given value is not nil.
+func (smu *SysMenuUpdate) SetNillableMeta(tm *types.MenuMeta) *SysMenuUpdate {
+	if tm != nil {
+		smu.SetMeta(*tm)
+	}
+	return smu
+}
+
+// ClearMeta clears the value of the "meta" field.
+func (smu *SysMenuUpdate) ClearMeta() *SysMenuUpdate {
+	smu.mutation.ClearMeta()
+	return smu
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (smu *SysMenuUpdate) SetCreatedAt(t time.Time) *SysMenuUpdate {
+	smu.mutation.SetCreatedAt(t)
+	return smu
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (smu *SysMenuUpdate) SetNillableCreatedAt(t *time.Time) *SysMenuUpdate {
+	if t != nil {
+		smu.SetCreatedAt(*t)
+	}
 	return smu
 }
 
@@ -315,6 +357,12 @@ func (smu *SysMenuUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: sysmenu.FieldRedirect,
 		})
 	}
+	if smu.mutation.RedirectCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: sysmenu.FieldRedirect,
+		})
+	}
 	if value, ok := smu.mutation.Component(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -345,9 +393,22 @@ func (smu *SysMenuUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := smu.mutation.Meta(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeJSON,
+			Type:   field.TypeString,
 			Value:  value,
 			Column: sysmenu.FieldMeta,
+		})
+	}
+	if smu.mutation.MetaCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: sysmenu.FieldMeta,
+		})
+	}
+	if value, ok := smu.mutation.CreatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: sysmenu.FieldCreatedAt,
 		})
 	}
 	if value, ok := smu.mutation.UpdatedAt(); ok {
@@ -448,6 +509,20 @@ func (smuo *SysMenuUpdateOne) SetRedirect(s string) *SysMenuUpdateOne {
 	return smuo
 }
 
+// SetNillableRedirect sets the "redirect" field if the given value is not nil.
+func (smuo *SysMenuUpdateOne) SetNillableRedirect(s *string) *SysMenuUpdateOne {
+	if s != nil {
+		smuo.SetRedirect(*s)
+	}
+	return smuo
+}
+
+// ClearRedirect clears the value of the "redirect" field.
+func (smuo *SysMenuUpdateOne) ClearRedirect() *SysMenuUpdateOne {
+	smuo.mutation.ClearRedirect()
+	return smuo
+}
+
 // SetComponent sets the "component" field.
 func (smuo *SysMenuUpdateOne) SetComponent(s string) *SysMenuUpdateOne {
 	smuo.mutation.SetComponent(s)
@@ -492,6 +567,34 @@ func (smuo *SysMenuUpdateOne) SetNillableDisabled(b *bool) *SysMenuUpdateOne {
 // SetMeta sets the "meta" field.
 func (smuo *SysMenuUpdateOne) SetMeta(tm types.MenuMeta) *SysMenuUpdateOne {
 	smuo.mutation.SetMeta(tm)
+	return smuo
+}
+
+// SetNillableMeta sets the "meta" field if the given value is not nil.
+func (smuo *SysMenuUpdateOne) SetNillableMeta(tm *types.MenuMeta) *SysMenuUpdateOne {
+	if tm != nil {
+		smuo.SetMeta(*tm)
+	}
+	return smuo
+}
+
+// ClearMeta clears the value of the "meta" field.
+func (smuo *SysMenuUpdateOne) ClearMeta() *SysMenuUpdateOne {
+	smuo.mutation.ClearMeta()
+	return smuo
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (smuo *SysMenuUpdateOne) SetCreatedAt(t time.Time) *SysMenuUpdateOne {
+	smuo.mutation.SetCreatedAt(t)
+	return smuo
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (smuo *SysMenuUpdateOne) SetNillableCreatedAt(t *time.Time) *SysMenuUpdateOne {
+	if t != nil {
+		smuo.SetCreatedAt(*t)
+	}
 	return smuo
 }
 
@@ -706,6 +809,12 @@ func (smuo *SysMenuUpdateOne) sqlSave(ctx context.Context) (_node *SysMenu, err 
 			Column: sysmenu.FieldRedirect,
 		})
 	}
+	if smuo.mutation.RedirectCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: sysmenu.FieldRedirect,
+		})
+	}
 	if value, ok := smuo.mutation.Component(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -736,9 +845,22 @@ func (smuo *SysMenuUpdateOne) sqlSave(ctx context.Context) (_node *SysMenu, err 
 	}
 	if value, ok := smuo.mutation.Meta(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeJSON,
+			Type:   field.TypeString,
 			Value:  value,
 			Column: sysmenu.FieldMeta,
+		})
+	}
+	if smuo.mutation.MetaCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: sysmenu.FieldMeta,
+		})
+	}
+	if value, ok := smuo.mutation.CreatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: sysmenu.FieldCreatedAt,
 		})
 	}
 	if value, ok := smuo.mutation.UpdatedAt(); ok {

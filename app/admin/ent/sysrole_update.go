@@ -110,6 +110,20 @@ func (sru *SysRoleUpdate) AddOrderNo(u int32) *SysRoleUpdate {
 	return sru
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (sru *SysRoleUpdate) SetCreatedAt(t time.Time) *SysRoleUpdate {
+	sru.mutation.SetCreatedAt(t)
+	return sru
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (sru *SysRoleUpdate) SetNillableCreatedAt(t *time.Time) *SysRoleUpdate {
+	if t != nil {
+		sru.SetCreatedAt(*t)
+	}
+	return sru
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (sru *SysRoleUpdate) SetUpdatedAt(t time.Time) *SysRoleUpdate {
 	sru.mutation.SetUpdatedAt(t)
@@ -290,6 +304,13 @@ func (sru *SysRoleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: sysrole.FieldOrderNo,
 		})
 	}
+	if value, ok := sru.mutation.CreatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: sysrole.FieldCreatedAt,
+		})
+	}
 	if value, ok := sru.mutation.UpdatedAt(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
@@ -408,6 +429,20 @@ func (sruo *SysRoleUpdateOne) SetNillableOrderNo(u *uint32) *SysRoleUpdateOne {
 // AddOrderNo adds u to the "order_no" field.
 func (sruo *SysRoleUpdateOne) AddOrderNo(u int32) *SysRoleUpdateOne {
 	sruo.mutation.AddOrderNo(u)
+	return sruo
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (sruo *SysRoleUpdateOne) SetCreatedAt(t time.Time) *SysRoleUpdateOne {
+	sruo.mutation.SetCreatedAt(t)
+	return sruo
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (sruo *SysRoleUpdateOne) SetNillableCreatedAt(t *time.Time) *SysRoleUpdateOne {
+	if t != nil {
+		sruo.SetCreatedAt(*t)
+	}
 	return sruo
 }
 
@@ -619,6 +654,13 @@ func (sruo *SysRoleUpdateOne) sqlSave(ctx context.Context) (_node *SysRole, err 
 			Type:   field.TypeUint32,
 			Value:  value,
 			Column: sysrole.FieldOrderNo,
+		})
+	}
+	if value, ok := sruo.mutation.CreatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: sysrole.FieldCreatedAt,
 		})
 	}
 	if value, ok := sruo.mutation.UpdatedAt(); ok {

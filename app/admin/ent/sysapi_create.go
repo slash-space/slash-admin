@@ -403,6 +403,18 @@ func (u *SysApiUpsert) UpdateMethod() *SysApiUpsert {
 	return u
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (u *SysApiUpsert) SetCreatedAt(v time.Time) *SysApiUpsert {
+	u.Set(sysapi.FieldCreatedAt, v)
+	return u
+}
+
+// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
+func (u *SysApiUpsert) UpdateCreatedAt() *SysApiUpsert {
+	u.SetExcluded(sysapi.FieldCreatedAt)
+	return u
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (u *SysApiUpsert) SetUpdatedAt(v time.Time) *SysApiUpsert {
 	u.Set(sysapi.FieldUpdatedAt, v)
@@ -449,9 +461,6 @@ func (u *SysApiUpsertOne) UpdateNewValues() *SysApiUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
 		if _, exists := u.create.mutation.ID(); exists {
 			s.SetIgnore(sysapi.FieldID)
-		}
-		if _, exists := u.create.mutation.CreatedAt(); exists {
-			s.SetIgnore(sysapi.FieldCreatedAt)
 		}
 	}))
 	return u
@@ -537,6 +546,20 @@ func (u *SysApiUpsertOne) SetMethod(v string) *SysApiUpsertOne {
 func (u *SysApiUpsertOne) UpdateMethod() *SysApiUpsertOne {
 	return u.Update(func(s *SysApiUpsert) {
 		s.UpdateMethod()
+	})
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (u *SysApiUpsertOne) SetCreatedAt(v time.Time) *SysApiUpsertOne {
+	return u.Update(func(s *SysApiUpsert) {
+		s.SetCreatedAt(v)
+	})
+}
+
+// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
+func (u *SysApiUpsertOne) UpdateCreatedAt() *SysApiUpsertOne {
+	return u.Update(func(s *SysApiUpsert) {
+		s.UpdateCreatedAt()
 	})
 }
 
@@ -753,9 +776,6 @@ func (u *SysApiUpsertBulk) UpdateNewValues() *SysApiUpsertBulk {
 			if _, exists := b.mutation.ID(); exists {
 				s.SetIgnore(sysapi.FieldID)
 			}
-			if _, exists := b.mutation.CreatedAt(); exists {
-				s.SetIgnore(sysapi.FieldCreatedAt)
-			}
 		}
 	}))
 	return u
@@ -841,6 +861,20 @@ func (u *SysApiUpsertBulk) SetMethod(v string) *SysApiUpsertBulk {
 func (u *SysApiUpsertBulk) UpdateMethod() *SysApiUpsertBulk {
 	return u.Update(func(s *SysApiUpsert) {
 		s.UpdateMethod()
+	})
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (u *SysApiUpsertBulk) SetCreatedAt(v time.Time) *SysApiUpsertBulk {
+	return u.Update(func(s *SysApiUpsert) {
+		s.SetCreatedAt(v)
+	})
+}
+
+// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
+func (u *SysApiUpsertBulk) UpdateCreatedAt() *SysApiUpsertBulk {
+	return u.Update(func(s *SysApiUpsert) {
+		s.UpdateCreatedAt()
 	})
 }
 

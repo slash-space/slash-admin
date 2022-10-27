@@ -20,7 +20,7 @@ func (SysMenuParam) Fields() []ent.Field {
 		field.String("type").Comment("参数类型"),
 		field.String("key").Comment("参数键"),
 		field.String("value").Comment("参数值"),
-		field.Time("created_at").Immutable().Default(time.Now),
+		field.Time("created_at").Default(time.Now),
 		field.Time("updated_at").Default(time.Now).UpdateDefault(time.Now),
 		field.Time("deleted_at").Optional().Nillable(),
 	}

@@ -66,6 +66,10 @@ func init() {
 	sysdictionarydetail.UpdateDefaultUpdatedAt = sysdictionarydetailDescUpdatedAt.UpdateDefault.(func() time.Time)
 	sysmenuFields := schema.SysMenu{}.Fields()
 	_ = sysmenuFields
+	// sysmenuDescRedirect is the schema descriptor for redirect field.
+	sysmenuDescRedirect := sysmenuFields[6].Descriptor()
+	// sysmenu.DefaultRedirect holds the default value on creation for the redirect field.
+	sysmenu.DefaultRedirect = sysmenuDescRedirect.Default.(string)
 	// sysmenuDescOrderNo is the schema descriptor for order_no field.
 	sysmenuDescOrderNo := sysmenuFields[8].Descriptor()
 	// sysmenu.DefaultOrderNo holds the default value on creation for the order_no field.
@@ -146,6 +150,10 @@ func init() {
 	sysuserDescSideMode := sysuserFields[5].Descriptor()
 	// sysuser.DefaultSideMode holds the default value on creation for the side_mode field.
 	sysuser.DefaultSideMode = sysuserDescSideMode.Default.(string)
+	// sysuserDescAvatar is the schema descriptor for avatar field.
+	sysuserDescAvatar := sysuserFields[6].Descriptor()
+	// sysuser.DefaultAvatar holds the default value on creation for the avatar field.
+	sysuser.DefaultAvatar = sysuserDescAvatar.Default.(string)
 	// sysuserDescBaseColor is the schema descriptor for base_color field.
 	sysuserDescBaseColor := sysuserFields[7].Descriptor()
 	// sysuser.DefaultBaseColor holds the default value on creation for the base_color field.

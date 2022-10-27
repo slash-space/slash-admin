@@ -2689,9 +2689,22 @@ func (m *SysMenuMutation) OldRedirect(ctx context.Context) (v string, err error)
 	return oldValue.Redirect, nil
 }
 
+// ClearRedirect clears the value of the "redirect" field.
+func (m *SysMenuMutation) ClearRedirect() {
+	m.redirect = nil
+	m.clearedFields[sysmenu.FieldRedirect] = struct{}{}
+}
+
+// RedirectCleared returns if the "redirect" field was cleared in this mutation.
+func (m *SysMenuMutation) RedirectCleared() bool {
+	_, ok := m.clearedFields[sysmenu.FieldRedirect]
+	return ok
+}
+
 // ResetRedirect resets all changes to the "redirect" field.
 func (m *SysMenuMutation) ResetRedirect() {
 	m.redirect = nil
+	delete(m.clearedFields, sysmenu.FieldRedirect)
 }
 
 // SetComponent sets the "component" field.
@@ -2853,9 +2866,22 @@ func (m *SysMenuMutation) OldMeta(ctx context.Context) (v types.MenuMeta, err er
 	return oldValue.Meta, nil
 }
 
+// ClearMeta clears the value of the "meta" field.
+func (m *SysMenuMutation) ClearMeta() {
+	m.meta = nil
+	m.clearedFields[sysmenu.FieldMeta] = struct{}{}
+}
+
+// MetaCleared returns if the "meta" field was cleared in this mutation.
+func (m *SysMenuMutation) MetaCleared() bool {
+	_, ok := m.clearedFields[sysmenu.FieldMeta]
+	return ok
+}
+
 // ResetMeta resets all changes to the "meta" field.
 func (m *SysMenuMutation) ResetMeta() {
 	m.meta = nil
+	delete(m.clearedFields, sysmenu.FieldMeta)
 }
 
 // SetCreatedAt sets the "created_at" field.
@@ -3288,6 +3314,12 @@ func (m *SysMenuMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *SysMenuMutation) ClearedFields() []string {
 	var fields []string
+	if m.FieldCleared(sysmenu.FieldRedirect) {
+		fields = append(fields, sysmenu.FieldRedirect)
+	}
+	if m.FieldCleared(sysmenu.FieldMeta) {
+		fields = append(fields, sysmenu.FieldMeta)
+	}
 	if m.FieldCleared(sysmenu.FieldDeletedAt) {
 		fields = append(fields, sysmenu.FieldDeletedAt)
 	}
@@ -3305,6 +3337,12 @@ func (m *SysMenuMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *SysMenuMutation) ClearField(name string) error {
 	switch name {
+	case sysmenu.FieldRedirect:
+		m.ClearRedirect()
+		return nil
+	case sysmenu.FieldMeta:
+		m.ClearMeta()
+		return nil
 	case sysmenu.FieldDeletedAt:
 		m.ClearDeletedAt()
 		return nil
@@ -7016,9 +7054,22 @@ func (m *SysUserMutation) OldSideMode(ctx context.Context) (v string, err error)
 	return oldValue.SideMode, nil
 }
 
+// ClearSideMode clears the value of the "side_mode" field.
+func (m *SysUserMutation) ClearSideMode() {
+	m.side_mode = nil
+	m.clearedFields[sysuser.FieldSideMode] = struct{}{}
+}
+
+// SideModeCleared returns if the "side_mode" field was cleared in this mutation.
+func (m *SysUserMutation) SideModeCleared() bool {
+	_, ok := m.clearedFields[sysuser.FieldSideMode]
+	return ok
+}
+
 // ResetSideMode resets all changes to the "side_mode" field.
 func (m *SysUserMutation) ResetSideMode() {
 	m.side_mode = nil
+	delete(m.clearedFields, sysuser.FieldSideMode)
 }
 
 // SetAvatar sets the "avatar" field.
@@ -7052,9 +7103,22 @@ func (m *SysUserMutation) OldAvatar(ctx context.Context) (v string, err error) {
 	return oldValue.Avatar, nil
 }
 
+// ClearAvatar clears the value of the "avatar" field.
+func (m *SysUserMutation) ClearAvatar() {
+	m.avatar = nil
+	m.clearedFields[sysuser.FieldAvatar] = struct{}{}
+}
+
+// AvatarCleared returns if the "avatar" field was cleared in this mutation.
+func (m *SysUserMutation) AvatarCleared() bool {
+	_, ok := m.clearedFields[sysuser.FieldAvatar]
+	return ok
+}
+
 // ResetAvatar resets all changes to the "avatar" field.
 func (m *SysUserMutation) ResetAvatar() {
 	m.avatar = nil
+	delete(m.clearedFields, sysuser.FieldAvatar)
 }
 
 // SetBaseColor sets the "base_color" field.
@@ -7088,9 +7152,22 @@ func (m *SysUserMutation) OldBaseColor(ctx context.Context) (v string, err error
 	return oldValue.BaseColor, nil
 }
 
+// ClearBaseColor clears the value of the "base_color" field.
+func (m *SysUserMutation) ClearBaseColor() {
+	m.base_color = nil
+	m.clearedFields[sysuser.FieldBaseColor] = struct{}{}
+}
+
+// BaseColorCleared returns if the "base_color" field was cleared in this mutation.
+func (m *SysUserMutation) BaseColorCleared() bool {
+	_, ok := m.clearedFields[sysuser.FieldBaseColor]
+	return ok
+}
+
 // ResetBaseColor resets all changes to the "base_color" field.
 func (m *SysUserMutation) ResetBaseColor() {
 	m.base_color = nil
+	delete(m.clearedFields, sysuser.FieldBaseColor)
 }
 
 // SetActiveColor sets the "active_color" field.
@@ -7124,9 +7201,22 @@ func (m *SysUserMutation) OldActiveColor(ctx context.Context) (v string, err err
 	return oldValue.ActiveColor, nil
 }
 
+// ClearActiveColor clears the value of the "active_color" field.
+func (m *SysUserMutation) ClearActiveColor() {
+	m.active_color = nil
+	m.clearedFields[sysuser.FieldActiveColor] = struct{}{}
+}
+
+// ActiveColorCleared returns if the "active_color" field was cleared in this mutation.
+func (m *SysUserMutation) ActiveColorCleared() bool {
+	_, ok := m.clearedFields[sysuser.FieldActiveColor]
+	return ok
+}
+
 // ResetActiveColor resets all changes to the "active_color" field.
 func (m *SysUserMutation) ResetActiveColor() {
 	m.active_color = nil
+	delete(m.clearedFields, sysuser.FieldActiveColor)
 }
 
 // SetRoleID sets the "role_id" field.
@@ -7179,10 +7269,24 @@ func (m *SysUserMutation) AddedRoleID() (r int32, exists bool) {
 	return *v, true
 }
 
+// ClearRoleID clears the value of the "role_id" field.
+func (m *SysUserMutation) ClearRoleID() {
+	m.role_id = nil
+	m.addrole_id = nil
+	m.clearedFields[sysuser.FieldRoleID] = struct{}{}
+}
+
+// RoleIDCleared returns if the "role_id" field was cleared in this mutation.
+func (m *SysUserMutation) RoleIDCleared() bool {
+	_, ok := m.clearedFields[sysuser.FieldRoleID]
+	return ok
+}
+
 // ResetRoleID resets all changes to the "role_id" field.
 func (m *SysUserMutation) ResetRoleID() {
 	m.role_id = nil
 	m.addrole_id = nil
+	delete(m.clearedFields, sysuser.FieldRoleID)
 }
 
 // SetMobile sets the "mobile" field.
@@ -7216,9 +7320,22 @@ func (m *SysUserMutation) OldMobile(ctx context.Context) (v string, err error) {
 	return oldValue.Mobile, nil
 }
 
+// ClearMobile clears the value of the "mobile" field.
+func (m *SysUserMutation) ClearMobile() {
+	m.mobile = nil
+	m.clearedFields[sysuser.FieldMobile] = struct{}{}
+}
+
+// MobileCleared returns if the "mobile" field was cleared in this mutation.
+func (m *SysUserMutation) MobileCleared() bool {
+	_, ok := m.clearedFields[sysuser.FieldMobile]
+	return ok
+}
+
 // ResetMobile resets all changes to the "mobile" field.
 func (m *SysUserMutation) ResetMobile() {
 	m.mobile = nil
+	delete(m.clearedFields, sysuser.FieldMobile)
 }
 
 // SetEmail sets the "email" field.
@@ -7252,9 +7369,22 @@ func (m *SysUserMutation) OldEmail(ctx context.Context) (v string, err error) {
 	return oldValue.Email, nil
 }
 
+// ClearEmail clears the value of the "email" field.
+func (m *SysUserMutation) ClearEmail() {
+	m.email = nil
+	m.clearedFields[sysuser.FieldEmail] = struct{}{}
+}
+
+// EmailCleared returns if the "email" field was cleared in this mutation.
+func (m *SysUserMutation) EmailCleared() bool {
+	_, ok := m.clearedFields[sysuser.FieldEmail]
+	return ok
+}
+
 // ResetEmail resets all changes to the "email" field.
 func (m *SysUserMutation) ResetEmail() {
 	m.email = nil
+	delete(m.clearedFields, sysuser.FieldEmail)
 }
 
 // SetStatus sets the "status" field.
@@ -7761,6 +7891,27 @@ func (m *SysUserMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *SysUserMutation) ClearedFields() []string {
 	var fields []string
+	if m.FieldCleared(sysuser.FieldSideMode) {
+		fields = append(fields, sysuser.FieldSideMode)
+	}
+	if m.FieldCleared(sysuser.FieldAvatar) {
+		fields = append(fields, sysuser.FieldAvatar)
+	}
+	if m.FieldCleared(sysuser.FieldBaseColor) {
+		fields = append(fields, sysuser.FieldBaseColor)
+	}
+	if m.FieldCleared(sysuser.FieldActiveColor) {
+		fields = append(fields, sysuser.FieldActiveColor)
+	}
+	if m.FieldCleared(sysuser.FieldRoleID) {
+		fields = append(fields, sysuser.FieldRoleID)
+	}
+	if m.FieldCleared(sysuser.FieldMobile) {
+		fields = append(fields, sysuser.FieldMobile)
+	}
+	if m.FieldCleared(sysuser.FieldEmail) {
+		fields = append(fields, sysuser.FieldEmail)
+	}
 	if m.FieldCleared(sysuser.FieldStatus) {
 		fields = append(fields, sysuser.FieldStatus)
 	}
@@ -7781,6 +7932,27 @@ func (m *SysUserMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *SysUserMutation) ClearField(name string) error {
 	switch name {
+	case sysuser.FieldSideMode:
+		m.ClearSideMode()
+		return nil
+	case sysuser.FieldAvatar:
+		m.ClearAvatar()
+		return nil
+	case sysuser.FieldBaseColor:
+		m.ClearBaseColor()
+		return nil
+	case sysuser.FieldActiveColor:
+		m.ClearActiveColor()
+		return nil
+	case sysuser.FieldRoleID:
+		m.ClearRoleID()
+		return nil
+	case sysuser.FieldMobile:
+		m.ClearMobile()
+		return nil
+	case sysuser.FieldEmail:
+		m.ClearEmail()
+		return nil
 	case sysuser.FieldStatus:
 		m.ClearStatus()
 		return nil

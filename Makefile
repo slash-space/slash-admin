@@ -19,8 +19,15 @@ goctl-admin-api:
 scan-admin-swagger:
 	swagger generate spec --output=./core.yml --scan-models
 
+start-admin-api:
+	lsof -i:9100 | awk 'NR!=1 {print $2}' | xargs killall -9
+	modd
+
 serve-admin-swagger:
-	swagger serve --no-open -F=swagger --port 36666 core.yml
+	lsof -i:36666 | awk 'NR!=1 {print $2}' | xargs killall -9
+	swagger serve -F=swagger --port 36666 core.yml
+
+
 
 ent-admin-orm:
 	cd app/admin/ent && go run -mod=mod ./entc.go

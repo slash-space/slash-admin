@@ -75,6 +75,20 @@ func (sdu *SysDictionaryUpdate) SetDesc(s string) *SysDictionaryUpdate {
 	return sdu
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (sdu *SysDictionaryUpdate) SetCreatedAt(t time.Time) *SysDictionaryUpdate {
+	sdu.mutation.SetCreatedAt(t)
+	return sdu
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (sdu *SysDictionaryUpdate) SetNillableCreatedAt(t *time.Time) *SysDictionaryUpdate {
+	if t != nil {
+		sdu.SetCreatedAt(*t)
+	}
+	return sdu
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (sdu *SysDictionaryUpdate) SetUpdatedAt(t time.Time) *SysDictionaryUpdate {
 	sdu.mutation.SetUpdatedAt(t)
@@ -234,6 +248,13 @@ func (sdu *SysDictionaryUpdate) sqlSave(ctx context.Context) (n int, err error) 
 			Column: sysdictionary.FieldDesc,
 		})
 	}
+	if value, ok := sdu.mutation.CreatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: sysdictionary.FieldCreatedAt,
+		})
+	}
 	if value, ok := sdu.mutation.UpdatedAt(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
@@ -317,6 +338,20 @@ func (sduo *SysDictionaryUpdateOne) ClearStatus() *SysDictionaryUpdateOne {
 // SetDesc sets the "desc" field.
 func (sduo *SysDictionaryUpdateOne) SetDesc(s string) *SysDictionaryUpdateOne {
 	sduo.mutation.SetDesc(s)
+	return sduo
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (sduo *SysDictionaryUpdateOne) SetCreatedAt(t time.Time) *SysDictionaryUpdateOne {
+	sduo.mutation.SetCreatedAt(t)
+	return sduo
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (sduo *SysDictionaryUpdateOne) SetNillableCreatedAt(t *time.Time) *SysDictionaryUpdateOne {
+	if t != nil {
+		sduo.SetCreatedAt(*t)
+	}
 	return sduo
 }
 
@@ -507,6 +542,13 @@ func (sduo *SysDictionaryUpdateOne) sqlSave(ctx context.Context) (_node *SysDict
 			Type:   field.TypeString,
 			Value:  value,
 			Column: sysdictionary.FieldDesc,
+		})
+	}
+	if value, ok := sduo.mutation.CreatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: sysdictionary.FieldCreatedAt,
 		})
 	}
 	if value, ok := sduo.mutation.UpdatedAt(); ok {

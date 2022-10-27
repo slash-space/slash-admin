@@ -68,9 +68,29 @@ func (suu *SysUserUpdate) SetNillableSideMode(s *string) *SysUserUpdate {
 	return suu
 }
 
+// ClearSideMode clears the value of the "side_mode" field.
+func (suu *SysUserUpdate) ClearSideMode() *SysUserUpdate {
+	suu.mutation.ClearSideMode()
+	return suu
+}
+
 // SetAvatar sets the "avatar" field.
 func (suu *SysUserUpdate) SetAvatar(s string) *SysUserUpdate {
 	suu.mutation.SetAvatar(s)
+	return suu
+}
+
+// SetNillableAvatar sets the "avatar" field if the given value is not nil.
+func (suu *SysUserUpdate) SetNillableAvatar(s *string) *SysUserUpdate {
+	if s != nil {
+		suu.SetAvatar(*s)
+	}
+	return suu
+}
+
+// ClearAvatar clears the value of the "avatar" field.
+func (suu *SysUserUpdate) ClearAvatar() *SysUserUpdate {
+	suu.mutation.ClearAvatar()
 	return suu
 }
 
@@ -88,6 +108,12 @@ func (suu *SysUserUpdate) SetNillableBaseColor(s *string) *SysUserUpdate {
 	return suu
 }
 
+// ClearBaseColor clears the value of the "base_color" field.
+func (suu *SysUserUpdate) ClearBaseColor() *SysUserUpdate {
+	suu.mutation.ClearBaseColor()
+	return suu
+}
+
 // SetActiveColor sets the "active_color" field.
 func (suu *SysUserUpdate) SetActiveColor(s string) *SysUserUpdate {
 	suu.mutation.SetActiveColor(s)
@@ -99,6 +125,12 @@ func (suu *SysUserUpdate) SetNillableActiveColor(s *string) *SysUserUpdate {
 	if s != nil {
 		suu.SetActiveColor(*s)
 	}
+	return suu
+}
+
+// ClearActiveColor clears the value of the "active_color" field.
+func (suu *SysUserUpdate) ClearActiveColor() *SysUserUpdate {
+	suu.mutation.ClearActiveColor()
 	return suu
 }
 
@@ -123,15 +155,49 @@ func (suu *SysUserUpdate) AddRoleID(u int32) *SysUserUpdate {
 	return suu
 }
 
+// ClearRoleID clears the value of the "role_id" field.
+func (suu *SysUserUpdate) ClearRoleID() *SysUserUpdate {
+	suu.mutation.ClearRoleID()
+	return suu
+}
+
 // SetMobile sets the "mobile" field.
 func (suu *SysUserUpdate) SetMobile(s string) *SysUserUpdate {
 	suu.mutation.SetMobile(s)
 	return suu
 }
 
+// SetNillableMobile sets the "mobile" field if the given value is not nil.
+func (suu *SysUserUpdate) SetNillableMobile(s *string) *SysUserUpdate {
+	if s != nil {
+		suu.SetMobile(*s)
+	}
+	return suu
+}
+
+// ClearMobile clears the value of the "mobile" field.
+func (suu *SysUserUpdate) ClearMobile() *SysUserUpdate {
+	suu.mutation.ClearMobile()
+	return suu
+}
+
 // SetEmail sets the "email" field.
 func (suu *SysUserUpdate) SetEmail(s string) *SysUserUpdate {
 	suu.mutation.SetEmail(s)
+	return suu
+}
+
+// SetNillableEmail sets the "email" field if the given value is not nil.
+func (suu *SysUserUpdate) SetNillableEmail(s *string) *SysUserUpdate {
+	if s != nil {
+		suu.SetEmail(*s)
+	}
+	return suu
+}
+
+// ClearEmail clears the value of the "email" field.
+func (suu *SysUserUpdate) ClearEmail() *SysUserUpdate {
+	suu.mutation.ClearEmail()
 	return suu
 }
 
@@ -159,6 +225,20 @@ func (suu *SysUserUpdate) AddStatus(t types.Status) *SysUserUpdate {
 // ClearStatus clears the value of the "status" field.
 func (suu *SysUserUpdate) ClearStatus() *SysUserUpdate {
 	suu.mutation.ClearStatus()
+	return suu
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (suu *SysUserUpdate) SetCreatedAt(t time.Time) *SysUserUpdate {
+	suu.mutation.SetCreatedAt(t)
+	return suu
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (suu *SysUserUpdate) SetNillableCreatedAt(t *time.Time) *SysUserUpdate {
+	if t != nil {
+		suu.SetCreatedAt(*t)
+	}
 	return suu
 }
 
@@ -315,10 +395,22 @@ func (suu *SysUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: sysuser.FieldSideMode,
 		})
 	}
+	if suu.mutation.SideModeCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: sysuser.FieldSideMode,
+		})
+	}
 	if value, ok := suu.mutation.Avatar(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
+			Column: sysuser.FieldAvatar,
+		})
+	}
+	if suu.mutation.AvatarCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
 			Column: sysuser.FieldAvatar,
 		})
 	}
@@ -329,10 +421,22 @@ func (suu *SysUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: sysuser.FieldBaseColor,
 		})
 	}
+	if suu.mutation.BaseColorCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: sysuser.FieldBaseColor,
+		})
+	}
 	if value, ok := suu.mutation.ActiveColor(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
+			Column: sysuser.FieldActiveColor,
+		})
+	}
+	if suu.mutation.ActiveColorCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
 			Column: sysuser.FieldActiveColor,
 		})
 	}
@@ -350,6 +454,12 @@ func (suu *SysUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: sysuser.FieldRoleID,
 		})
 	}
+	if suu.mutation.RoleIDCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint32,
+			Column: sysuser.FieldRoleID,
+		})
+	}
 	if value, ok := suu.mutation.Mobile(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -357,10 +467,22 @@ func (suu *SysUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: sysuser.FieldMobile,
 		})
 	}
+	if suu.mutation.MobileCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: sysuser.FieldMobile,
+		})
+	}
 	if value, ok := suu.mutation.Email(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
+			Column: sysuser.FieldEmail,
+		})
+	}
+	if suu.mutation.EmailCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
 			Column: sysuser.FieldEmail,
 		})
 	}
@@ -382,6 +504,13 @@ func (suu *SysUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeUint8,
 			Column: sysuser.FieldStatus,
+		})
+	}
+	if value, ok := suu.mutation.CreatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: sysuser.FieldCreatedAt,
 		})
 	}
 	if value, ok := suu.mutation.UpdatedAt(); ok {
@@ -463,9 +592,29 @@ func (suuo *SysUserUpdateOne) SetNillableSideMode(s *string) *SysUserUpdateOne {
 	return suuo
 }
 
+// ClearSideMode clears the value of the "side_mode" field.
+func (suuo *SysUserUpdateOne) ClearSideMode() *SysUserUpdateOne {
+	suuo.mutation.ClearSideMode()
+	return suuo
+}
+
 // SetAvatar sets the "avatar" field.
 func (suuo *SysUserUpdateOne) SetAvatar(s string) *SysUserUpdateOne {
 	suuo.mutation.SetAvatar(s)
+	return suuo
+}
+
+// SetNillableAvatar sets the "avatar" field if the given value is not nil.
+func (suuo *SysUserUpdateOne) SetNillableAvatar(s *string) *SysUserUpdateOne {
+	if s != nil {
+		suuo.SetAvatar(*s)
+	}
+	return suuo
+}
+
+// ClearAvatar clears the value of the "avatar" field.
+func (suuo *SysUserUpdateOne) ClearAvatar() *SysUserUpdateOne {
+	suuo.mutation.ClearAvatar()
 	return suuo
 }
 
@@ -483,6 +632,12 @@ func (suuo *SysUserUpdateOne) SetNillableBaseColor(s *string) *SysUserUpdateOne 
 	return suuo
 }
 
+// ClearBaseColor clears the value of the "base_color" field.
+func (suuo *SysUserUpdateOne) ClearBaseColor() *SysUserUpdateOne {
+	suuo.mutation.ClearBaseColor()
+	return suuo
+}
+
 // SetActiveColor sets the "active_color" field.
 func (suuo *SysUserUpdateOne) SetActiveColor(s string) *SysUserUpdateOne {
 	suuo.mutation.SetActiveColor(s)
@@ -494,6 +649,12 @@ func (suuo *SysUserUpdateOne) SetNillableActiveColor(s *string) *SysUserUpdateOn
 	if s != nil {
 		suuo.SetActiveColor(*s)
 	}
+	return suuo
+}
+
+// ClearActiveColor clears the value of the "active_color" field.
+func (suuo *SysUserUpdateOne) ClearActiveColor() *SysUserUpdateOne {
+	suuo.mutation.ClearActiveColor()
 	return suuo
 }
 
@@ -518,15 +679,49 @@ func (suuo *SysUserUpdateOne) AddRoleID(u int32) *SysUserUpdateOne {
 	return suuo
 }
 
+// ClearRoleID clears the value of the "role_id" field.
+func (suuo *SysUserUpdateOne) ClearRoleID() *SysUserUpdateOne {
+	suuo.mutation.ClearRoleID()
+	return suuo
+}
+
 // SetMobile sets the "mobile" field.
 func (suuo *SysUserUpdateOne) SetMobile(s string) *SysUserUpdateOne {
 	suuo.mutation.SetMobile(s)
 	return suuo
 }
 
+// SetNillableMobile sets the "mobile" field if the given value is not nil.
+func (suuo *SysUserUpdateOne) SetNillableMobile(s *string) *SysUserUpdateOne {
+	if s != nil {
+		suuo.SetMobile(*s)
+	}
+	return suuo
+}
+
+// ClearMobile clears the value of the "mobile" field.
+func (suuo *SysUserUpdateOne) ClearMobile() *SysUserUpdateOne {
+	suuo.mutation.ClearMobile()
+	return suuo
+}
+
 // SetEmail sets the "email" field.
 func (suuo *SysUserUpdateOne) SetEmail(s string) *SysUserUpdateOne {
 	suuo.mutation.SetEmail(s)
+	return suuo
+}
+
+// SetNillableEmail sets the "email" field if the given value is not nil.
+func (suuo *SysUserUpdateOne) SetNillableEmail(s *string) *SysUserUpdateOne {
+	if s != nil {
+		suuo.SetEmail(*s)
+	}
+	return suuo
+}
+
+// ClearEmail clears the value of the "email" field.
+func (suuo *SysUserUpdateOne) ClearEmail() *SysUserUpdateOne {
+	suuo.mutation.ClearEmail()
 	return suuo
 }
 
@@ -554,6 +749,20 @@ func (suuo *SysUserUpdateOne) AddStatus(t types.Status) *SysUserUpdateOne {
 // ClearStatus clears the value of the "status" field.
 func (suuo *SysUserUpdateOne) ClearStatus() *SysUserUpdateOne {
 	suuo.mutation.ClearStatus()
+	return suuo
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (suuo *SysUserUpdateOne) SetCreatedAt(t time.Time) *SysUserUpdateOne {
+	suuo.mutation.SetCreatedAt(t)
+	return suuo
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (suuo *SysUserUpdateOne) SetNillableCreatedAt(t *time.Time) *SysUserUpdateOne {
+	if t != nil {
+		suuo.SetCreatedAt(*t)
+	}
 	return suuo
 }
 
@@ -740,10 +949,22 @@ func (suuo *SysUserUpdateOne) sqlSave(ctx context.Context) (_node *SysUser, err 
 			Column: sysuser.FieldSideMode,
 		})
 	}
+	if suuo.mutation.SideModeCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: sysuser.FieldSideMode,
+		})
+	}
 	if value, ok := suuo.mutation.Avatar(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
+			Column: sysuser.FieldAvatar,
+		})
+	}
+	if suuo.mutation.AvatarCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
 			Column: sysuser.FieldAvatar,
 		})
 	}
@@ -754,10 +975,22 @@ func (suuo *SysUserUpdateOne) sqlSave(ctx context.Context) (_node *SysUser, err 
 			Column: sysuser.FieldBaseColor,
 		})
 	}
+	if suuo.mutation.BaseColorCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: sysuser.FieldBaseColor,
+		})
+	}
 	if value, ok := suuo.mutation.ActiveColor(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
+			Column: sysuser.FieldActiveColor,
+		})
+	}
+	if suuo.mutation.ActiveColorCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
 			Column: sysuser.FieldActiveColor,
 		})
 	}
@@ -775,6 +1008,12 @@ func (suuo *SysUserUpdateOne) sqlSave(ctx context.Context) (_node *SysUser, err 
 			Column: sysuser.FieldRoleID,
 		})
 	}
+	if suuo.mutation.RoleIDCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeUint32,
+			Column: sysuser.FieldRoleID,
+		})
+	}
 	if value, ok := suuo.mutation.Mobile(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -782,10 +1021,22 @@ func (suuo *SysUserUpdateOne) sqlSave(ctx context.Context) (_node *SysUser, err 
 			Column: sysuser.FieldMobile,
 		})
 	}
+	if suuo.mutation.MobileCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: sysuser.FieldMobile,
+		})
+	}
 	if value, ok := suuo.mutation.Email(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
+			Column: sysuser.FieldEmail,
+		})
+	}
+	if suuo.mutation.EmailCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
 			Column: sysuser.FieldEmail,
 		})
 	}
@@ -807,6 +1058,13 @@ func (suuo *SysUserUpdateOne) sqlSave(ctx context.Context) (_node *SysUser, err 
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeUint8,
 			Column: sysuser.FieldStatus,
+		})
+	}
+	if value, ok := suuo.mutation.CreatedAt(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: sysuser.FieldCreatedAt,
 		})
 	}
 	if value, ok := suuo.mutation.UpdatedAt(); ok {

@@ -70,6 +70,8 @@ func ValidColumn(column string) bool {
 }
 
 var (
+	// DefaultRedirect holds the default value on creation for the "redirect" field.
+	DefaultRedirect string
 	// DefaultOrderNo holds the default value on creation for the "order_no" field.
 	DefaultOrderNo uint32
 	// DefaultDisabled holds the default value on creation for the "disabled" field.

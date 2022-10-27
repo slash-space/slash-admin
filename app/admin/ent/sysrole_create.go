@@ -497,6 +497,18 @@ func (u *SysRoleUpsert) AddOrderNo(v uint32) *SysRoleUpsert {
 	return u
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (u *SysRoleUpsert) SetCreatedAt(v time.Time) *SysRoleUpsert {
+	u.Set(sysrole.FieldCreatedAt, v)
+	return u
+}
+
+// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
+func (u *SysRoleUpsert) UpdateCreatedAt() *SysRoleUpsert {
+	u.SetExcluded(sysrole.FieldCreatedAt)
+	return u
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (u *SysRoleUpsert) SetUpdatedAt(v time.Time) *SysRoleUpsert {
 	u.Set(sysrole.FieldUpdatedAt, v)
@@ -543,9 +555,6 @@ func (u *SysRoleUpsertOne) UpdateNewValues() *SysRoleUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
 		if _, exists := u.create.mutation.ID(); exists {
 			s.SetIgnore(sysrole.FieldID)
-		}
-		if _, exists := u.create.mutation.CreatedAt(); exists {
-			s.SetIgnore(sysrole.FieldCreatedAt)
 		}
 	}))
 	return u
@@ -680,6 +689,20 @@ func (u *SysRoleUpsertOne) AddOrderNo(v uint32) *SysRoleUpsertOne {
 func (u *SysRoleUpsertOne) UpdateOrderNo() *SysRoleUpsertOne {
 	return u.Update(func(s *SysRoleUpsert) {
 		s.UpdateOrderNo()
+	})
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (u *SysRoleUpsertOne) SetCreatedAt(v time.Time) *SysRoleUpsertOne {
+	return u.Update(func(s *SysRoleUpsert) {
+		s.SetCreatedAt(v)
+	})
+}
+
+// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
+func (u *SysRoleUpsertOne) UpdateCreatedAt() *SysRoleUpsertOne {
+	return u.Update(func(s *SysRoleUpsert) {
+		s.UpdateCreatedAt()
 	})
 }
 
@@ -896,9 +919,6 @@ func (u *SysRoleUpsertBulk) UpdateNewValues() *SysRoleUpsertBulk {
 			if _, exists := b.mutation.ID(); exists {
 				s.SetIgnore(sysrole.FieldID)
 			}
-			if _, exists := b.mutation.CreatedAt(); exists {
-				s.SetIgnore(sysrole.FieldCreatedAt)
-			}
 		}
 	}))
 	return u
@@ -1033,6 +1053,20 @@ func (u *SysRoleUpsertBulk) AddOrderNo(v uint32) *SysRoleUpsertBulk {
 func (u *SysRoleUpsertBulk) UpdateOrderNo() *SysRoleUpsertBulk {
 	return u.Update(func(s *SysRoleUpsert) {
 		s.UpdateOrderNo()
+	})
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (u *SysRoleUpsertBulk) SetCreatedAt(v time.Time) *SysRoleUpsertBulk {
+	return u.Update(func(s *SysRoleUpsert) {
+		s.SetCreatedAt(v)
+	})
+}
+
+// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
+func (u *SysRoleUpsertBulk) UpdateCreatedAt() *SysRoleUpsertBulk {
+	return u.Update(func(s *SysRoleUpsert) {
+		s.UpdateCreatedAt()
 	})
 }
 

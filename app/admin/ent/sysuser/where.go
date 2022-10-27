@@ -667,6 +667,20 @@ func SideModeHasSuffix(v string) predicate.SysUser {
 	})
 }
 
+// SideModeIsNil applies the IsNil predicate on the "side_mode" field.
+func SideModeIsNil() predicate.SysUser {
+	return predicate.SysUser(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldSideMode)))
+	})
+}
+
+// SideModeNotNil applies the NotNil predicate on the "side_mode" field.
+func SideModeNotNil() predicate.SysUser {
+	return predicate.SysUser(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldSideMode)))
+	})
+}
+
 // SideModeEqualFold applies the EqualFold predicate on the "side_mode" field.
 func SideModeEqualFold(v string) predicate.SysUser {
 	return predicate.SysUser(func(s *sql.Selector) {
@@ -763,6 +777,20 @@ func AvatarHasPrefix(v string) predicate.SysUser {
 func AvatarHasSuffix(v string) predicate.SysUser {
 	return predicate.SysUser(func(s *sql.Selector) {
 		s.Where(sql.HasSuffix(s.C(FieldAvatar), v))
+	})
+}
+
+// AvatarIsNil applies the IsNil predicate on the "avatar" field.
+func AvatarIsNil() predicate.SysUser {
+	return predicate.SysUser(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldAvatar)))
+	})
+}
+
+// AvatarNotNil applies the NotNil predicate on the "avatar" field.
+func AvatarNotNil() predicate.SysUser {
+	return predicate.SysUser(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldAvatar)))
 	})
 }
 
@@ -865,6 +893,20 @@ func BaseColorHasSuffix(v string) predicate.SysUser {
 	})
 }
 
+// BaseColorIsNil applies the IsNil predicate on the "base_color" field.
+func BaseColorIsNil() predicate.SysUser {
+	return predicate.SysUser(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldBaseColor)))
+	})
+}
+
+// BaseColorNotNil applies the NotNil predicate on the "base_color" field.
+func BaseColorNotNil() predicate.SysUser {
+	return predicate.SysUser(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldBaseColor)))
+	})
+}
+
 // BaseColorEqualFold applies the EqualFold predicate on the "base_color" field.
 func BaseColorEqualFold(v string) predicate.SysUser {
 	return predicate.SysUser(func(s *sql.Selector) {
@@ -964,6 +1006,20 @@ func ActiveColorHasSuffix(v string) predicate.SysUser {
 	})
 }
 
+// ActiveColorIsNil applies the IsNil predicate on the "active_color" field.
+func ActiveColorIsNil() predicate.SysUser {
+	return predicate.SysUser(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldActiveColor)))
+	})
+}
+
+// ActiveColorNotNil applies the NotNil predicate on the "active_color" field.
+func ActiveColorNotNil() predicate.SysUser {
+	return predicate.SysUser(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldActiveColor)))
+	})
+}
+
 // ActiveColorEqualFold applies the EqualFold predicate on the "active_color" field.
 func ActiveColorEqualFold(v string) predicate.SysUser {
 	return predicate.SysUser(func(s *sql.Selector) {
@@ -1039,6 +1095,20 @@ func RoleIDLT(v uint32) predicate.SysUser {
 func RoleIDLTE(v uint32) predicate.SysUser {
 	return predicate.SysUser(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldRoleID), v))
+	})
+}
+
+// RoleIDIsNil applies the IsNil predicate on the "role_id" field.
+func RoleIDIsNil() predicate.SysUser {
+	return predicate.SysUser(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldRoleID)))
+	})
+}
+
+// RoleIDNotNil applies the NotNil predicate on the "role_id" field.
+func RoleIDNotNil() predicate.SysUser {
+	return predicate.SysUser(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldRoleID)))
 	})
 }
 
@@ -1124,6 +1194,20 @@ func MobileHasPrefix(v string) predicate.SysUser {
 func MobileHasSuffix(v string) predicate.SysUser {
 	return predicate.SysUser(func(s *sql.Selector) {
 		s.Where(sql.HasSuffix(s.C(FieldMobile), v))
+	})
+}
+
+// MobileIsNil applies the IsNil predicate on the "mobile" field.
+func MobileIsNil() predicate.SysUser {
+	return predicate.SysUser(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldMobile)))
+	})
+}
+
+// MobileNotNil applies the NotNil predicate on the "mobile" field.
+func MobileNotNil() predicate.SysUser {
+	return predicate.SysUser(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldMobile)))
 	})
 }
 
@@ -1223,6 +1307,20 @@ func EmailHasPrefix(v string) predicate.SysUser {
 func EmailHasSuffix(v string) predicate.SysUser {
 	return predicate.SysUser(func(s *sql.Selector) {
 		s.Where(sql.HasSuffix(s.C(FieldEmail), v))
+	})
+}
+
+// EmailIsNil applies the IsNil predicate on the "email" field.
+func EmailIsNil() predicate.SysUser {
+	return predicate.SysUser(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldEmail)))
+	})
+}
+
+// EmailNotNil applies the NotNil predicate on the "email" field.
+func EmailNotNil() predicate.SysUser {
+	return predicate.SysUser(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldEmail)))
 	})
 }
 

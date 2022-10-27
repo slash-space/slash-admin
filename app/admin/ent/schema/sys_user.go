@@ -22,13 +22,19 @@ func (SysUser) Fields() []ent.Field {
 		field.String("username").Unique().Comment("登录名"),
 		field.String("password").Comment("密码"),
 		field.String("nickname").Unique().Comment("昵称"),
-		field.String("side_mode").Default("dark").Comment("布局方式"),
-		field.String("avatar").Comment("头像路径"),
-		field.String("base_color").Default("#fff").Comment("后台页面色调"),
-		field.String("active_color").Default("#1890ff").Comment("当前激活的颜色设定"),
-		field.Uint32("role_id").Default(2).Comment("角色ID"),
-		field.String("mobile").Comment("手机号"),
-		field.String("email").Comment("邮箱号"),
+		field.String("side_mode").Optional().Default("dark").Comment("布局方式"),
+
+		field.String("avatar").
+			SchemaType(map[string]string{dialect.MySQL: "varchar(512)"}).
+			Optional().
+			Default("").
+			Comment("头像路径"),
+
+		field.String("base_color").Optional().Default("#fff").Comment("后台页面色调"),
+		field.String("active_color").Optional().Default("#1890ff").Comment("当前激活的颜色设定"),
+		field.Uint32("role_id").Optional().Default(2).Comment("角色ID"),
+		field.String("mobile").Optional().Comment("手机号"),
+		field.String("email").Optional().Comment("邮箱号"),
 
 		field.Uint8("status").
 			SchemaType(map[string]string{dialect.MySQL: "tinyint unsigned"}).
@@ -36,7 +42,7 @@ func (SysUser) Fields() []ent.Field {
 			Optional().
 			Comment("0=正常 1=禁用"),
 
-		field.Time("created_at").Immutable().Default(time.Now),
+		field.Time("created_at").Default(time.Now),
 		field.Time("updated_at").Default(time.Now).UpdateDefault(time.Now),
 		field.Time("deleted_at").Optional().Nillable(),
 	}

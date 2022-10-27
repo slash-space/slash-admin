@@ -438,6 +438,18 @@ func (u *SysTokenUpsert) UpdateExpiredAt() *SysTokenUpsert {
 	return u
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (u *SysTokenUpsert) SetCreatedAt(v time.Time) *SysTokenUpsert {
+	u.Set(systoken.FieldCreatedAt, v)
+	return u
+}
+
+// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
+func (u *SysTokenUpsert) UpdateCreatedAt() *SysTokenUpsert {
+	u.SetExcluded(systoken.FieldCreatedAt)
+	return u
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (u *SysTokenUpsert) SetUpdatedAt(v time.Time) *SysTokenUpsert {
 	u.Set(systoken.FieldUpdatedAt, v)
@@ -484,9 +496,6 @@ func (u *SysTokenUpsertOne) UpdateNewValues() *SysTokenUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
 		if _, exists := u.create.mutation.ID(); exists {
 			s.SetIgnore(systoken.FieldID)
-		}
-		if _, exists := u.create.mutation.CreatedAt(); exists {
-			s.SetIgnore(systoken.FieldCreatedAt)
 		}
 	}))
 	return u
@@ -600,6 +609,20 @@ func (u *SysTokenUpsertOne) SetExpiredAt(v time.Time) *SysTokenUpsertOne {
 func (u *SysTokenUpsertOne) UpdateExpiredAt() *SysTokenUpsertOne {
 	return u.Update(func(s *SysTokenUpsert) {
 		s.UpdateExpiredAt()
+	})
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (u *SysTokenUpsertOne) SetCreatedAt(v time.Time) *SysTokenUpsertOne {
+	return u.Update(func(s *SysTokenUpsert) {
+		s.SetCreatedAt(v)
+	})
+}
+
+// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
+func (u *SysTokenUpsertOne) UpdateCreatedAt() *SysTokenUpsertOne {
+	return u.Update(func(s *SysTokenUpsert) {
+		s.UpdateCreatedAt()
 	})
 }
 
@@ -816,9 +839,6 @@ func (u *SysTokenUpsertBulk) UpdateNewValues() *SysTokenUpsertBulk {
 			if _, exists := b.mutation.ID(); exists {
 				s.SetIgnore(systoken.FieldID)
 			}
-			if _, exists := b.mutation.CreatedAt(); exists {
-				s.SetIgnore(systoken.FieldCreatedAt)
-			}
 		}
 	}))
 	return u
@@ -932,6 +952,20 @@ func (u *SysTokenUpsertBulk) SetExpiredAt(v time.Time) *SysTokenUpsertBulk {
 func (u *SysTokenUpsertBulk) UpdateExpiredAt() *SysTokenUpsertBulk {
 	return u.Update(func(s *SysTokenUpsert) {
 		s.UpdateExpiredAt()
+	})
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (u *SysTokenUpsertBulk) SetCreatedAt(v time.Time) *SysTokenUpsertBulk {
+	return u.Update(func(s *SysTokenUpsert) {
+		s.SetCreatedAt(v)
+	})
+}
+
+// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
+func (u *SysTokenUpsertBulk) UpdateCreatedAt() *SysTokenUpsertBulk {
+	return u.Update(func(s *SysTokenUpsert) {
+		s.UpdateCreatedAt()
 	})
 }
 

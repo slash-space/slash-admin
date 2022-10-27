@@ -67,6 +67,14 @@ func (suc *SysUserCreate) SetAvatar(s string) *SysUserCreate {
 	return suc
 }
 
+// SetNillableAvatar sets the "avatar" field if the given value is not nil.
+func (suc *SysUserCreate) SetNillableAvatar(s *string) *SysUserCreate {
+	if s != nil {
+		suc.SetAvatar(*s)
+	}
+	return suc
+}
+
 // SetBaseColor sets the "base_color" field.
 func (suc *SysUserCreate) SetBaseColor(s string) *SysUserCreate {
 	suc.mutation.SetBaseColor(s)
@@ -115,9 +123,25 @@ func (suc *SysUserCreate) SetMobile(s string) *SysUserCreate {
 	return suc
 }
 
+// SetNillableMobile sets the "mobile" field if the given value is not nil.
+func (suc *SysUserCreate) SetNillableMobile(s *string) *SysUserCreate {
+	if s != nil {
+		suc.SetMobile(*s)
+	}
+	return suc
+}
+
 // SetEmail sets the "email" field.
 func (suc *SysUserCreate) SetEmail(s string) *SysUserCreate {
 	suc.mutation.SetEmail(s)
+	return suc
+}
+
+// SetNillableEmail sets the "email" field if the given value is not nil.
+func (suc *SysUserCreate) SetNillableEmail(s *string) *SysUserCreate {
+	if s != nil {
+		suc.SetEmail(*s)
+	}
 	return suc
 }
 
@@ -264,6 +288,10 @@ func (suc *SysUserCreate) defaults() {
 		v := sysuser.DefaultSideMode
 		suc.mutation.SetSideMode(v)
 	}
+	if _, ok := suc.mutation.Avatar(); !ok {
+		v := sysuser.DefaultAvatar
+		suc.mutation.SetAvatar(v)
+	}
 	if _, ok := suc.mutation.BaseColor(); !ok {
 		v := sysuser.DefaultBaseColor
 		suc.mutation.SetBaseColor(v)
@@ -299,27 +327,6 @@ func (suc *SysUserCreate) check() error {
 	}
 	if _, ok := suc.mutation.Nickname(); !ok {
 		return &ValidationError{Name: "nickname", err: errors.New(`ent: missing required field "SysUser.nickname"`)}
-	}
-	if _, ok := suc.mutation.SideMode(); !ok {
-		return &ValidationError{Name: "side_mode", err: errors.New(`ent: missing required field "SysUser.side_mode"`)}
-	}
-	if _, ok := suc.mutation.Avatar(); !ok {
-		return &ValidationError{Name: "avatar", err: errors.New(`ent: missing required field "SysUser.avatar"`)}
-	}
-	if _, ok := suc.mutation.BaseColor(); !ok {
-		return &ValidationError{Name: "base_color", err: errors.New(`ent: missing required field "SysUser.base_color"`)}
-	}
-	if _, ok := suc.mutation.ActiveColor(); !ok {
-		return &ValidationError{Name: "active_color", err: errors.New(`ent: missing required field "SysUser.active_color"`)}
-	}
-	if _, ok := suc.mutation.RoleID(); !ok {
-		return &ValidationError{Name: "role_id", err: errors.New(`ent: missing required field "SysUser.role_id"`)}
-	}
-	if _, ok := suc.mutation.Mobile(); !ok {
-		return &ValidationError{Name: "mobile", err: errors.New(`ent: missing required field "SysUser.mobile"`)}
-	}
-	if _, ok := suc.mutation.Email(); !ok {
-		return &ValidationError{Name: "email", err: errors.New(`ent: missing required field "SysUser.email"`)}
 	}
 	if _, ok := suc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "SysUser.created_at"`)}
@@ -593,6 +600,12 @@ func (u *SysUserUpsert) UpdateSideMode() *SysUserUpsert {
 	return u
 }
 
+// ClearSideMode clears the value of the "side_mode" field.
+func (u *SysUserUpsert) ClearSideMode() *SysUserUpsert {
+	u.SetNull(sysuser.FieldSideMode)
+	return u
+}
+
 // SetAvatar sets the "avatar" field.
 func (u *SysUserUpsert) SetAvatar(v string) *SysUserUpsert {
 	u.Set(sysuser.FieldAvatar, v)
@@ -602,6 +615,12 @@ func (u *SysUserUpsert) SetAvatar(v string) *SysUserUpsert {
 // UpdateAvatar sets the "avatar" field to the value that was provided on create.
 func (u *SysUserUpsert) UpdateAvatar() *SysUserUpsert {
 	u.SetExcluded(sysuser.FieldAvatar)
+	return u
+}
+
+// ClearAvatar clears the value of the "avatar" field.
+func (u *SysUserUpsert) ClearAvatar() *SysUserUpsert {
+	u.SetNull(sysuser.FieldAvatar)
 	return u
 }
 
@@ -617,6 +636,12 @@ func (u *SysUserUpsert) UpdateBaseColor() *SysUserUpsert {
 	return u
 }
 
+// ClearBaseColor clears the value of the "base_color" field.
+func (u *SysUserUpsert) ClearBaseColor() *SysUserUpsert {
+	u.SetNull(sysuser.FieldBaseColor)
+	return u
+}
+
 // SetActiveColor sets the "active_color" field.
 func (u *SysUserUpsert) SetActiveColor(v string) *SysUserUpsert {
 	u.Set(sysuser.FieldActiveColor, v)
@@ -626,6 +651,12 @@ func (u *SysUserUpsert) SetActiveColor(v string) *SysUserUpsert {
 // UpdateActiveColor sets the "active_color" field to the value that was provided on create.
 func (u *SysUserUpsert) UpdateActiveColor() *SysUserUpsert {
 	u.SetExcluded(sysuser.FieldActiveColor)
+	return u
+}
+
+// ClearActiveColor clears the value of the "active_color" field.
+func (u *SysUserUpsert) ClearActiveColor() *SysUserUpsert {
+	u.SetNull(sysuser.FieldActiveColor)
 	return u
 }
 
@@ -647,6 +678,12 @@ func (u *SysUserUpsert) AddRoleID(v uint32) *SysUserUpsert {
 	return u
 }
 
+// ClearRoleID clears the value of the "role_id" field.
+func (u *SysUserUpsert) ClearRoleID() *SysUserUpsert {
+	u.SetNull(sysuser.FieldRoleID)
+	return u
+}
+
 // SetMobile sets the "mobile" field.
 func (u *SysUserUpsert) SetMobile(v string) *SysUserUpsert {
 	u.Set(sysuser.FieldMobile, v)
@@ -659,6 +696,12 @@ func (u *SysUserUpsert) UpdateMobile() *SysUserUpsert {
 	return u
 }
 
+// ClearMobile clears the value of the "mobile" field.
+func (u *SysUserUpsert) ClearMobile() *SysUserUpsert {
+	u.SetNull(sysuser.FieldMobile)
+	return u
+}
+
 // SetEmail sets the "email" field.
 func (u *SysUserUpsert) SetEmail(v string) *SysUserUpsert {
 	u.Set(sysuser.FieldEmail, v)
@@ -668,6 +711,12 @@ func (u *SysUserUpsert) SetEmail(v string) *SysUserUpsert {
 // UpdateEmail sets the "email" field to the value that was provided on create.
 func (u *SysUserUpsert) UpdateEmail() *SysUserUpsert {
 	u.SetExcluded(sysuser.FieldEmail)
+	return u
+}
+
+// ClearEmail clears the value of the "email" field.
+func (u *SysUserUpsert) ClearEmail() *SysUserUpsert {
+	u.SetNull(sysuser.FieldEmail)
 	return u
 }
 
@@ -692,6 +741,18 @@ func (u *SysUserUpsert) AddStatus(v types.Status) *SysUserUpsert {
 // ClearStatus clears the value of the "status" field.
 func (u *SysUserUpsert) ClearStatus() *SysUserUpsert {
 	u.SetNull(sysuser.FieldStatus)
+	return u
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (u *SysUserUpsert) SetCreatedAt(v time.Time) *SysUserUpsert {
+	u.Set(sysuser.FieldCreatedAt, v)
+	return u
+}
+
+// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
+func (u *SysUserUpsert) UpdateCreatedAt() *SysUserUpsert {
+	u.SetExcluded(sysuser.FieldCreatedAt)
 	return u
 }
 
@@ -741,9 +802,6 @@ func (u *SysUserUpsertOne) UpdateNewValues() *SysUserUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
 		if _, exists := u.create.mutation.ID(); exists {
 			s.SetIgnore(sysuser.FieldID)
-		}
-		if _, exists := u.create.mutation.CreatedAt(); exists {
-			s.SetIgnore(sysuser.FieldCreatedAt)
 		}
 	}))
 	return u
@@ -846,6 +904,13 @@ func (u *SysUserUpsertOne) UpdateSideMode() *SysUserUpsertOne {
 	})
 }
 
+// ClearSideMode clears the value of the "side_mode" field.
+func (u *SysUserUpsertOne) ClearSideMode() *SysUserUpsertOne {
+	return u.Update(func(s *SysUserUpsert) {
+		s.ClearSideMode()
+	})
+}
+
 // SetAvatar sets the "avatar" field.
 func (u *SysUserUpsertOne) SetAvatar(v string) *SysUserUpsertOne {
 	return u.Update(func(s *SysUserUpsert) {
@@ -857,6 +922,13 @@ func (u *SysUserUpsertOne) SetAvatar(v string) *SysUserUpsertOne {
 func (u *SysUserUpsertOne) UpdateAvatar() *SysUserUpsertOne {
 	return u.Update(func(s *SysUserUpsert) {
 		s.UpdateAvatar()
+	})
+}
+
+// ClearAvatar clears the value of the "avatar" field.
+func (u *SysUserUpsertOne) ClearAvatar() *SysUserUpsertOne {
+	return u.Update(func(s *SysUserUpsert) {
+		s.ClearAvatar()
 	})
 }
 
@@ -874,6 +946,13 @@ func (u *SysUserUpsertOne) UpdateBaseColor() *SysUserUpsertOne {
 	})
 }
 
+// ClearBaseColor clears the value of the "base_color" field.
+func (u *SysUserUpsertOne) ClearBaseColor() *SysUserUpsertOne {
+	return u.Update(func(s *SysUserUpsert) {
+		s.ClearBaseColor()
+	})
+}
+
 // SetActiveColor sets the "active_color" field.
 func (u *SysUserUpsertOne) SetActiveColor(v string) *SysUserUpsertOne {
 	return u.Update(func(s *SysUserUpsert) {
@@ -885,6 +964,13 @@ func (u *SysUserUpsertOne) SetActiveColor(v string) *SysUserUpsertOne {
 func (u *SysUserUpsertOne) UpdateActiveColor() *SysUserUpsertOne {
 	return u.Update(func(s *SysUserUpsert) {
 		s.UpdateActiveColor()
+	})
+}
+
+// ClearActiveColor clears the value of the "active_color" field.
+func (u *SysUserUpsertOne) ClearActiveColor() *SysUserUpsertOne {
+	return u.Update(func(s *SysUserUpsert) {
+		s.ClearActiveColor()
 	})
 }
 
@@ -909,6 +995,13 @@ func (u *SysUserUpsertOne) UpdateRoleID() *SysUserUpsertOne {
 	})
 }
 
+// ClearRoleID clears the value of the "role_id" field.
+func (u *SysUserUpsertOne) ClearRoleID() *SysUserUpsertOne {
+	return u.Update(func(s *SysUserUpsert) {
+		s.ClearRoleID()
+	})
+}
+
 // SetMobile sets the "mobile" field.
 func (u *SysUserUpsertOne) SetMobile(v string) *SysUserUpsertOne {
 	return u.Update(func(s *SysUserUpsert) {
@@ -923,6 +1016,13 @@ func (u *SysUserUpsertOne) UpdateMobile() *SysUserUpsertOne {
 	})
 }
 
+// ClearMobile clears the value of the "mobile" field.
+func (u *SysUserUpsertOne) ClearMobile() *SysUserUpsertOne {
+	return u.Update(func(s *SysUserUpsert) {
+		s.ClearMobile()
+	})
+}
+
 // SetEmail sets the "email" field.
 func (u *SysUserUpsertOne) SetEmail(v string) *SysUserUpsertOne {
 	return u.Update(func(s *SysUserUpsert) {
@@ -934,6 +1034,13 @@ func (u *SysUserUpsertOne) SetEmail(v string) *SysUserUpsertOne {
 func (u *SysUserUpsertOne) UpdateEmail() *SysUserUpsertOne {
 	return u.Update(func(s *SysUserUpsert) {
 		s.UpdateEmail()
+	})
+}
+
+// ClearEmail clears the value of the "email" field.
+func (u *SysUserUpsertOne) ClearEmail() *SysUserUpsertOne {
+	return u.Update(func(s *SysUserUpsert) {
+		s.ClearEmail()
 	})
 }
 
@@ -962,6 +1069,20 @@ func (u *SysUserUpsertOne) UpdateStatus() *SysUserUpsertOne {
 func (u *SysUserUpsertOne) ClearStatus() *SysUserUpsertOne {
 	return u.Update(func(s *SysUserUpsert) {
 		s.ClearStatus()
+	})
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (u *SysUserUpsertOne) SetCreatedAt(v time.Time) *SysUserUpsertOne {
+	return u.Update(func(s *SysUserUpsert) {
+		s.SetCreatedAt(v)
+	})
+}
+
+// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
+func (u *SysUserUpsertOne) UpdateCreatedAt() *SysUserUpsertOne {
+	return u.Update(func(s *SysUserUpsert) {
+		s.UpdateCreatedAt()
 	})
 }
 
@@ -1178,9 +1299,6 @@ func (u *SysUserUpsertBulk) UpdateNewValues() *SysUserUpsertBulk {
 			if _, exists := b.mutation.ID(); exists {
 				s.SetIgnore(sysuser.FieldID)
 			}
-			if _, exists := b.mutation.CreatedAt(); exists {
-				s.SetIgnore(sysuser.FieldCreatedAt)
-			}
 		}
 	}))
 	return u
@@ -1283,6 +1401,13 @@ func (u *SysUserUpsertBulk) UpdateSideMode() *SysUserUpsertBulk {
 	})
 }
 
+// ClearSideMode clears the value of the "side_mode" field.
+func (u *SysUserUpsertBulk) ClearSideMode() *SysUserUpsertBulk {
+	return u.Update(func(s *SysUserUpsert) {
+		s.ClearSideMode()
+	})
+}
+
 // SetAvatar sets the "avatar" field.
 func (u *SysUserUpsertBulk) SetAvatar(v string) *SysUserUpsertBulk {
 	return u.Update(func(s *SysUserUpsert) {
@@ -1294,6 +1419,13 @@ func (u *SysUserUpsertBulk) SetAvatar(v string) *SysUserUpsertBulk {
 func (u *SysUserUpsertBulk) UpdateAvatar() *SysUserUpsertBulk {
 	return u.Update(func(s *SysUserUpsert) {
 		s.UpdateAvatar()
+	})
+}
+
+// ClearAvatar clears the value of the "avatar" field.
+func (u *SysUserUpsertBulk) ClearAvatar() *SysUserUpsertBulk {
+	return u.Update(func(s *SysUserUpsert) {
+		s.ClearAvatar()
 	})
 }
 
@@ -1311,6 +1443,13 @@ func (u *SysUserUpsertBulk) UpdateBaseColor() *SysUserUpsertBulk {
 	})
 }
 
+// ClearBaseColor clears the value of the "base_color" field.
+func (u *SysUserUpsertBulk) ClearBaseColor() *SysUserUpsertBulk {
+	return u.Update(func(s *SysUserUpsert) {
+		s.ClearBaseColor()
+	})
+}
+
 // SetActiveColor sets the "active_color" field.
 func (u *SysUserUpsertBulk) SetActiveColor(v string) *SysUserUpsertBulk {
 	return u.Update(func(s *SysUserUpsert) {
@@ -1322,6 +1461,13 @@ func (u *SysUserUpsertBulk) SetActiveColor(v string) *SysUserUpsertBulk {
 func (u *SysUserUpsertBulk) UpdateActiveColor() *SysUserUpsertBulk {
 	return u.Update(func(s *SysUserUpsert) {
 		s.UpdateActiveColor()
+	})
+}
+
+// ClearActiveColor clears the value of the "active_color" field.
+func (u *SysUserUpsertBulk) ClearActiveColor() *SysUserUpsertBulk {
+	return u.Update(func(s *SysUserUpsert) {
+		s.ClearActiveColor()
 	})
 }
 
@@ -1346,6 +1492,13 @@ func (u *SysUserUpsertBulk) UpdateRoleID() *SysUserUpsertBulk {
 	})
 }
 
+// ClearRoleID clears the value of the "role_id" field.
+func (u *SysUserUpsertBulk) ClearRoleID() *SysUserUpsertBulk {
+	return u.Update(func(s *SysUserUpsert) {
+		s.ClearRoleID()
+	})
+}
+
 // SetMobile sets the "mobile" field.
 func (u *SysUserUpsertBulk) SetMobile(v string) *SysUserUpsertBulk {
 	return u.Update(func(s *SysUserUpsert) {
@@ -1360,6 +1513,13 @@ func (u *SysUserUpsertBulk) UpdateMobile() *SysUserUpsertBulk {
 	})
 }
 
+// ClearMobile clears the value of the "mobile" field.
+func (u *SysUserUpsertBulk) ClearMobile() *SysUserUpsertBulk {
+	return u.Update(func(s *SysUserUpsert) {
+		s.ClearMobile()
+	})
+}
+
 // SetEmail sets the "email" field.
 func (u *SysUserUpsertBulk) SetEmail(v string) *SysUserUpsertBulk {
 	return u.Update(func(s *SysUserUpsert) {
@@ -1371,6 +1531,13 @@ func (u *SysUserUpsertBulk) SetEmail(v string) *SysUserUpsertBulk {
 func (u *SysUserUpsertBulk) UpdateEmail() *SysUserUpsertBulk {
 	return u.Update(func(s *SysUserUpsert) {
 		s.UpdateEmail()
+	})
+}
+
+// ClearEmail clears the value of the "email" field.
+func (u *SysUserUpsertBulk) ClearEmail() *SysUserUpsertBulk {
+	return u.Update(func(s *SysUserUpsert) {
+		s.ClearEmail()
 	})
 }
 
@@ -1399,6 +1566,20 @@ func (u *SysUserUpsertBulk) UpdateStatus() *SysUserUpsertBulk {
 func (u *SysUserUpsertBulk) ClearStatus() *SysUserUpsertBulk {
 	return u.Update(func(s *SysUserUpsert) {
 		s.ClearStatus()
+	})
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (u *SysUserUpsertBulk) SetCreatedAt(v time.Time) *SysUserUpsertBulk {
+	return u.Update(func(s *SysUserUpsert) {
+		s.SetCreatedAt(v)
+	})
+}
+
+// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
+func (u *SysUserUpsertBulk) UpdateCreatedAt() *SysUserUpsertBulk {
+	return u.Update(func(s *SysUserUpsert) {
+		s.UpdateCreatedAt()
 	})
 }
 

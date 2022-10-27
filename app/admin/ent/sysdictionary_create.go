@@ -409,6 +409,18 @@ func (u *SysDictionaryUpsert) UpdateDesc() *SysDictionaryUpsert {
 	return u
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (u *SysDictionaryUpsert) SetCreatedAt(v time.Time) *SysDictionaryUpsert {
+	u.Set(sysdictionary.FieldCreatedAt, v)
+	return u
+}
+
+// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
+func (u *SysDictionaryUpsert) UpdateCreatedAt() *SysDictionaryUpsert {
+	u.SetExcluded(sysdictionary.FieldCreatedAt)
+	return u
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (u *SysDictionaryUpsert) SetUpdatedAt(v time.Time) *SysDictionaryUpsert {
 	u.Set(sysdictionary.FieldUpdatedAt, v)
@@ -455,9 +467,6 @@ func (u *SysDictionaryUpsertOne) UpdateNewValues() *SysDictionaryUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
 		if _, exists := u.create.mutation.ID(); exists {
 			s.SetIgnore(sysdictionary.FieldID)
-		}
-		if _, exists := u.create.mutation.CreatedAt(); exists {
-			s.SetIgnore(sysdictionary.FieldCreatedAt)
 		}
 	}))
 	return u
@@ -557,6 +566,20 @@ func (u *SysDictionaryUpsertOne) SetDesc(v string) *SysDictionaryUpsertOne {
 func (u *SysDictionaryUpsertOne) UpdateDesc() *SysDictionaryUpsertOne {
 	return u.Update(func(s *SysDictionaryUpsert) {
 		s.UpdateDesc()
+	})
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (u *SysDictionaryUpsertOne) SetCreatedAt(v time.Time) *SysDictionaryUpsertOne {
+	return u.Update(func(s *SysDictionaryUpsert) {
+		s.SetCreatedAt(v)
+	})
+}
+
+// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
+func (u *SysDictionaryUpsertOne) UpdateCreatedAt() *SysDictionaryUpsertOne {
+	return u.Update(func(s *SysDictionaryUpsert) {
+		s.UpdateCreatedAt()
 	})
 }
 
@@ -773,9 +796,6 @@ func (u *SysDictionaryUpsertBulk) UpdateNewValues() *SysDictionaryUpsertBulk {
 			if _, exists := b.mutation.ID(); exists {
 				s.SetIgnore(sysdictionary.FieldID)
 			}
-			if _, exists := b.mutation.CreatedAt(); exists {
-				s.SetIgnore(sysdictionary.FieldCreatedAt)
-			}
 		}
 	}))
 	return u
@@ -875,6 +895,20 @@ func (u *SysDictionaryUpsertBulk) SetDesc(v string) *SysDictionaryUpsertBulk {
 func (u *SysDictionaryUpsertBulk) UpdateDesc() *SysDictionaryUpsertBulk {
 	return u.Update(func(s *SysDictionaryUpsert) {
 		s.UpdateDesc()
+	})
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (u *SysDictionaryUpsertBulk) SetCreatedAt(v time.Time) *SysDictionaryUpsertBulk {
+	return u.Update(func(s *SysDictionaryUpsert) {
+		s.SetCreatedAt(v)
+	})
+}
+
+// UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
+func (u *SysDictionaryUpsertBulk) UpdateCreatedAt() *SysDictionaryUpsertBulk {
+	return u.Update(func(s *SysDictionaryUpsert) {
+		s.UpdateCreatedAt()
 	})
 }
 
