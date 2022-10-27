@@ -834,7 +834,7 @@ func (su *SysUser) Node(ctx context.Context) (node *Node, err error) {
 		return nil, err
 	}
 	node.Fields[8] = &Field{
-		Type:  "uint32",
+		Type:  "uint64",
 		Name:  "role_id",
 		Value: string(buf),
 	}

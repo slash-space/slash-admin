@@ -213,7 +213,7 @@ func init() {
 	// sysuserDescRoleID is the schema descriptor for role_id field.
 	sysuserDescRoleID := sysuserFields[9].Descriptor()
 	// sysuser.DefaultRoleID holds the default value on creation for the role_id field.
-	sysuser.DefaultRoleID = sysuserDescRoleID.Default.(uint32)
+	sysuser.DefaultRoleID = sysuserDescRoleID.Default.(uint64)
 	// sysuserDescStatus is the schema descriptor for status field.
 	sysuserDescStatus := sysuserFields[12].Descriptor()
 	// sysuser.DefaultStatus holds the default value on creation for the status field.

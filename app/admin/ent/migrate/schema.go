@@ -256,7 +256,7 @@ var (
 		{Name: "avatar", Type: field.TypeString, Nullable: true, Default: "", SchemaType: map[string]string{"mysql": "varchar(512)"}},
 		{Name: "base_color", Type: field.TypeString, Nullable: true, Default: "#fff"},
 		{Name: "active_color", Type: field.TypeString, Nullable: true, Default: "#1890ff"},
-		{Name: "role_id", Type: field.TypeUint32, Nullable: true, Default: 2},
+		{Name: "role_id", Type: field.TypeUint64, Nullable: true, Default: 2},
 		{Name: "mobile", Type: field.TypeString, Nullable: true},
 		{Name: "email", Type: field.TypeString, Nullable: true},
 		{Name: "status", Type: field.TypeUint8, Nullable: true, Default: 0, SchemaType: map[string]string{"mysql": "tinyint unsigned"}},

@@ -7697,8 +7697,8 @@ type SysUserMutation struct {
 	avatar        *string
 	base_color    *string
 	active_color  *string
-	role_id       *uint32
-	addrole_id    *int32
+	role_id       *uint64
+	addrole_id    *int64
 	mobile        *string
 	email         *string
 	status        *types.Status
@@ -8157,13 +8157,13 @@ func (m *SysUserMutation) ResetActiveColor() {
 }
 
 // SetRoleID sets the "role_id" field.
-func (m *SysUserMutation) SetRoleID(u uint32) {
+func (m *SysUserMutation) SetRoleID(u uint64) {
 	m.role_id = &u
 	m.addrole_id = nil
 }
 
 // RoleID returns the value of the "role_id" field in the mutation.
-func (m *SysUserMutation) RoleID() (r uint32, exists bool) {
+func (m *SysUserMutation) RoleID() (r uint64, exists bool) {
 	v := m.role_id
 	if v == nil {
 		return
@@ -8174,7 +8174,7 @@ func (m *SysUserMutation) RoleID() (r uint32, exists bool) {
 // OldRoleID returns the old "role_id" field's value of the SysUser entity.
 // If the SysUser object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *SysUserMutation) OldRoleID(ctx context.Context) (v uint32, err error) {
+func (m *SysUserMutation) OldRoleID(ctx context.Context) (v uint64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldRoleID is only allowed on UpdateOne operations")
 	}
@@ -8189,7 +8189,7 @@ func (m *SysUserMutation) OldRoleID(ctx context.Context) (v uint32, err error) {
 }
 
 // AddRoleID adds u to the "role_id" field.
-func (m *SysUserMutation) AddRoleID(u int32) {
+func (m *SysUserMutation) AddRoleID(u int64) {
 	if m.addrole_id != nil {
 		*m.addrole_id += u
 	} else {
@@ -8198,7 +8198,7 @@ func (m *SysUserMutation) AddRoleID(u int32) {
 }
 
 // AddedRoleID returns the value that was added to the "role_id" field in this mutation.
-func (m *SysUserMutation) AddedRoleID() (r int32, exists bool) {
+func (m *SysUserMutation) AddedRoleID() (r int64, exists bool) {
 	v := m.addrole_id
 	if v == nil {
 		return
@@ -8723,7 +8723,7 @@ func (m *SysUserMutation) SetField(name string, value ent.Value) error {
 		m.SetActiveColor(v)
 		return nil
 	case sysuser.FieldRoleID:
-		v, ok := value.(uint32)
+		v, ok := value.(uint64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -8807,7 +8807,7 @@ func (m *SysUserMutation) AddedField(name string) (ent.Value, bool) {
 func (m *SysUserMutation) AddField(name string, value ent.Value) error {
 	switch name {
 	case sysuser.FieldRoleID:
-		v, ok := value.(int32)
+		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}

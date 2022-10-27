@@ -104,13 +104,13 @@ func (suc *SysUserCreate) SetNillableActiveColor(s *string) *SysUserCreate {
 }
 
 // SetRoleID sets the "role_id" field.
-func (suc *SysUserCreate) SetRoleID(u uint32) *SysUserCreate {
+func (suc *SysUserCreate) SetRoleID(u uint64) *SysUserCreate {
 	suc.mutation.SetRoleID(u)
 	return suc
 }
 
 // SetNillableRoleID sets the "role_id" field if the given value is not nil.
-func (suc *SysUserCreate) SetNillableRoleID(u *uint32) *SysUserCreate {
+func (suc *SysUserCreate) SetNillableRoleID(u *uint64) *SysUserCreate {
 	if u != nil {
 		suc.SetRoleID(*u)
 	}
@@ -438,7 +438,7 @@ func (suc *SysUserCreate) createSpec() (*SysUser, *sqlgraph.CreateSpec) {
 	}
 	if value, ok := suc.mutation.RoleID(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
+			Type:   field.TypeUint64,
 			Value:  value,
 			Column: sysuser.FieldRoleID,
 		})
@@ -665,7 +665,7 @@ func (u *SysUserUpsert) ClearActiveColor() *SysUserUpsert {
 }
 
 // SetRoleID sets the "role_id" field.
-func (u *SysUserUpsert) SetRoleID(v uint32) *SysUserUpsert {
+func (u *SysUserUpsert) SetRoleID(v uint64) *SysUserUpsert {
 	u.Set(sysuser.FieldRoleID, v)
 	return u
 }
@@ -677,7 +677,7 @@ func (u *SysUserUpsert) UpdateRoleID() *SysUserUpsert {
 }
 
 // AddRoleID adds v to the "role_id" field.
-func (u *SysUserUpsert) AddRoleID(v uint32) *SysUserUpsert {
+func (u *SysUserUpsert) AddRoleID(v uint64) *SysUserUpsert {
 	u.Add(sysuser.FieldRoleID, v)
 	return u
 }
@@ -979,14 +979,14 @@ func (u *SysUserUpsertOne) ClearActiveColor() *SysUserUpsertOne {
 }
 
 // SetRoleID sets the "role_id" field.
-func (u *SysUserUpsertOne) SetRoleID(v uint32) *SysUserUpsertOne {
+func (u *SysUserUpsertOne) SetRoleID(v uint64) *SysUserUpsertOne {
 	return u.Update(func(s *SysUserUpsert) {
 		s.SetRoleID(v)
 	})
 }
 
 // AddRoleID adds v to the "role_id" field.
-func (u *SysUserUpsertOne) AddRoleID(v uint32) *SysUserUpsertOne {
+func (u *SysUserUpsertOne) AddRoleID(v uint64) *SysUserUpsertOne {
 	return u.Update(func(s *SysUserUpsert) {
 		s.AddRoleID(v)
 	})
@@ -1476,14 +1476,14 @@ func (u *SysUserUpsertBulk) ClearActiveColor() *SysUserUpsertBulk {
 }
 
 // SetRoleID sets the "role_id" field.
-func (u *SysUserUpsertBulk) SetRoleID(v uint32) *SysUserUpsertBulk {
+func (u *SysUserUpsertBulk) SetRoleID(v uint64) *SysUserUpsertBulk {
 	return u.Update(func(s *SysUserUpsert) {
 		s.SetRoleID(v)
 	})
 }
 
 // AddRoleID adds v to the "role_id" field.
-func (u *SysUserUpsertBulk) AddRoleID(v uint32) *SysUserUpsertBulk {
+func (u *SysUserUpsertBulk) AddRoleID(v uint64) *SysUserUpsertBulk {
 	return u.Update(func(s *SysUserUpsert) {
 		s.AddRoleID(v)
 	})

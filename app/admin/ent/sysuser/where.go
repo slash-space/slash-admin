@@ -138,7 +138,7 @@ func ActiveColor(v string) predicate.SysUser {
 }
 
 // RoleID applies equality check predicate on the "role_id" field. It's identical to RoleIDEQ.
-func RoleID(v uint32) predicate.SysUser {
+func RoleID(v uint64) predicate.SysUser {
 	return predicate.SysUser(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldRoleID), v))
 	})
@@ -1035,21 +1035,21 @@ func ActiveColorContainsFold(v string) predicate.SysUser {
 }
 
 // RoleIDEQ applies the EQ predicate on the "role_id" field.
-func RoleIDEQ(v uint32) predicate.SysUser {
+func RoleIDEQ(v uint64) predicate.SysUser {
 	return predicate.SysUser(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldRoleID), v))
 	})
 }
 
 // RoleIDNEQ applies the NEQ predicate on the "role_id" field.
-func RoleIDNEQ(v uint32) predicate.SysUser {
+func RoleIDNEQ(v uint64) predicate.SysUser {
 	return predicate.SysUser(func(s *sql.Selector) {
 		s.Where(sql.NEQ(s.C(FieldRoleID), v))
 	})
 }
 
 // RoleIDIn applies the In predicate on the "role_id" field.
-func RoleIDIn(vs ...uint32) predicate.SysUser {
+func RoleIDIn(vs ...uint64) predicate.SysUser {
 	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -1060,7 +1060,7 @@ func RoleIDIn(vs ...uint32) predicate.SysUser {
 }
 
 // RoleIDNotIn applies the NotIn predicate on the "role_id" field.
-func RoleIDNotIn(vs ...uint32) predicate.SysUser {
+func RoleIDNotIn(vs ...uint64) predicate.SysUser {
 	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -1071,28 +1071,28 @@ func RoleIDNotIn(vs ...uint32) predicate.SysUser {
 }
 
 // RoleIDGT applies the GT predicate on the "role_id" field.
-func RoleIDGT(v uint32) predicate.SysUser {
+func RoleIDGT(v uint64) predicate.SysUser {
 	return predicate.SysUser(func(s *sql.Selector) {
 		s.Where(sql.GT(s.C(FieldRoleID), v))
 	})
 }
 
 // RoleIDGTE applies the GTE predicate on the "role_id" field.
-func RoleIDGTE(v uint32) predicate.SysUser {
+func RoleIDGTE(v uint64) predicate.SysUser {
 	return predicate.SysUser(func(s *sql.Selector) {
 		s.Where(sql.GTE(s.C(FieldRoleID), v))
 	})
 }
 
 // RoleIDLT applies the LT predicate on the "role_id" field.
-func RoleIDLT(v uint32) predicate.SysUser {
+func RoleIDLT(v uint64) predicate.SysUser {
 	return predicate.SysUser(func(s *sql.Selector) {
 		s.Where(sql.LT(s.C(FieldRoleID), v))
 	})
 }
 
 // RoleIDLTE applies the LTE predicate on the "role_id" field.
-func RoleIDLTE(v uint32) predicate.SysUser {
+func RoleIDLTE(v uint64) predicate.SysUser {
 	return predicate.SysUser(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldRoleID), v))
 	})

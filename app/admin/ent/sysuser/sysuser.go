@@ -86,7 +86,7 @@ var (
 	// DefaultActiveColor holds the default value on creation for the "active_color" field.
 	DefaultActiveColor string
 	// DefaultRoleID holds the default value on creation for the "role_id" field.
-	DefaultRoleID uint32
+	DefaultRoleID uint64
 	// DefaultStatus holds the default value on creation for the "status" field.
 	DefaultStatus types.Status
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.

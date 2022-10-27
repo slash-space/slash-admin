@@ -34,7 +34,7 @@ type SysUser struct {
 	// 当前激活的颜色设定
 	ActiveColor string `json:"active_color,omitempty"`
 	// 角色ID
-	RoleID uint32 `json:"role_id,omitempty"`
+	RoleID uint64 `json:"role_id,omitempty"`
 	// 手机号
 	Mobile string `json:"mobile,omitempty"`
 	// 邮箱号
@@ -135,7 +135,7 @@ func (su *SysUser) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field role_id", values[i])
 			} else if value.Valid {
-				su.RoleID = uint32(value.Int64)
+				su.RoleID = uint64(value.Int64)
 			}
 		case sysuser.FieldMobile:
 			if value, ok := values[i].(*sql.NullString); !ok {

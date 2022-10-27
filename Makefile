@@ -29,3 +29,6 @@ serve-admin-swagger:
 
 ent-admin-orm:
 	cd app/admin/ent && go run -mod=mod ./entc.go
+
+goverter-admin:
+	cd app/admin/cmd/api/internal/converter && go run ./goverter.go

@@ -6,17 +6,18 @@ import (
 	pType "slash-admin/pkg/types"
 )
 
-//go:generate go run github.com/jmattheis/goverter/cmd/goverter slash-admin/app/admin/cmd/api/internal/converter
-
 // goverter:converter
 // goverter:extend StatusToUint8
 type Converter interface {
-	// goverter:matchIgnoreCase
 	ConvertPagination(input *ent.PageDetails) (output *types.Pagination)
-
-	// goverter:matchIgnoreCase
 	ConvertSysRoleToRoleInfo(input *ent.SysRole) (output *types.RoleInfo)
+
 	ConvertSysRoleToRoleInfoList(input []*ent.SysRole) (output []*types.RoleInfo)
+
+	// goverter:ignore CreatedAt UpdatedAt DeletedAt
+	ConvertRoleInfoToCreateSysRoleInput(input *types.RoleInfo) (output *ent.CreateSysRoleInput)
+	// goverter:ignore CreatedAt UpdatedAt DeletedAt
+	ConvertRoleInfoToUpdateSysRoleInput(input *types.RoleInfo) (output *ent.UpdateSysRoleInput)
 }
 
 func StatusToUint8(v pType.Status) uint8 {

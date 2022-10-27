@@ -32,7 +32,7 @@ func (SysUser) Fields() []ent.Field {
 
 		field.String("base_color").Optional().Default("#fff").Comment("后台页面色调"),
 		field.String("active_color").Optional().Default("#1890ff").Comment("当前激活的颜色设定"),
-		field.Uint32("role_id").Optional().Default(2).Comment("角色ID"),
+		field.Uint64("role_id").Optional().Default(2).Comment("角色ID"),
 		field.String("mobile").Optional().Comment("手机号"),
 		field.String("email").Optional().Comment("邮箱号"),
 

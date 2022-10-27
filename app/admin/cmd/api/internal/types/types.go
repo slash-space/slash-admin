@@ -23,7 +23,8 @@ type PageReq struct {
 	// Minimum: 1
 	PageNo int `json:"pageNo,optional,default=1" validate:"number,min=1"`
 	// Page size | 单页数据行数
-	// Maximum: 100000
+	// Maximum: 100
+	// Default: 10
 	PageSize int `json:"pageSize,optional,default=10," validate:"number,max=100"`
 }
 
@@ -32,7 +33,7 @@ type PageReq struct {
 type IDReq struct {
 	// ID
 	// Required: true
-	ID uint `json:"id" validate:"number"`
+	ID uint64 `json:"id" validate:"number"`
 }
 
 // Page information return ｜ 分页信息返回
@@ -48,7 +49,7 @@ type Pagination struct {
 type IDPathReq struct {
 	// ID
 	// Required: true
-	ID uint `path:"id"`
+	ID uint64 `path:"id"`
 }
 
 // Basic UUID request | 基础UUID参数请求
@@ -64,7 +65,7 @@ type UUIDReq struct {
 // swagger:model BaseInfo
 type BaseInfo struct {
 	// ID
-	ID uint `json:"id"`
+	ID uint64 `json:"id"`
 	// Create date | 创建日期
 	CreatedAt int64 `json:"createdAt"`
 	// Update date | 更新日期
@@ -88,9 +89,8 @@ type SetBooleanStatusReq struct {
 // swagger:model RoleInfo
 type RoleInfo struct {
 	// Role ID | 角色 ID
-	// Required : true
-	// Maximum: 1000
-	Id uint64 `json:"id" validate:"number,max=1000"`
+	// Default: 0
+	ID uint64 `json:"id,optional,default=0" validate:"number"`
 	// Role Name | 角色名
 	// Required : true
 	// Max length: 20
@@ -131,7 +131,7 @@ type SetStatusReq struct {
 	// ID
 	// Required: true
 	// Maximum: 1000
-	Id uint64 `json:"id" validate:"number,max=1000"`
+	ID uint64 `json:"id" validate:"number,max=1000"`
 	// Status code | 状态码
 	// Required: true
 	// Maximum: 10

@@ -60,9 +60,10 @@ definitions:
                 type: integer
                 x-go-name: PageNo
             pageSize:
+                default: 10
                 description: Page size | 单页数据行数
                 format: int64
-                maximum: 100000
+                maximum: 100
                 type: integer
                 x-go-name: PageSize
         type: object
@@ -97,7 +98,7 @@ definitions:
                 format: uint64
                 maximum: 1000
                 type: integer
-                x-go-name: Id
+                x-go-name: ID
             name:
                 description: Role Name | 角色名
                 maxLength: 20
@@ -159,7 +160,7 @@ definitions:
                 format: uint64
                 maximum: 1000
                 type: integer
-                x-go-name: Id
+                x-go-name: ID
             status:
                 description: Status code | 状态码
                 format: uint8

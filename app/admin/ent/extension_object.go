@@ -225,7 +225,7 @@ type UpdateSysUserInput struct {
 	Avatar      *string
 	BaseColor   *string
 	ActiveColor *string
-	RoleID      *uint32
+	RoleID      *uint64
 	Mobile      *string
 	Email       *string
 	Status      *types.Status
@@ -244,7 +244,7 @@ type CreateSysUserInput struct {
 	Avatar      *string
 	BaseColor   *string
 	ActiveColor *string
-	RoleID      *uint32
+	RoleID      *uint64
 	Mobile      *string
 	Email       *string
 	Status      *types.Status

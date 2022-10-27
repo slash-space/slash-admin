@@ -147,7 +147,7 @@ func (l *InitDatabaseLogic) insertUserData() error {
 			Avatar:   utils.Wrap(utils.AvatarUrl()),
 			Nickname: utils.Wrap("Admin"),
 			Email:    utils.Wrap("admin@gmail.com"),
-			RoleID:   utils.Wrap[uint32](1),
+			RoleID:   utils.Wrap[uint64](1),
 		},
 	}
 

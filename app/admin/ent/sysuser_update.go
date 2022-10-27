@@ -135,14 +135,14 @@ func (suu *SysUserUpdate) ClearActiveColor() *SysUserUpdate {
 }
 
 // SetRoleID sets the "role_id" field.
-func (suu *SysUserUpdate) SetRoleID(u uint32) *SysUserUpdate {
+func (suu *SysUserUpdate) SetRoleID(u uint64) *SysUserUpdate {
 	suu.mutation.ResetRoleID()
 	suu.mutation.SetRoleID(u)
 	return suu
 }
 
 // SetNillableRoleID sets the "role_id" field if the given value is not nil.
-func (suu *SysUserUpdate) SetNillableRoleID(u *uint32) *SysUserUpdate {
+func (suu *SysUserUpdate) SetNillableRoleID(u *uint64) *SysUserUpdate {
 	if u != nil {
 		suu.SetRoleID(*u)
 	}
@@ -150,7 +150,7 @@ func (suu *SysUserUpdate) SetNillableRoleID(u *uint32) *SysUserUpdate {
 }
 
 // AddRoleID adds u to the "role_id" field.
-func (suu *SysUserUpdate) AddRoleID(u int32) *SysUserUpdate {
+func (suu *SysUserUpdate) AddRoleID(u int64) *SysUserUpdate {
 	suu.mutation.AddRoleID(u)
 	return suu
 }
@@ -442,21 +442,21 @@ func (suu *SysUserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := suu.mutation.RoleID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
+			Type:   field.TypeUint64,
 			Value:  value,
 			Column: sysuser.FieldRoleID,
 		})
 	}
 	if value, ok := suu.mutation.AddedRoleID(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
+			Type:   field.TypeUint64,
 			Value:  value,
 			Column: sysuser.FieldRoleID,
 		})
 	}
 	if suu.mutation.RoleIDCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
+			Type:   field.TypeUint64,
 			Column: sysuser.FieldRoleID,
 		})
 	}
@@ -659,14 +659,14 @@ func (suuo *SysUserUpdateOne) ClearActiveColor() *SysUserUpdateOne {
 }
 
 // SetRoleID sets the "role_id" field.
-func (suuo *SysUserUpdateOne) SetRoleID(u uint32) *SysUserUpdateOne {
+func (suuo *SysUserUpdateOne) SetRoleID(u uint64) *SysUserUpdateOne {
 	suuo.mutation.ResetRoleID()
 	suuo.mutation.SetRoleID(u)
 	return suuo
 }
 
 // SetNillableRoleID sets the "role_id" field if the given value is not nil.
-func (suuo *SysUserUpdateOne) SetNillableRoleID(u *uint32) *SysUserUpdateOne {
+func (suuo *SysUserUpdateOne) SetNillableRoleID(u *uint64) *SysUserUpdateOne {
 	if u != nil {
 		suuo.SetRoleID(*u)
 	}
@@ -674,7 +674,7 @@ func (suuo *SysUserUpdateOne) SetNillableRoleID(u *uint32) *SysUserUpdateOne {
 }
 
 // AddRoleID adds u to the "role_id" field.
-func (suuo *SysUserUpdateOne) AddRoleID(u int32) *SysUserUpdateOne {
+func (suuo *SysUserUpdateOne) AddRoleID(u int64) *SysUserUpdateOne {
 	suuo.mutation.AddRoleID(u)
 	return suuo
 }
@@ -996,21 +996,21 @@ func (suuo *SysUserUpdateOne) sqlSave(ctx context.Context) (_node *SysUser, err 
 	}
 	if value, ok := suuo.mutation.RoleID(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
+			Type:   field.TypeUint64,
 			Value:  value,
 			Column: sysuser.FieldRoleID,
 		})
 	}
 	if value, ok := suuo.mutation.AddedRoleID(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
+			Type:   field.TypeUint64,
 			Value:  value,
 			Column: sysuser.FieldRoleID,
 		})
 	}
 	if suuo.mutation.RoleIDCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint32,
+			Type:   field.TypeUint64,
 			Column: sysuser.FieldRoleID,
 		})
 	}
