@@ -3,6 +3,7 @@
 package sysuser
 
 import (
+	"slash-admin/pkg/types"
 	"time"
 )
 
@@ -86,6 +87,8 @@ var (
 	DefaultActiveColor string
 	// DefaultRoleID holds the default value on creation for the "role_id" field.
 	DefaultRoleID uint32
+	// DefaultStatus holds the default value on creation for the "status" field.
+	DefaultStatus types.Status
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
 	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.

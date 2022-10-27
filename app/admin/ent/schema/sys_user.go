@@ -39,6 +39,7 @@ func (SysUser) Fields() []ent.Field {
 		field.Uint8("status").
 			SchemaType(map[string]string{dialect.MySQL: "tinyint unsigned"}).
 			GoType(types.Status(0)).
+			Default(0).
 			Optional().
 			Comment("0=正常 1=禁用"),
 

@@ -25,8 +25,9 @@ func (SysToken) Fields() []ent.Field {
 		field.Uint8("status").
 			SchemaType(map[string]string{dialect.MySQL: "tinyint unsigned"}).
 			GoType(types.Status(0)).
+			Default(0).
 			Optional().
-			Comment("0=禁用 1=正常"),
+			Comment("0=正常 1=禁用"),
 
 		field.Time("expired_at").Comment(" 过期时间"),
 		field.Time("created_at").Default(time.Now),

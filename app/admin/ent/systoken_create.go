@@ -186,6 +186,10 @@ func (stc *SysTokenCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (stc *SysTokenCreate) defaults() {
+	if _, ok := stc.mutation.Status(); !ok {
+		v := systoken.DefaultStatus
+		stc.mutation.SetStatus(v)
+	}
 	if _, ok := stc.mutation.CreatedAt(); !ok {
 		v := systoken.DefaultCreatedAt()
 		stc.mutation.SetCreatedAt(v)

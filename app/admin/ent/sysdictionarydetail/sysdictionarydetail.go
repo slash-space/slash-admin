@@ -3,6 +3,7 @@
 package sysdictionarydetail
 
 import (
+	"slash-admin/pkg/types"
 	"time"
 )
 
@@ -58,6 +59,8 @@ func ValidColumn(column string) bool {
 }
 
 var (
+	// DefaultStatus holds the default value on creation for the "status" field.
+	DefaultStatus types.Status
 	// DefaultOrderNo holds the default value on creation for the "order_no" field.
 	DefaultOrderNo uint32
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.

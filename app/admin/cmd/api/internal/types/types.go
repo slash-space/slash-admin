@@ -21,19 +21,26 @@ type SimpleMsgResp struct {
 type PageReq struct {
 	// Page number | 第几页
 	// Minimum: 1
-	PageNo uint64 `json:"pageNo,optional,default=1" validate:"number,min=1"`
+	PageNo int `json:"pageNo,optional,default=1" validate:"number,min=1"`
 	// Page size | 单页数据行数
 	// Maximum: 100000
-	PageSize uint64 `json:"pageSize,optional,default=10," validate:"number,max=100"`
+	PageSize int `json:"pageSize,optional,default=10," validate:"number,max=100"`
 }
 
 // Basic id request | 基础id参数请求
-// swagger:model IDReq
 // swagger:model IDReq
 type IDReq struct {
 	// ID
 	// Required: true
 	ID uint `json:"id" validate:"number"`
+}
+
+// Page information return ｜ 分页信息返回
+// swagger:model Pagination
+type Pagination struct {
+	Page  int `json:"page"`
+	Limit int `json:"limit"`
+	Total int `json:"total"`
 }
 
 // Basic id request | 基础id参数请求
@@ -110,13 +117,12 @@ type RoleInfo struct {
 
 // The response data of role list | 角色列表数据
 // swagger:response RoleListResp
-// swagger:response RoleListResp
 type RoleListResp struct {
-	// The total number of data | 数据总数
-	Total uint64 `json:"total"`
+	// in: body
+	Pagination *Pagination `json:"pagination"`
 	// The role list data | 角色列表数据
 	// in: body
-	Data []*RoleInfo `json:"data"`
+	List []*RoleInfo `json:"data"`
 }
 
 // The request params of setting role status | 设置角色状态参数

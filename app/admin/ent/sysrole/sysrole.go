@@ -3,6 +3,7 @@
 package sysrole
 
 import (
+	"slash-admin/pkg/types"
 	"time"
 )
 
@@ -73,6 +74,8 @@ func ValidColumn(column string) bool {
 var (
 	// DefaultDefaultRouter holds the default value on creation for the "default_router" field.
 	DefaultDefaultRouter string
+	// DefaultStatus holds the default value on creation for the "status" field.
+	DefaultStatus types.Status
 	// DefaultOrderNo holds the default value on creation for the "order_no" field.
 	DefaultOrderNo uint32
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.

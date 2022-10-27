@@ -23,7 +23,7 @@ type SysRole struct {
 	Value string `json:"value,omitempty"`
 	// 默认登录页面
 	DefaultRouter string `json:"default_router,omitempty"`
-	// 0=禁用 1=开启
+	// 0=开启 1=禁用
 	Status types.Status `json:"status,omitempty"`
 	// 备注
 	Remark string `json:"remark,omitempty"`

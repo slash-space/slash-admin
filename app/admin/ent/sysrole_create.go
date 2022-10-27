@@ -228,6 +228,10 @@ func (src *SysRoleCreate) defaults() {
 		v := sysrole.DefaultDefaultRouter
 		src.mutation.SetDefaultRouter(v)
 	}
+	if _, ok := src.mutation.Status(); !ok {
+		v := sysrole.DefaultStatus
+		src.mutation.SetStatus(v)
+	}
 	if _, ok := src.mutation.OrderNo(); !ok {
 		v := sysrole.DefaultOrderNo
 		src.mutation.SetOrderNo(v)

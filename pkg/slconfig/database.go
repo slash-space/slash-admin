@@ -38,7 +38,7 @@ func (config DatabaseConf) NewDatabase(redisConfig RedisConf) (*ent.Client, erro
 
 	if config.Debug {
 		logx.Info("Enabling Ent Client Request Debug")
-		entOpts = append(entOpts, ent.Log(logx.Debug))
+		entOpts = append(entOpts, ent.Log(logx.Info))
 		entOpts = append(entOpts, ent.Debug())
 	}
 

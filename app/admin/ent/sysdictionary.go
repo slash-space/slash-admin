@@ -21,7 +21,7 @@ type SysDictionary struct {
 	Title string `json:"title,omitempty"`
 	// the name of dictionary for search
 	Name string `json:"name,omitempty"`
-	// 0=禁用 1=开启
+	// 0=开启 1=禁用
 	Status types.Status `json:"status,omitempty"`
 	// the descriptions of dictionary
 	Desc string `json:"desc,omitempty"`

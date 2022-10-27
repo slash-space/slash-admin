@@ -304,6 +304,10 @@ func (suc *SysUserCreate) defaults() {
 		v := sysuser.DefaultRoleID
 		suc.mutation.SetRoleID(v)
 	}
+	if _, ok := suc.mutation.Status(); !ok {
+		v := sysuser.DefaultStatus
+		suc.mutation.SetStatus(v)
+	}
 	if _, ok := suc.mutation.CreatedAt(); !ok {
 		v := sysuser.DefaultCreatedAt()
 		suc.mutation.SetCreatedAt(v)

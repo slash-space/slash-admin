@@ -180,6 +180,10 @@ func (sdc *SysDictionaryCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (sdc *SysDictionaryCreate) defaults() {
+	if _, ok := sdc.mutation.Status(); !ok {
+		v := sysdictionary.DefaultStatus
+		sdc.mutation.SetStatus(v)
+	}
 	if _, ok := sdc.mutation.CreatedAt(); !ok {
 		v := sysdictionary.DefaultCreatedAt()
 		sdc.mutation.SetCreatedAt(v)

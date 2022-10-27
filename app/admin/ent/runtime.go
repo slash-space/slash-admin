@@ -14,6 +14,7 @@ import (
 	"slash-admin/app/admin/ent/sysrole"
 	"slash-admin/app/admin/ent/systoken"
 	"slash-admin/app/admin/ent/sysuser"
+	"slash-admin/pkg/types"
 	"time"
 )
 
@@ -69,6 +70,10 @@ func init() {
 	sysapi.UpdateDefaultUpdatedAt = sysapiDescUpdatedAt.UpdateDefault.(func() time.Time)
 	sysdictionaryFields := schema.SysDictionary{}.Fields()
 	_ = sysdictionaryFields
+	// sysdictionaryDescStatus is the schema descriptor for status field.
+	sysdictionaryDescStatus := sysdictionaryFields[3].Descriptor()
+	// sysdictionary.DefaultStatus holds the default value on creation for the status field.
+	sysdictionary.DefaultStatus = types.Status(sysdictionaryDescStatus.Default.(uint8))
 	// sysdictionaryDescCreatedAt is the schema descriptor for created_at field.
 	sysdictionaryDescCreatedAt := sysdictionaryFields[5].Descriptor()
 	// sysdictionary.DefaultCreatedAt holds the default value on creation for the created_at field.
@@ -81,6 +86,10 @@ func init() {
 	sysdictionary.UpdateDefaultUpdatedAt = sysdictionaryDescUpdatedAt.UpdateDefault.(func() time.Time)
 	sysdictionarydetailFields := schema.SysDictionaryDetail{}.Fields()
 	_ = sysdictionarydetailFields
+	// sysdictionarydetailDescStatus is the schema descriptor for status field.
+	sysdictionarydetailDescStatus := sysdictionarydetailFields[4].Descriptor()
+	// sysdictionarydetail.DefaultStatus holds the default value on creation for the status field.
+	sysdictionarydetail.DefaultStatus = types.Status(sysdictionarydetailDescStatus.Default.(uint8))
 	// sysdictionarydetailDescOrderNo is the schema descriptor for order_no field.
 	sysdictionarydetailDescOrderNo := sysdictionarydetailFields[6].Descriptor()
 	// sysdictionarydetail.DefaultOrderNo holds the default value on creation for the order_no field.
@@ -149,6 +158,10 @@ func init() {
 	sysroleDescDefaultRouter := sysroleFields[3].Descriptor()
 	// sysrole.DefaultDefaultRouter holds the default value on creation for the default_router field.
 	sysrole.DefaultDefaultRouter = sysroleDescDefaultRouter.Default.(string)
+	// sysroleDescStatus is the schema descriptor for status field.
+	sysroleDescStatus := sysroleFields[4].Descriptor()
+	// sysrole.DefaultStatus holds the default value on creation for the status field.
+	sysrole.DefaultStatus = types.Status(sysroleDescStatus.Default.(uint8))
 	// sysroleDescOrderNo is the schema descriptor for order_no field.
 	sysroleDescOrderNo := sysroleFields[6].Descriptor()
 	// sysrole.DefaultOrderNo holds the default value on creation for the order_no field.
@@ -165,6 +178,10 @@ func init() {
 	sysrole.UpdateDefaultUpdatedAt = sysroleDescUpdatedAt.UpdateDefault.(func() time.Time)
 	systokenFields := schema.SysToken{}.Fields()
 	_ = systokenFields
+	// systokenDescStatus is the schema descriptor for status field.
+	systokenDescStatus := systokenFields[4].Descriptor()
+	// systoken.DefaultStatus holds the default value on creation for the status field.
+	systoken.DefaultStatus = types.Status(systokenDescStatus.Default.(uint8))
 	// systokenDescCreatedAt is the schema descriptor for created_at field.
 	systokenDescCreatedAt := systokenFields[6].Descriptor()
 	// systoken.DefaultCreatedAt holds the default value on creation for the created_at field.
@@ -197,6 +214,10 @@ func init() {
 	sysuserDescRoleID := sysuserFields[9].Descriptor()
 	// sysuser.DefaultRoleID holds the default value on creation for the role_id field.
 	sysuser.DefaultRoleID = sysuserDescRoleID.Default.(uint32)
+	// sysuserDescStatus is the schema descriptor for status field.
+	sysuserDescStatus := sysuserFields[12].Descriptor()
+	// sysuser.DefaultStatus holds the default value on creation for the status field.
+	sysuser.DefaultStatus = types.Status(sysuserDescStatus.Default.(uint8))
 	// sysuserDescCreatedAt is the schema descriptor for created_at field.
 	sysuserDescCreatedAt := sysuserFields[13].Descriptor()
 	// sysuser.DefaultCreatedAt holds the default value on creation for the created_at field.

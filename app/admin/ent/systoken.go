@@ -23,7 +23,7 @@ type SysToken struct {
 	Token string `json:"token,omitempty"`
 	//  Token 来源 （本地为core, 第三方如github等）
 	Source string `json:"source,omitempty"`
-	// 0=禁用 1=正常
+	// 0=正常 1=禁用
 	Status types.Status `json:"status,omitempty"`
 	//  过期时间
 	ExpiredAt time.Time `json:"expired_at,omitempty"`

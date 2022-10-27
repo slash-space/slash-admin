@@ -20,14 +20,12 @@ scan-admin-swagger:
 	swagger generate spec --output=./core.yml --scan-models
 
 start-admin-api:
-	lsof -i:9100 | awk 'NR!=1 {print $2}' | xargs killall -9
+	lsof -i:9100 | awk 'NR!=1 {print $2}' | xargs killall -9 || true
 	modd
 
 serve-admin-swagger:
-	lsof -i:36666 | awk 'NR!=1 {print $2}' | xargs killall -9
+	lsof -i:36666 | awk 'NR!=1 {print $2}' | xargs killall -9 || true
 	swagger serve -F=swagger --port 36666 core.yml
-
-
 
 ent-admin-orm:
 	cd app/admin/ent && go run -mod=mod ./entc.go

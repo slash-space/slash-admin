@@ -23,7 +23,7 @@ type SysDictionaryDetail struct {
 	Key string `json:"key,omitempty"`
 	// value
 	Value string `json:"value,omitempty"`
-	// 0=禁用 1=开启
+	// 0=开启 1=禁用
 	Status types.Status `json:"status,omitempty"`
 	// 备注
 	Remark string `json:"remark,omitempty"`

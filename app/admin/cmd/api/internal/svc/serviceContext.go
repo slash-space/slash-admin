@@ -5,6 +5,8 @@ import (
 	"github.com/zeromicro/go-zero/core/stores/redis"
 	"github.com/zeromicro/go-zero/rest"
 	"slash-admin/app/admin/cmd/api/internal/config"
+	"slash-admin/app/admin/cmd/api/internal/converter"
+	"slash-admin/app/admin/cmd/api/internal/converter/generated"
 	"slash-admin/app/admin/cmd/api/internal/middleware"
 	"slash-admin/app/admin/ent"
 )
@@ -14,6 +16,7 @@ type ServiceContext struct {
 	EntClient   *ent.Client
 	Config      config.Config
 	Authority   rest.Middleware
+	Converter   converter.Converter
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -36,5 +39,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		EntClient:   entClient,
 		Config:      c,
 		Authority:   middleware.NewAuthorityMiddleware(nil, redisClient).Handle,
+		Converter:   &generated.ConverterImpl{},
 	}
 }

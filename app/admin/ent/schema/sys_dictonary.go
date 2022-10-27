@@ -24,8 +24,9 @@ func (SysDictionary) Fields() []ent.Field {
 		field.Uint8("status").
 			SchemaType(map[string]string{dialect.MySQL: "tinyint unsigned"}).
 			GoType(types.Status(0)).
+			Default(0).
 			Optional().
-			Comment("0=禁用 1=开启"),
+			Comment("0=开启 1=禁用"),
 
 		field.String("desc").Comment("the descriptions of dictionary"),
 		field.Time("created_at").Default(time.Now),

@@ -55,28 +55,38 @@ definitions:
         properties:
             pageNo:
                 description: Page number | 第几页
-                format: uint64
+                format: int64
+                minimum: 1
                 type: integer
                 x-go-name: PageNo
             pageSize:
                 description: Page size | 单页数据行数
-                format: uint64
+                format: int64
                 maximum: 100000
                 type: integer
                 x-go-name: PageSize
-        required:
-            - pageNo
-            - pageSize
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    Pagination:
+        description: Page information return ｜ 分页信息返回
+        properties:
+            limit:
+                format: int64
+                type: integer
+                x-go-name: Limit
+            page:
+                format: int64
+                type: integer
+                x-go-name: Page
+            total:
+                format: int64
+                type: integer
+                x-go-name: Total
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
     RoleInfo:
         description: Create or update role information params | 创建或更新角色信息参数
         properties:
-            createAt:
-                description: Create time | 创建日期
-                format: int64
-                type: integer
-                x-go-name: CreateAt
             defaultRouter:
                 description: Role's default page | 角色默认管理页面
                 maxLength: 20
@@ -106,8 +116,8 @@ definitions:
                 x-go-name: Remark
             status:
                 description: Role status | 角色状态
-                format: uint32
-                maximum: 20
+                format: uint8
+                maximum: 10
                 type: integer
                 x-go-name: Status
             value:
@@ -120,10 +130,7 @@ definitions:
             - name
             - value
             - defaultRouter
-            - status
-            - remark
             - orderNo
-            - createAt
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
     SetBooleanStatusReq:
@@ -155,8 +162,8 @@ definitions:
                 x-go-name: Id
             status:
                 description: Status code | 状态码
-                format: uint32
-                maximum: 20
+                format: uint8
+                maximum: 10
                 type: integer
                 x-go-name: Status
         required:
@@ -261,156 +268,6 @@ paths:
             summary: '"Set role status | 设置角色状态"'
             tags:
                 - role
-    /user:
-        delete:
-            description: '"删除用户信息"'
-            operationId: DeleteUser
-            parameters:
-                - in: body
-                  name: body
-                  schema:
-                    $ref: '#/definitions/IDReq'
-                    type: object
-            responses:
-                "200":
-                    $ref: '#/responses/SimpleMsg'
-            summary: '"Delete user information | 删除用户信息"'
-            tags:
-                - user
-        post:
-            description: '"新增或更新用户"'
-            operationId: CreateOrUpdateUser
-            parameters:
-                - in: body
-                  name: body
-                  schema:
-                    $ref: '#/definitions/CreateOrUpdateUserReq'
-                    type: object
-            responses:
-                "200":
-                    $ref: '#/responses/SimpleMsg'
-            summary: '"Create or update user''s information | 新增或更新用户"'
-            tags:
-                - user
-    /user/change-password:
-        post:
-            description: '"修改用户密码"'
-            operationId: ChangePassword
-            parameters:
-                - in: body
-                  name: body
-                  schema:
-                    $ref: '#/definitions/ChangePasswordReq'
-                    type: object
-            responses:
-                "200":
-                    $ref: '#/responses/SimpleMsg'
-            summary: '"Change Password | 修改密码"'
-            tags:
-                - user
-    /user/info:
-        get:
-            description: '"获取用户基本信息"'
-            operationId: GetUserInfo
-            responses:
-                "200":
-                    $ref: '#/responses/GetUserInfoResp'
-            summary: '"Get user basic information | 获取用户基本信息"'
-            tags:
-                - user
-    /user/list:
-        post:
-            description: '"获取用户列表"'
-            operationId: GetUserList
-            parameters:
-                - in: body
-                  name: body
-                  schema:
-                    $ref: '#/definitions/GetUserListReq'
-                    type: object
-            responses:
-                "200":
-                    $ref: '#/responses/UserListResp'
-            summary: '"Get user list | 获取用户列表"'
-            tags:
-                - user
-    /user/login:
-        post:
-            description: '"登录"'
-            operationId: Login
-            parameters:
-                - in: body
-                  name: body
-                  schema:
-                    $ref: '#/definitions/LoginReq'
-                    type: object
-            responses:
-                "200":
-                    $ref: '#/responses/LoginResp'
-            summary: '"Log in | 登录"'
-            tags:
-                - user
-    /user/logout:
-        get:
-            description: '"退出登陆"'
-            operationId: Logout
-            responses:
-                "200":
-                    $ref: '#/responses/SimpleMsg'
-            summary: '"Log out | 退出登陆"'
-            tags:
-                - user
-    /user/perm:
-        get:
-            description: '"获取用户权限码"'
-            operationId: GetUserPermCode
-            responses:
-                "200":
-                    $ref: '#/responses/PermCodeResp'
-            summary: '"Get user''s permission code | 获取用户权限码"'
-            tags:
-                - user
-    /user/profile:
-        get:
-            description: '"获取用户个人信息"'
-            operationId: GetUserProfile
-            responses:
-                "200":
-                    $ref: '#/responses/ProfileResp'
-            summary: '"Get user''s profile | 获取用户个人信息"'
-            tags:
-                - user
-        post:
-            description: '"更新用户个人信息"'
-            operationId: UpdateUserProfile
-            parameters:
-                - in: body
-                  name: body
-                  schema:
-                    $ref: '#/definitions/ProfileReq'
-                    type: object
-            responses:
-                "200":
-                    $ref: '#/responses/SimpleMsg'
-            summary: '"Update user''s profile | 更新用户个人信息"'
-            tags:
-                - user
-    /user/register:
-        post:
-            description: '"注册"'
-            operationId: Register
-            parameters:
-                - in: body
-                  name: body
-                  schema:
-                    $ref: '#/definitions/RegisterReq'
-                    type: object
-            responses:
-                "200":
-                    $ref: '#/responses/SimpleMsg'
-            summary: '"Register | 注册"'
-            tags:
-                - user
 produces:
     - application/json
 responses:
@@ -426,12 +283,8 @@ responses:
                 type: string
     RoleListResp:
         description: The response data of role list | 角色列表数据
-        headers:
-            total:
-                description: The total number of data | 数据总数
-                format: uint64
-                type: integer
         schema:
+            $ref: '#/definitions/Pagination'
             items:
                 $ref: '#/definitions/RoleInfo'
             type: array

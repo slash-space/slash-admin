@@ -2,6 +2,8 @@ package role
 
 import (
 	"context"
+	"github.com/zeromicro/go-zero/core/errorx"
+	"net/http"
 
 	"slash-admin/app/admin/cmd/api/internal/svc"
 	"slash-admin/app/admin/cmd/api/internal/types"
@@ -24,7 +26,16 @@ func NewGetRoleListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetRo
 }
 
 func (l *GetRoleListLogic) GetRoleList(req *types.PageReq) (resp *types.RoleListResp, err error) {
-	l.svcCtx.EntClient.SysRole.Query().Where()
+	page, err := l.svcCtx.EntClient.SysRole.Query().Page(l.ctx, req.PageNo, req.PageSize)
 
-	return
+	if err != nil {
+		logx.Errorw(errorx.DatabaseError, logx.Field("detail", err.Error()))
+		return nil, errorx.NewApiError(http.StatusInternalServerError, errorx.DatabaseError)
+	}
+
+	return &types.RoleListResp{
+		Pagination: l.svcCtx.Converter.ConvertPagination(page.PageDetails),
+		List:       l.svcCtx.Converter.ConvertSysRoleToRoleInfoList(page.List),
+	}, nil
+
 }
