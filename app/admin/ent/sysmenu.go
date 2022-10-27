@@ -22,7 +22,7 @@ type SysMenu struct {
 	// menu type: 0. group 1. menu
 	MenuType uint32 `json:"menu_type,omitempty"`
 	// parent menu ID
-	ParentID uint `json:"parent_id,omitempty"`
+	ParentID uint64 `json:"parent_id,omitempty"`
 	// index path
 	Path string `json:"path,omitempty"`
 	// index name
@@ -43,6 +43,58 @@ type SysMenu struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// DeletedAt holds the value of the "deleted_at" field.
 	DeletedAt *time.Time `json:"deleted_at,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the SysMenuQuery when eager-loading is set.
+	Edges SysMenuEdges `json:"edges"`
+}
+
+// SysMenuEdges holds the relations/edges for other nodes in the graph.
+type SysMenuEdges struct {
+	// Roles holds the value of the roles edge.
+	Roles []*SysRole `json:"roles,omitempty"`
+	// Parent holds the value of the parent edge.
+	Parent *SysMenu `json:"parent,omitempty"`
+	// Children holds the value of the children edge.
+	Children []*SysMenu `json:"children,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [3]bool
+	// totalCount holds the count of the edges above.
+	totalCount [3]map[string]int
+
+	namedRoles    map[string][]*SysRole
+	namedChildren map[string][]*SysMenu
+}
+
+// RolesOrErr returns the Roles value or an error if the edge
+// was not loaded in eager-loading.
+func (e SysMenuEdges) RolesOrErr() ([]*SysRole, error) {
+	if e.loadedTypes[0] {
+		return e.Roles, nil
+	}
+	return nil, &NotLoadedError{edge: "roles"}
+}
+
+// ParentOrErr returns the Parent value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e SysMenuEdges) ParentOrErr() (*SysMenu, error) {
+	if e.loadedTypes[1] {
+		if e.Parent == nil {
+			// Edge was loaded but was not found.
+			return nil, &NotFoundError{label: sysmenu.Label}
+		}
+		return e.Parent, nil
+	}
+	return nil, &NotLoadedError{edge: "parent"}
+}
+
+// ChildrenOrErr returns the Children value or an error if the edge
+// was not loaded in eager-loading.
+func (e SysMenuEdges) ChildrenOrErr() ([]*SysMenu, error) {
+	if e.loadedTypes[2] {
+		return e.Children, nil
+	}
+	return nil, &NotLoadedError{edge: "children"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -97,7 +149,7 @@ func (sm *SysMenu) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field parent_id", values[i])
 			} else if value.Valid {
-				sm.ParentID = uint(value.Int64)
+				sm.ParentID = uint64(value.Int64)
 			}
 		case sysmenu.FieldPath:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -165,6 +217,21 @@ func (sm *SysMenu) assignValues(columns []string, values []any) error {
 	return nil
 }
 
+// QueryRoles queries the "roles" edge of the SysMenu entity.
+func (sm *SysMenu) QueryRoles() *SysRoleQuery {
+	return (&SysMenuClient{config: sm.config}).QueryRoles(sm)
+}
+
+// QueryParent queries the "parent" edge of the SysMenu entity.
+func (sm *SysMenu) QueryParent() *SysMenuQuery {
+	return (&SysMenuClient{config: sm.config}).QueryParent(sm)
+}
+
+// QueryChildren queries the "children" edge of the SysMenu entity.
+func (sm *SysMenu) QueryChildren() *SysMenuQuery {
+	return (&SysMenuClient{config: sm.config}).QueryChildren(sm)
+}
+
 // Update returns a builder for updating this SysMenu.
 // Note that you need to call SysMenu.Unwrap() before calling this method if this SysMenu
 // was returned from a transaction, and the transaction was committed or rolled back.
@@ -230,6 +297,54 @@ func (sm *SysMenu) String() string {
 	}
 	builder.WriteByte(')')
 	return builder.String()
+}
+
+// NamedRoles returns the Roles named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (sm *SysMenu) NamedRoles(name string) ([]*SysRole, error) {
+	if sm.Edges.namedRoles == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := sm.Edges.namedRoles[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (sm *SysMenu) appendNamedRoles(name string, edges ...*SysRole) {
+	if sm.Edges.namedRoles == nil {
+		sm.Edges.namedRoles = make(map[string][]*SysRole)
+	}
+	if len(edges) == 0 {
+		sm.Edges.namedRoles[name] = []*SysRole{}
+	} else {
+		sm.Edges.namedRoles[name] = append(sm.Edges.namedRoles[name], edges...)
+	}
+}
+
+// NamedChildren returns the Children named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (sm *SysMenu) NamedChildren(name string) ([]*SysMenu, error) {
+	if sm.Edges.namedChildren == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := sm.Edges.namedChildren[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (sm *SysMenu) appendNamedChildren(name string, edges ...*SysMenu) {
+	if sm.Edges.namedChildren == nil {
+		sm.Edges.namedChildren = make(map[string][]*SysMenu)
+	}
+	if len(edges) == 0 {
+		sm.Edges.namedChildren[name] = []*SysMenu{}
+	} else {
+		sm.Edges.namedChildren[name] = append(sm.Edges.namedChildren[name], edges...)
+	}
 }
 
 // SysMenus is a parsable slice of SysMenu.

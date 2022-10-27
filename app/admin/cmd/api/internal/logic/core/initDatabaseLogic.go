@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/google/uuid"
 	"github.com/zeromicro/go-zero/core/errorx"
+	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/redis"
 	"net/http"
 	"slash-admin/app/admin/cmd/api/internal/globalkey"
@@ -13,8 +14,6 @@ import (
 	"slash-admin/app/admin/ent/migrate"
 	pType "slash-admin/pkg/types"
 	"slash-admin/pkg/utils"
-
-	"github.com/zeromicro/go-zero/core/logx"
 )
 
 type InitDatabaseLogic struct {
@@ -828,3 +827,32 @@ func (l *InitDatabaseLogic) insertMenuData() error {
 	}
 	return nil
 }
+
+// insert admin menu authority
+//
+//func (l *InitDatabaseLogic) insertRoleMenuAuthorityData() error {
+//	var menus []model.Menu
+//	result := l.svcCtx.DB.Find(&menus)
+//	if result.Error != nil {
+//		logx.Errorw(logmessage.DatabaseError, logx.Field("detail", result.Error.Error()))
+//		return status.Error(codes.Internal, result.Error.Error())
+//	}
+//
+//	var insertString strings.Builder
+//	insertString.WriteString("insert into role_menus values ")
+//	for i := 0; i < len(menus); i++ {
+//		if i != len(menus)-1 {
+//			insertString.WriteString(fmt.Sprintf("(%d, %d),", menus[i].ID, 1))
+//		} else {
+//			insertString.WriteString(fmt.Sprintf("(%d, %d);", menus[i].ID, 1))
+//		}
+//	}
+//
+//	result = l.svcCtx.DB.Exec(insertString.String())
+//	if result.Error != nil {
+//		logx.Errorw(logmessage.DatabaseError, logx.Field("detail", result.Error.Error()))
+//		return status.Error(codes.Internal, result.Error.Error())
+//	} else {
+//		return nil
+//	}
+//}

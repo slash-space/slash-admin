@@ -81,7 +81,7 @@ type UpdateSysMenuInput struct {
 	ID        *uint64
 	MenuLevel *uint32
 	MenuType  *uint32
-	ParentID  *uint
+	ParentID  *uint64
 	Path      *string
 	Name      *string
 	Redirect  *string
@@ -98,7 +98,7 @@ type CreateSysMenuInput struct {
 	ID        *uint64
 	MenuLevel *uint32
 	MenuType  *uint32
-	ParentID  *uint
+	ParentID  *uint64
 	Path      *string
 	Name      *string
 	Redirect  *string

@@ -22,6 +22,7 @@ import (
 
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 // Client is the client that holds all ent builders.
@@ -535,6 +536,54 @@ func (c *SysMenuClient) GetX(ctx context.Context, id uint64) *SysMenu {
 	return obj
 }
 
+// QueryRoles queries the roles edge of a SysMenu.
+func (c *SysMenuClient) QueryRoles(sm *SysMenu) *SysRoleQuery {
+	query := &SysRoleQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := sm.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(sysmenu.Table, sysmenu.FieldID, id),
+			sqlgraph.To(sysrole.Table, sysrole.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, sysmenu.RolesTable, sysmenu.RolesPrimaryKey...),
+		)
+		fromV = sqlgraph.Neighbors(sm.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryParent queries the parent edge of a SysMenu.
+func (c *SysMenuClient) QueryParent(sm *SysMenu) *SysMenuQuery {
+	query := &SysMenuQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := sm.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(sysmenu.Table, sysmenu.FieldID, id),
+			sqlgraph.To(sysmenu.Table, sysmenu.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, sysmenu.ParentTable, sysmenu.ParentColumn),
+		)
+		fromV = sqlgraph.Neighbors(sm.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryChildren queries the children edge of a SysMenu.
+func (c *SysMenuClient) QueryChildren(sm *SysMenu) *SysMenuQuery {
+	query := &SysMenuQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := sm.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(sysmenu.Table, sysmenu.FieldID, id),
+			sqlgraph.To(sysmenu.Table, sysmenu.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, sysmenu.ChildrenTable, sysmenu.ChildrenColumn),
+		)
+		fromV = sqlgraph.Neighbors(sm.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *SysMenuClient) Hooks() []Hook {
 	return c.hooks.SysMenu
@@ -803,6 +852,22 @@ func (c *SysRoleClient) GetX(ctx context.Context, id uint64) *SysRole {
 		panic(err)
 	}
 	return obj
+}
+
+// QueryMenus queries the menus edge of a SysRole.
+func (c *SysRoleClient) QueryMenus(sr *SysRole) *SysMenuQuery {
+	query := &SysMenuQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := sr.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(sysrole.Table, sysrole.FieldID, id),
+			sqlgraph.To(sysmenu.Table, sysmenu.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, sysrole.MenusTable, sysrole.MenusPrimaryKey...),
+		)
+		fromV = sqlgraph.Neighbors(sr.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
 }
 
 // Hooks returns the client hooks.

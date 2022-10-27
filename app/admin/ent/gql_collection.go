@@ -152,6 +152,44 @@ func (sm *SysMenuQuery) CollectFields(ctx context.Context, satisfies ...string) 
 
 func (sm *SysMenuQuery) collectField(ctx context.Context, op *graphql.OperationContext, field graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
+	for _, field := range graphql.CollectFields(op, field.Selections, satisfies) {
+		switch field.Name {
+		case "roles":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = &SysRoleQuery{config: sm.config}
+			)
+			if err := query.collectField(ctx, op, field, path, satisfies...); err != nil {
+				return err
+			}
+			sm.WithNamedRoles(alias, func(wq *SysRoleQuery) {
+				*wq = *query
+			})
+		case "parent":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = &SysMenuQuery{config: sm.config}
+			)
+			if err := query.collectField(ctx, op, field, path, satisfies...); err != nil {
+				return err
+			}
+			sm.withParent = query
+		case "children":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = &SysMenuQuery{config: sm.config}
+			)
+			if err := query.collectField(ctx, op, field, path, satisfies...); err != nil {
+				return err
+			}
+			sm.WithNamedChildren(alias, func(wq *SysMenuQuery) {
+				*wq = *query
+			})
+		}
+	}
 	return nil
 }
 
@@ -281,6 +319,22 @@ func (sr *SysRoleQuery) CollectFields(ctx context.Context, satisfies ...string) 
 
 func (sr *SysRoleQuery) collectField(ctx context.Context, op *graphql.OperationContext, field graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
+	for _, field := range graphql.CollectFields(op, field.Selections, satisfies) {
+		switch field.Name {
+		case "menus":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = &SysMenuQuery{config: sr.config}
+			)
+			if err := query.collectField(ctx, op, field, path, satisfies...); err != nil {
+				return err
+			}
+			sr.WithNamedMenus(alias, func(wq *SysMenuQuery) {
+				*wq = *query
+			})
+		}
+	}
 	return nil
 }
 

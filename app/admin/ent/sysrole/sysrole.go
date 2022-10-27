@@ -29,8 +29,15 @@ const (
 	FieldUpdatedAt = "updated_at"
 	// FieldDeletedAt holds the string denoting the deleted_at field in the database.
 	FieldDeletedAt = "deleted_at"
+	// EdgeMenus holds the string denoting the menus edge name in mutations.
+	EdgeMenus = "menus"
 	// Table holds the table name of the sysrole in the database.
 	Table = "sys_role"
+	// MenusTable is the table that holds the menus relation/edge. The primary key declared below.
+	MenusTable = "sys_menu_roles"
+	// MenusInverseTable is the table name for the SysMenu entity.
+	// It exists in this package in order to avoid circular dependency with the "sysmenu" package.
+	MenusInverseTable = "sys_menu"
 )
 
 // Columns holds all SQL columns for sysrole fields.
@@ -46,6 +53,12 @@ var Columns = []string{
 	FieldUpdatedAt,
 	FieldDeletedAt,
 }
+
+var (
+	// MenusPrimaryKey and MenusColumn2 are the table columns denoting the
+	// primary key for the menus relation (M2M).
+	MenusPrimaryKey = []string{"sys_menu_id", "sys_role_id"}
+)
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {

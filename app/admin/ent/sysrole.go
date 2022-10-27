@@ -35,6 +35,31 @@ type SysRole struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// DeletedAt holds the value of the "deleted_at" field.
 	DeletedAt *time.Time `json:"deleted_at,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the SysRoleQuery when eager-loading is set.
+	Edges SysRoleEdges `json:"edges"`
+}
+
+// SysRoleEdges holds the relations/edges for other nodes in the graph.
+type SysRoleEdges struct {
+	// Menus holds the value of the menus edge.
+	Menus []*SysMenu `json:"menus,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [1]bool
+	// totalCount holds the count of the edges above.
+	totalCount [1]map[string]int
+
+	namedMenus map[string][]*SysMenu
+}
+
+// MenusOrErr returns the Menus value or an error if the edge
+// was not loaded in eager-loading.
+func (e SysRoleEdges) MenusOrErr() ([]*SysMenu, error) {
+	if e.loadedTypes[0] {
+		return e.Menus, nil
+	}
+	return nil, &NotLoadedError{edge: "menus"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -131,6 +156,11 @@ func (sr *SysRole) assignValues(columns []string, values []any) error {
 	return nil
 }
 
+// QueryMenus queries the "menus" edge of the SysRole entity.
+func (sr *SysRole) QueryMenus() *SysMenuQuery {
+	return (&SysRoleClient{config: sr.config}).QueryMenus(sr)
+}
+
 // Update returns a builder for updating this SysRole.
 // Note that you need to call SysRole.Unwrap() before calling this method if this SysRole
 // was returned from a transaction, and the transaction was committed or rolled back.
@@ -184,6 +214,30 @@ func (sr *SysRole) String() string {
 	}
 	builder.WriteByte(')')
 	return builder.String()
+}
+
+// NamedMenus returns the Menus named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (sr *SysRole) NamedMenus(name string) ([]*SysMenu, error) {
+	if sr.Edges.namedMenus == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := sr.Edges.namedMenus[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (sr *SysRole) appendNamedMenus(name string, edges ...*SysMenu) {
+	if sr.Edges.namedMenus == nil {
+		sr.Edges.namedMenus = make(map[string][]*SysMenu)
+	}
+	if len(edges) == 0 {
+		sr.Edges.namedMenus[name] = []*SysMenu{}
+	} else {
+		sr.Edges.namedMenus[name] = append(sr.Edges.namedMenus[name], edges...)
+	}
 }
 
 // SysRoles is a parsable slice of SysRole.

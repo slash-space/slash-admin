@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"slash-admin/app/admin/ent/sysmenu"
+	"slash-admin/app/admin/ent/sysrole"
 	"slash-admin/pkg/types"
 	"time"
 
@@ -36,8 +37,16 @@ func (smc *SysMenuCreate) SetMenuType(u uint32) *SysMenuCreate {
 }
 
 // SetParentID sets the "parent_id" field.
-func (smc *SysMenuCreate) SetParentID(u uint) *SysMenuCreate {
+func (smc *SysMenuCreate) SetParentID(u uint64) *SysMenuCreate {
 	smc.mutation.SetParentID(u)
+	return smc
+}
+
+// SetNillableParentID sets the "parent_id" field if the given value is not nil.
+func (smc *SysMenuCreate) SetNillableParentID(u *uint64) *SysMenuCreate {
+	if u != nil {
+		smc.SetParentID(*u)
+	}
 	return smc
 }
 
@@ -163,6 +172,41 @@ func (smc *SysMenuCreate) SetID(u uint64) *SysMenuCreate {
 	return smc
 }
 
+// AddRoleIDs adds the "roles" edge to the SysRole entity by IDs.
+func (smc *SysMenuCreate) AddRoleIDs(ids ...uint64) *SysMenuCreate {
+	smc.mutation.AddRoleIDs(ids...)
+	return smc
+}
+
+// AddRoles adds the "roles" edges to the SysRole entity.
+func (smc *SysMenuCreate) AddRoles(s ...*SysRole) *SysMenuCreate {
+	ids := make([]uint64, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return smc.AddRoleIDs(ids...)
+}
+
+// SetParent sets the "parent" edge to the SysMenu entity.
+func (smc *SysMenuCreate) SetParent(s *SysMenu) *SysMenuCreate {
+	return smc.SetParentID(s.ID)
+}
+
+// AddChildIDs adds the "children" edge to the SysMenu entity by IDs.
+func (smc *SysMenuCreate) AddChildIDs(ids ...uint64) *SysMenuCreate {
+	smc.mutation.AddChildIDs(ids...)
+	return smc
+}
+
+// AddChildren adds the "children" edges to the SysMenu entity.
+func (smc *SysMenuCreate) AddChildren(s ...*SysMenu) *SysMenuCreate {
+	ids := make([]uint64, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return smc.AddChildIDs(ids...)
+}
+
 // Mutation returns the SysMenuMutation object of the builder.
 func (smc *SysMenuCreate) Mutation() *SysMenuMutation {
 	return smc.mutation
@@ -270,9 +314,6 @@ func (smc *SysMenuCreate) check() error {
 	if _, ok := smc.mutation.MenuType(); !ok {
 		return &ValidationError{Name: "menu_type", err: errors.New(`ent: missing required field "SysMenu.menu_type"`)}
 	}
-	if _, ok := smc.mutation.ParentID(); !ok {
-		return &ValidationError{Name: "parent_id", err: errors.New(`ent: missing required field "SysMenu.parent_id"`)}
-	}
 	if _, ok := smc.mutation.Path(); !ok {
 		return &ValidationError{Name: "path", err: errors.New(`ent: missing required field "SysMenu.path"`)}
 	}
@@ -343,14 +384,6 @@ func (smc *SysMenuCreate) createSpec() (*SysMenu, *sqlgraph.CreateSpec) {
 			Column: sysmenu.FieldMenuType,
 		})
 		_node.MenuType = value
-	}
-	if value, ok := smc.mutation.ParentID(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint,
-			Value:  value,
-			Column: sysmenu.FieldParentID,
-		})
-		_node.ParentID = value
 	}
 	if value, ok := smc.mutation.Path(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -431,6 +464,64 @@ func (smc *SysMenuCreate) createSpec() (*SysMenu, *sqlgraph.CreateSpec) {
 			Column: sysmenu.FieldDeletedAt,
 		})
 		_node.DeletedAt = &value
+	}
+	if nodes := smc.mutation.RolesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   sysmenu.RolesTable,
+			Columns: sysmenu.RolesPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: sysrole.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := smc.mutation.ParentIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   sysmenu.ParentTable,
+			Columns: []string{sysmenu.ParentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: sysmenu.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.ParentID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := smc.mutation.ChildrenIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   sysmenu.ChildrenTable,
+			Columns: []string{sysmenu.ChildrenColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: sysmenu.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }
@@ -521,7 +612,7 @@ func (u *SysMenuUpsert) AddMenuType(v uint32) *SysMenuUpsert {
 }
 
 // SetParentID sets the "parent_id" field.
-func (u *SysMenuUpsert) SetParentID(v uint) *SysMenuUpsert {
+func (u *SysMenuUpsert) SetParentID(v uint64) *SysMenuUpsert {
 	u.Set(sysmenu.FieldParentID, v)
 	return u
 }
@@ -532,9 +623,9 @@ func (u *SysMenuUpsert) UpdateParentID() *SysMenuUpsert {
 	return u
 }
 
-// AddParentID adds v to the "parent_id" field.
-func (u *SysMenuUpsert) AddParentID(v uint) *SysMenuUpsert {
-	u.Add(sysmenu.FieldParentID, v)
+// ClearParentID clears the value of the "parent_id" field.
+func (u *SysMenuUpsert) ClearParentID() *SysMenuUpsert {
+	u.SetNull(sysmenu.FieldParentID)
 	return u
 }
 
@@ -773,16 +864,9 @@ func (u *SysMenuUpsertOne) UpdateMenuType() *SysMenuUpsertOne {
 }
 
 // SetParentID sets the "parent_id" field.
-func (u *SysMenuUpsertOne) SetParentID(v uint) *SysMenuUpsertOne {
+func (u *SysMenuUpsertOne) SetParentID(v uint64) *SysMenuUpsertOne {
 	return u.Update(func(s *SysMenuUpsert) {
 		s.SetParentID(v)
-	})
-}
-
-// AddParentID adds v to the "parent_id" field.
-func (u *SysMenuUpsertOne) AddParentID(v uint) *SysMenuUpsertOne {
-	return u.Update(func(s *SysMenuUpsert) {
-		s.AddParentID(v)
 	})
 }
 
@@ -790,6 +874,13 @@ func (u *SysMenuUpsertOne) AddParentID(v uint) *SysMenuUpsertOne {
 func (u *SysMenuUpsertOne) UpdateParentID() *SysMenuUpsertOne {
 	return u.Update(func(s *SysMenuUpsert) {
 		s.UpdateParentID()
+	})
+}
+
+// ClearParentID clears the value of the "parent_id" field.
+func (u *SysMenuUpsertOne) ClearParentID() *SysMenuUpsertOne {
+	return u.Update(func(s *SysMenuUpsert) {
+		s.ClearParentID()
 	})
 }
 
@@ -1214,16 +1305,9 @@ func (u *SysMenuUpsertBulk) UpdateMenuType() *SysMenuUpsertBulk {
 }
 
 // SetParentID sets the "parent_id" field.
-func (u *SysMenuUpsertBulk) SetParentID(v uint) *SysMenuUpsertBulk {
+func (u *SysMenuUpsertBulk) SetParentID(v uint64) *SysMenuUpsertBulk {
 	return u.Update(func(s *SysMenuUpsert) {
 		s.SetParentID(v)
-	})
-}
-
-// AddParentID adds v to the "parent_id" field.
-func (u *SysMenuUpsertBulk) AddParentID(v uint) *SysMenuUpsertBulk {
-	return u.Update(func(s *SysMenuUpsert) {
-		s.AddParentID(v)
 	})
 }
 
@@ -1231,6 +1315,13 @@ func (u *SysMenuUpsertBulk) AddParentID(v uint) *SysMenuUpsertBulk {
 func (u *SysMenuUpsertBulk) UpdateParentID() *SysMenuUpsertBulk {
 	return u.Update(func(s *SysMenuUpsert) {
 		s.UpdateParentID()
+	})
+}
+
+// ClearParentID clears the value of the "parent_id" field.
+func (u *SysMenuUpsertBulk) ClearParentID() *SysMenuUpsertBulk {
+	return u.Update(func(s *SysMenuUpsert) {
+		s.ClearParentID()
 	})
 }
 

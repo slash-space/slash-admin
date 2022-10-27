@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 // ID filters vertices based on their ID field.
@@ -885,6 +886,34 @@ func DeletedAtIsNil() predicate.SysRole {
 func DeletedAtNotNil() predicate.SysRole {
 	return predicate.SysRole(func(s *sql.Selector) {
 		s.Where(sql.NotNull(s.C(FieldDeletedAt)))
+	})
+}
+
+// HasMenus applies the HasEdge predicate on the "menus" edge.
+func HasMenus() predicate.SysRole {
+	return predicate.SysRole(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(MenusTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, MenusTable, MenusPrimaryKey...),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasMenusWith applies the HasEdge predicate on the "menus" edge with a given conditions (other predicates).
+func HasMenusWith(preds ...predicate.SysMenu) predicate.SysRole {
+	return predicate.SysRole(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(MenusInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, MenusTable, MenusPrimaryKey...),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
 	})
 }
 

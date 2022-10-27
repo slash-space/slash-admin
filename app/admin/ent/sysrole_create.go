@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"slash-admin/app/admin/ent/sysmenu"
 	"slash-admin/app/admin/ent/sysrole"
 	"slash-admin/pkg/types"
 	"time"
@@ -129,6 +130,21 @@ func (src *SysRoleCreate) SetNillableDeletedAt(t *time.Time) *SysRoleCreate {
 func (src *SysRoleCreate) SetID(u uint64) *SysRoleCreate {
 	src.mutation.SetID(u)
 	return src
+}
+
+// AddMenuIDs adds the "menus" edge to the SysMenu entity by IDs.
+func (src *SysRoleCreate) AddMenuIDs(ids ...uint64) *SysRoleCreate {
+	src.mutation.AddMenuIDs(ids...)
+	return src
+}
+
+// AddMenus adds the "menus" edges to the SysMenu entity.
+func (src *SysRoleCreate) AddMenus(s ...*SysMenu) *SysRoleCreate {
+	ids := make([]uint64, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return src.AddMenuIDs(ids...)
 }
 
 // Mutation returns the SysRoleMutation object of the builder.
@@ -354,6 +370,25 @@ func (src *SysRoleCreate) createSpec() (*SysRole, *sqlgraph.CreateSpec) {
 			Column: sysrole.FieldDeletedAt,
 		})
 		_node.DeletedAt = &value
+	}
+	if nodes := src.mutation.MenusIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   sysrole.MenusTable,
+			Columns: sysrole.MenusPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: sysmenu.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }

@@ -5,6 +5,7 @@ import (
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
 	"slash-admin/pkg/types"
@@ -20,7 +21,7 @@ func (SysMenu) Fields() []ent.Field {
 		field.Uint64("id"),
 		field.Uint32("menu_level").Comment("menu level"),
 		field.Uint32("menu_type").Comment("menu type: 0. group 1. menu"),
-		field.Uint("parent_id").Comment("parent menu ID"),
+		field.Uint64("parent_id").Optional().Comment("parent menu ID"),
 		field.String("path").Comment("index path"),
 		field.String("name").Comment("index name"),
 		field.String("redirect").Optional().Default("").Comment("redirect path"),
@@ -41,7 +42,11 @@ func (SysMenu) Fields() []ent.Field {
 }
 
 func (SysMenu) Edges() []ent.Edge {
-	return nil
+	return []ent.Edge{
+		edge.To("roles", SysRole.Type),
+		//https://entgo.io/docs/schema-edges/#o2m-same-type
+		edge.To("children", SysMenu.Type).From("parent").Unique().Field("parent_id"),
+	}
 }
 
 func (SysMenu) Indexes() []ent.Index {

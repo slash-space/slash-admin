@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"slash-admin/app/admin/ent/predicate"
+	"slash-admin/app/admin/ent/sysmenu"
 	"slash-admin/app/admin/ent/sysrole"
 	"slash-admin/pkg/types"
 	"time"
@@ -150,9 +151,45 @@ func (sru *SysRoleUpdate) ClearDeletedAt() *SysRoleUpdate {
 	return sru
 }
 
+// AddMenuIDs adds the "menus" edge to the SysMenu entity by IDs.
+func (sru *SysRoleUpdate) AddMenuIDs(ids ...uint64) *SysRoleUpdate {
+	sru.mutation.AddMenuIDs(ids...)
+	return sru
+}
+
+// AddMenus adds the "menus" edges to the SysMenu entity.
+func (sru *SysRoleUpdate) AddMenus(s ...*SysMenu) *SysRoleUpdate {
+	ids := make([]uint64, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return sru.AddMenuIDs(ids...)
+}
+
 // Mutation returns the SysRoleMutation object of the builder.
 func (sru *SysRoleUpdate) Mutation() *SysRoleMutation {
 	return sru.mutation
+}
+
+// ClearMenus clears all "menus" edges to the SysMenu entity.
+func (sru *SysRoleUpdate) ClearMenus() *SysRoleUpdate {
+	sru.mutation.ClearMenus()
+	return sru
+}
+
+// RemoveMenuIDs removes the "menus" edge to SysMenu entities by IDs.
+func (sru *SysRoleUpdate) RemoveMenuIDs(ids ...uint64) *SysRoleUpdate {
+	sru.mutation.RemoveMenuIDs(ids...)
+	return sru
+}
+
+// RemoveMenus removes "menus" edges to SysMenu entities.
+func (sru *SysRoleUpdate) RemoveMenus(s ...*SysMenu) *SysRoleUpdate {
+	ids := make([]uint64, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return sru.RemoveMenuIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -331,6 +368,60 @@ func (sru *SysRoleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: sysrole.FieldDeletedAt,
 		})
 	}
+	if sru.mutation.MenusCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   sysrole.MenusTable,
+			Columns: sysrole.MenusPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: sysmenu.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := sru.mutation.RemovedMenusIDs(); len(nodes) > 0 && !sru.mutation.MenusCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   sysrole.MenusTable,
+			Columns: sysrole.MenusPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: sysmenu.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := sru.mutation.MenusIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   sysrole.MenusTable,
+			Columns: sysrole.MenusPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: sysmenu.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	_spec.AddModifiers(sru.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, sru.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -472,9 +563,45 @@ func (sruo *SysRoleUpdateOne) ClearDeletedAt() *SysRoleUpdateOne {
 	return sruo
 }
 
+// AddMenuIDs adds the "menus" edge to the SysMenu entity by IDs.
+func (sruo *SysRoleUpdateOne) AddMenuIDs(ids ...uint64) *SysRoleUpdateOne {
+	sruo.mutation.AddMenuIDs(ids...)
+	return sruo
+}
+
+// AddMenus adds the "menus" edges to the SysMenu entity.
+func (sruo *SysRoleUpdateOne) AddMenus(s ...*SysMenu) *SysRoleUpdateOne {
+	ids := make([]uint64, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return sruo.AddMenuIDs(ids...)
+}
+
 // Mutation returns the SysRoleMutation object of the builder.
 func (sruo *SysRoleUpdateOne) Mutation() *SysRoleMutation {
 	return sruo.mutation
+}
+
+// ClearMenus clears all "menus" edges to the SysMenu entity.
+func (sruo *SysRoleUpdateOne) ClearMenus() *SysRoleUpdateOne {
+	sruo.mutation.ClearMenus()
+	return sruo
+}
+
+// RemoveMenuIDs removes the "menus" edge to SysMenu entities by IDs.
+func (sruo *SysRoleUpdateOne) RemoveMenuIDs(ids ...uint64) *SysRoleUpdateOne {
+	sruo.mutation.RemoveMenuIDs(ids...)
+	return sruo
+}
+
+// RemoveMenus removes "menus" edges to SysMenu entities.
+func (sruo *SysRoleUpdateOne) RemoveMenus(s ...*SysMenu) *SysRoleUpdateOne {
+	ids := make([]uint64, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return sruo.RemoveMenuIDs(ids...)
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
@@ -682,6 +809,60 @@ func (sruo *SysRoleUpdateOne) sqlSave(ctx context.Context) (_node *SysRole, err 
 			Type:   field.TypeTime,
 			Column: sysrole.FieldDeletedAt,
 		})
+	}
+	if sruo.mutation.MenusCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   sysrole.MenusTable,
+			Columns: sysrole.MenusPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: sysmenu.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := sruo.mutation.RemovedMenusIDs(); len(nodes) > 0 && !sruo.mutation.MenusCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   sysrole.MenusTable,
+			Columns: sysrole.MenusPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: sysmenu.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := sruo.mutation.MenusIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   sysrole.MenusTable,
+			Columns: sysrole.MenusPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: sysmenu.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_spec.AddModifiers(sruo.modifiers...)
 	_node = &SysRole{config: sruo.config}

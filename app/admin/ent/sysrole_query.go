@@ -4,9 +4,11 @@ package ent
 
 import (
 	"context"
+	"database/sql/driver"
 	"fmt"
 	"math"
 	"slash-admin/app/admin/ent/predicate"
+	"slash-admin/app/admin/ent/sysmenu"
 	"slash-admin/app/admin/ent/sysrole"
 
 	"entgo.io/ent/dialect/sql"
@@ -17,14 +19,16 @@ import (
 // SysRoleQuery is the builder for querying SysRole entities.
 type SysRoleQuery struct {
 	config
-	limit      *int
-	offset     *int
-	unique     *bool
-	order      []OrderFunc
-	fields     []string
-	predicates []predicate.SysRole
-	loadTotal  []func(context.Context, []*SysRole) error
-	modifiers  []func(*sql.Selector)
+	limit          *int
+	offset         *int
+	unique         *bool
+	order          []OrderFunc
+	fields         []string
+	predicates     []predicate.SysRole
+	withMenus      *SysMenuQuery
+	loadTotal      []func(context.Context, []*SysRole) error
+	modifiers      []func(*sql.Selector)
+	withNamedMenus map[string]*SysMenuQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -59,6 +63,28 @@ func (srq *SysRoleQuery) Unique(unique bool) *SysRoleQuery {
 func (srq *SysRoleQuery) Order(o ...OrderFunc) *SysRoleQuery {
 	srq.order = append(srq.order, o...)
 	return srq
+}
+
+// QueryMenus chains the current query on the "menus" edge.
+func (srq *SysRoleQuery) QueryMenus() *SysMenuQuery {
+	query := &SysMenuQuery{config: srq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := srq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := srq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(sysrole.Table, sysrole.FieldID, selector),
+			sqlgraph.To(sysmenu.Table, sysmenu.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, sysrole.MenusTable, sysrole.MenusPrimaryKey...),
+		)
+		fromU = sqlgraph.SetNeighbors(srq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // First returns the first SysRole entity from the query.
@@ -242,11 +268,23 @@ func (srq *SysRoleQuery) Clone() *SysRoleQuery {
 		offset:     srq.offset,
 		order:      append([]OrderFunc{}, srq.order...),
 		predicates: append([]predicate.SysRole{}, srq.predicates...),
+		withMenus:  srq.withMenus.Clone(),
 		// clone intermediate query.
 		sql:    srq.sql.Clone(),
 		path:   srq.path,
 		unique: srq.unique,
 	}
+}
+
+// WithMenus tells the query-builder to eager-load the nodes that are connected to
+// the "menus" edge. The optional arguments are used to configure the query builder of the edge.
+func (srq *SysRoleQuery) WithMenus(opts ...func(*SysMenuQuery)) *SysRoleQuery {
+	query := &SysMenuQuery{config: srq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	srq.withMenus = query
+	return srq
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -315,8 +353,11 @@ func (srq *SysRoleQuery) prepareQuery(ctx context.Context) error {
 
 func (srq *SysRoleQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*SysRole, error) {
 	var (
-		nodes = []*SysRole{}
-		_spec = srq.querySpec()
+		nodes       = []*SysRole{}
+		_spec       = srq.querySpec()
+		loadedTypes = [1]bool{
+			srq.withMenus != nil,
+		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*SysRole).scanValues(nil, columns)
@@ -324,6 +365,7 @@ func (srq *SysRoleQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Sys
 	_spec.Assign = func(columns []string, values []any) error {
 		node := &SysRole{config: srq.config}
 		nodes = append(nodes, node)
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
 	if len(srq.modifiers) > 0 {
@@ -338,12 +380,85 @@ func (srq *SysRoleQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Sys
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+	if query := srq.withMenus; query != nil {
+		if err := srq.loadMenus(ctx, query, nodes,
+			func(n *SysRole) { n.Edges.Menus = []*SysMenu{} },
+			func(n *SysRole, e *SysMenu) { n.Edges.Menus = append(n.Edges.Menus, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range srq.withNamedMenus {
+		if err := srq.loadMenus(ctx, query, nodes,
+			func(n *SysRole) { n.appendNamedMenus(name) },
+			func(n *SysRole, e *SysMenu) { n.appendNamedMenus(name, e) }); err != nil {
+			return nil, err
+		}
+	}
 	for i := range srq.loadTotal {
 		if err := srq.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
+}
+
+func (srq *SysRoleQuery) loadMenus(ctx context.Context, query *SysMenuQuery, nodes []*SysRole, init func(*SysRole), assign func(*SysRole, *SysMenu)) error {
+	edgeIDs := make([]driver.Value, len(nodes))
+	byID := make(map[uint64]*SysRole)
+	nids := make(map[uint64]map[*SysRole]struct{})
+	for i, node := range nodes {
+		edgeIDs[i] = node.ID
+		byID[node.ID] = node
+		if init != nil {
+			init(node)
+		}
+	}
+	query.Where(func(s *sql.Selector) {
+		joinT := sql.Table(sysrole.MenusTable)
+		s.Join(joinT).On(s.C(sysmenu.FieldID), joinT.C(sysrole.MenusPrimaryKey[0]))
+		s.Where(sql.InValues(joinT.C(sysrole.MenusPrimaryKey[1]), edgeIDs...))
+		columns := s.SelectedColumns()
+		s.Select(joinT.C(sysrole.MenusPrimaryKey[1]))
+		s.AppendSelect(columns...)
+		s.SetDistinct(false)
+	})
+	if err := query.prepareQuery(ctx); err != nil {
+		return err
+	}
+	neighbors, err := query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
+		assign := spec.Assign
+		values := spec.ScanValues
+		spec.ScanValues = func(columns []string) ([]any, error) {
+			values, err := values(columns[1:])
+			if err != nil {
+				return nil, err
+			}
+			return append([]any{new(sql.NullInt64)}, values...), nil
+		}
+		spec.Assign = func(columns []string, values []any) error {
+			outValue := uint64(values[0].(*sql.NullInt64).Int64)
+			inValue := uint64(values[1].(*sql.NullInt64).Int64)
+			if nids[inValue] == nil {
+				nids[inValue] = map[*SysRole]struct{}{byID[outValue]: struct{}{}}
+				return assign(columns[1:], values[1:])
+			}
+			nids[inValue][byID[outValue]] = struct{}{}
+			return nil
+		}
+	})
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected "menus" node returned %v`, n.ID)
+		}
+		for kn := range nodes {
+			assign(kn, n)
+		}
+	}
+	return nil
 }
 
 func (srq *SysRoleQuery) sqlCount(ctx context.Context) (int, error) {
@@ -456,6 +571,20 @@ func (srq *SysRoleQuery) sqlQuery(ctx context.Context) *sql.Selector {
 func (srq *SysRoleQuery) Modify(modifiers ...func(s *sql.Selector)) *SysRoleSelect {
 	srq.modifiers = append(srq.modifiers, modifiers...)
 	return srq.Select()
+}
+
+// WithNamedMenus tells the query-builder to eager-load the nodes that are connected to the "menus"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (srq *SysRoleQuery) WithNamedMenus(name string, opts ...func(*SysMenuQuery)) *SysRoleQuery {
+	query := &SysMenuQuery{config: srq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	if srq.withNamedMenus == nil {
+		srq.withNamedMenus = make(map[string]*SysMenuQuery)
+	}
+	srq.withNamedMenus[name] = query
+	return srq
 }
 
 // SysRoleGroupBy is the group-by builder for SysRole entities.

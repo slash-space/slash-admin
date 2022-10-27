@@ -276,7 +276,7 @@ func (sm *SysMenu) Node(ctx context.Context) (node *Node, err error) {
 		ID:     sm.ID,
 		Type:   "SysMenu",
 		Fields: make([]*Field, 13),
-		Edges:  make([]*Edge, 0),
+		Edges:  make([]*Edge, 3),
 	}
 	var buf []byte
 	if buf, err = json.Marshal(sm.MenuLevel); err != nil {
@@ -299,7 +299,7 @@ func (sm *SysMenu) Node(ctx context.Context) (node *Node, err error) {
 		return nil, err
 	}
 	node.Fields[2] = &Field{
-		Type:  "uint",
+		Type:  "uint64",
 		Name:  "parent_id",
 		Value: string(buf),
 	}
@@ -382,6 +382,36 @@ func (sm *SysMenu) Node(ctx context.Context) (node *Node, err error) {
 		Type:  "time.Time",
 		Name:  "deleted_at",
 		Value: string(buf),
+	}
+	node.Edges[0] = &Edge{
+		Type: "SysRole",
+		Name: "roles",
+	}
+	err = sm.QueryRoles().
+		Select(sysrole.FieldID).
+		Scan(ctx, &node.Edges[0].IDs)
+	if err != nil {
+		return nil, err
+	}
+	node.Edges[1] = &Edge{
+		Type: "SysMenu",
+		Name: "parent",
+	}
+	err = sm.QueryParent().
+		Select(sysmenu.FieldID).
+		Scan(ctx, &node.Edges[1].IDs)
+	if err != nil {
+		return nil, err
+	}
+	node.Edges[2] = &Edge{
+		Type: "SysMenu",
+		Name: "children",
+	}
+	err = sm.QueryChildren().
+		Select(sysmenu.FieldID).
+		Scan(ctx, &node.Edges[2].IDs)
+	if err != nil {
+		return nil, err
 	}
 	return node, nil
 }
@@ -565,7 +595,7 @@ func (sr *SysRole) Node(ctx context.Context) (node *Node, err error) {
 		ID:     sr.ID,
 		Type:   "SysRole",
 		Fields: make([]*Field, 9),
-		Edges:  make([]*Edge, 0),
+		Edges:  make([]*Edge, 1),
 	}
 	var buf []byte
 	if buf, err = json.Marshal(sr.Name); err != nil {
@@ -639,6 +669,16 @@ func (sr *SysRole) Node(ctx context.Context) (node *Node, err error) {
 		Type:  "time.Time",
 		Name:  "deleted_at",
 		Value: string(buf),
+	}
+	node.Edges[0] = &Edge{
+		Type: "SysMenu",
+		Name: "menus",
+	}
+	err = sr.QueryMenus().
+		Select(sysmenu.FieldID).
+		Scan(ctx, &node.Edges[0].IDs)
+	if err != nil {
+		return nil, err
 	}
 	return node, nil
 }

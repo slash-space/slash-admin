@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"slash-admin/app/admin/ent/predicate"
 	"slash-admin/app/admin/ent/sysmenu"
+	"slash-admin/app/admin/ent/sysrole"
 	"slash-admin/pkg/types"
 	"time"
 
@@ -57,15 +58,22 @@ func (smu *SysMenuUpdate) AddMenuType(u int32) *SysMenuUpdate {
 }
 
 // SetParentID sets the "parent_id" field.
-func (smu *SysMenuUpdate) SetParentID(u uint) *SysMenuUpdate {
-	smu.mutation.ResetParentID()
+func (smu *SysMenuUpdate) SetParentID(u uint64) *SysMenuUpdate {
 	smu.mutation.SetParentID(u)
 	return smu
 }
 
-// AddParentID adds u to the "parent_id" field.
-func (smu *SysMenuUpdate) AddParentID(u int) *SysMenuUpdate {
-	smu.mutation.AddParentID(u)
+// SetNillableParentID sets the "parent_id" field if the given value is not nil.
+func (smu *SysMenuUpdate) SetNillableParentID(u *uint64) *SysMenuUpdate {
+	if u != nil {
+		smu.SetParentID(*u)
+	}
+	return smu
+}
+
+// ClearParentID clears the value of the "parent_id" field.
+func (smu *SysMenuUpdate) ClearParentID() *SysMenuUpdate {
+	smu.mutation.ClearParentID()
 	return smu
 }
 
@@ -202,9 +210,92 @@ func (smu *SysMenuUpdate) ClearDeletedAt() *SysMenuUpdate {
 	return smu
 }
 
+// AddRoleIDs adds the "roles" edge to the SysRole entity by IDs.
+func (smu *SysMenuUpdate) AddRoleIDs(ids ...uint64) *SysMenuUpdate {
+	smu.mutation.AddRoleIDs(ids...)
+	return smu
+}
+
+// AddRoles adds the "roles" edges to the SysRole entity.
+func (smu *SysMenuUpdate) AddRoles(s ...*SysRole) *SysMenuUpdate {
+	ids := make([]uint64, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return smu.AddRoleIDs(ids...)
+}
+
+// SetParent sets the "parent" edge to the SysMenu entity.
+func (smu *SysMenuUpdate) SetParent(s *SysMenu) *SysMenuUpdate {
+	return smu.SetParentID(s.ID)
+}
+
+// AddChildIDs adds the "children" edge to the SysMenu entity by IDs.
+func (smu *SysMenuUpdate) AddChildIDs(ids ...uint64) *SysMenuUpdate {
+	smu.mutation.AddChildIDs(ids...)
+	return smu
+}
+
+// AddChildren adds the "children" edges to the SysMenu entity.
+func (smu *SysMenuUpdate) AddChildren(s ...*SysMenu) *SysMenuUpdate {
+	ids := make([]uint64, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return smu.AddChildIDs(ids...)
+}
+
 // Mutation returns the SysMenuMutation object of the builder.
 func (smu *SysMenuUpdate) Mutation() *SysMenuMutation {
 	return smu.mutation
+}
+
+// ClearRoles clears all "roles" edges to the SysRole entity.
+func (smu *SysMenuUpdate) ClearRoles() *SysMenuUpdate {
+	smu.mutation.ClearRoles()
+	return smu
+}
+
+// RemoveRoleIDs removes the "roles" edge to SysRole entities by IDs.
+func (smu *SysMenuUpdate) RemoveRoleIDs(ids ...uint64) *SysMenuUpdate {
+	smu.mutation.RemoveRoleIDs(ids...)
+	return smu
+}
+
+// RemoveRoles removes "roles" edges to SysRole entities.
+func (smu *SysMenuUpdate) RemoveRoles(s ...*SysRole) *SysMenuUpdate {
+	ids := make([]uint64, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return smu.RemoveRoleIDs(ids...)
+}
+
+// ClearParent clears the "parent" edge to the SysMenu entity.
+func (smu *SysMenuUpdate) ClearParent() *SysMenuUpdate {
+	smu.mutation.ClearParent()
+	return smu
+}
+
+// ClearChildren clears all "children" edges to the SysMenu entity.
+func (smu *SysMenuUpdate) ClearChildren() *SysMenuUpdate {
+	smu.mutation.ClearChildren()
+	return smu
+}
+
+// RemoveChildIDs removes the "children" edge to SysMenu entities by IDs.
+func (smu *SysMenuUpdate) RemoveChildIDs(ids ...uint64) *SysMenuUpdate {
+	smu.mutation.RemoveChildIDs(ids...)
+	return smu
+}
+
+// RemoveChildren removes "children" edges to SysMenu entities.
+func (smu *SysMenuUpdate) RemoveChildren(s ...*SysMenu) *SysMenuUpdate {
+	ids := make([]uint64, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return smu.RemoveChildIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -322,20 +413,6 @@ func (smu *SysMenuUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: sysmenu.FieldMenuType,
 		})
 	}
-	if value, ok := smu.mutation.ParentID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint,
-			Value:  value,
-			Column: sysmenu.FieldParentID,
-		})
-	}
-	if value, ok := smu.mutation.AddedParentID(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint,
-			Value:  value,
-			Column: sysmenu.FieldParentID,
-		})
-	}
 	if value, ok := smu.mutation.Path(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -431,6 +508,149 @@ func (smu *SysMenuUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: sysmenu.FieldDeletedAt,
 		})
 	}
+	if smu.mutation.RolesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   sysmenu.RolesTable,
+			Columns: sysmenu.RolesPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: sysrole.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := smu.mutation.RemovedRolesIDs(); len(nodes) > 0 && !smu.mutation.RolesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   sysmenu.RolesTable,
+			Columns: sysmenu.RolesPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: sysrole.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := smu.mutation.RolesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   sysmenu.RolesTable,
+			Columns: sysmenu.RolesPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: sysrole.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if smu.mutation.ParentCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   sysmenu.ParentTable,
+			Columns: []string{sysmenu.ParentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: sysmenu.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := smu.mutation.ParentIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   sysmenu.ParentTable,
+			Columns: []string{sysmenu.ParentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: sysmenu.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if smu.mutation.ChildrenCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   sysmenu.ChildrenTable,
+			Columns: []string{sysmenu.ChildrenColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: sysmenu.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := smu.mutation.RemovedChildrenIDs(); len(nodes) > 0 && !smu.mutation.ChildrenCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   sysmenu.ChildrenTable,
+			Columns: []string{sysmenu.ChildrenColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: sysmenu.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := smu.mutation.ChildrenIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   sysmenu.ChildrenTable,
+			Columns: []string{sysmenu.ChildrenColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: sysmenu.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	_spec.AddModifiers(smu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, smu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -479,15 +699,22 @@ func (smuo *SysMenuUpdateOne) AddMenuType(u int32) *SysMenuUpdateOne {
 }
 
 // SetParentID sets the "parent_id" field.
-func (smuo *SysMenuUpdateOne) SetParentID(u uint) *SysMenuUpdateOne {
-	smuo.mutation.ResetParentID()
+func (smuo *SysMenuUpdateOne) SetParentID(u uint64) *SysMenuUpdateOne {
 	smuo.mutation.SetParentID(u)
 	return smuo
 }
 
-// AddParentID adds u to the "parent_id" field.
-func (smuo *SysMenuUpdateOne) AddParentID(u int) *SysMenuUpdateOne {
-	smuo.mutation.AddParentID(u)
+// SetNillableParentID sets the "parent_id" field if the given value is not nil.
+func (smuo *SysMenuUpdateOne) SetNillableParentID(u *uint64) *SysMenuUpdateOne {
+	if u != nil {
+		smuo.SetParentID(*u)
+	}
+	return smuo
+}
+
+// ClearParentID clears the value of the "parent_id" field.
+func (smuo *SysMenuUpdateOne) ClearParentID() *SysMenuUpdateOne {
+	smuo.mutation.ClearParentID()
 	return smuo
 }
 
@@ -624,9 +851,92 @@ func (smuo *SysMenuUpdateOne) ClearDeletedAt() *SysMenuUpdateOne {
 	return smuo
 }
 
+// AddRoleIDs adds the "roles" edge to the SysRole entity by IDs.
+func (smuo *SysMenuUpdateOne) AddRoleIDs(ids ...uint64) *SysMenuUpdateOne {
+	smuo.mutation.AddRoleIDs(ids...)
+	return smuo
+}
+
+// AddRoles adds the "roles" edges to the SysRole entity.
+func (smuo *SysMenuUpdateOne) AddRoles(s ...*SysRole) *SysMenuUpdateOne {
+	ids := make([]uint64, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return smuo.AddRoleIDs(ids...)
+}
+
+// SetParent sets the "parent" edge to the SysMenu entity.
+func (smuo *SysMenuUpdateOne) SetParent(s *SysMenu) *SysMenuUpdateOne {
+	return smuo.SetParentID(s.ID)
+}
+
+// AddChildIDs adds the "children" edge to the SysMenu entity by IDs.
+func (smuo *SysMenuUpdateOne) AddChildIDs(ids ...uint64) *SysMenuUpdateOne {
+	smuo.mutation.AddChildIDs(ids...)
+	return smuo
+}
+
+// AddChildren adds the "children" edges to the SysMenu entity.
+func (smuo *SysMenuUpdateOne) AddChildren(s ...*SysMenu) *SysMenuUpdateOne {
+	ids := make([]uint64, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return smuo.AddChildIDs(ids...)
+}
+
 // Mutation returns the SysMenuMutation object of the builder.
 func (smuo *SysMenuUpdateOne) Mutation() *SysMenuMutation {
 	return smuo.mutation
+}
+
+// ClearRoles clears all "roles" edges to the SysRole entity.
+func (smuo *SysMenuUpdateOne) ClearRoles() *SysMenuUpdateOne {
+	smuo.mutation.ClearRoles()
+	return smuo
+}
+
+// RemoveRoleIDs removes the "roles" edge to SysRole entities by IDs.
+func (smuo *SysMenuUpdateOne) RemoveRoleIDs(ids ...uint64) *SysMenuUpdateOne {
+	smuo.mutation.RemoveRoleIDs(ids...)
+	return smuo
+}
+
+// RemoveRoles removes "roles" edges to SysRole entities.
+func (smuo *SysMenuUpdateOne) RemoveRoles(s ...*SysRole) *SysMenuUpdateOne {
+	ids := make([]uint64, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return smuo.RemoveRoleIDs(ids...)
+}
+
+// ClearParent clears the "parent" edge to the SysMenu entity.
+func (smuo *SysMenuUpdateOne) ClearParent() *SysMenuUpdateOne {
+	smuo.mutation.ClearParent()
+	return smuo
+}
+
+// ClearChildren clears all "children" edges to the SysMenu entity.
+func (smuo *SysMenuUpdateOne) ClearChildren() *SysMenuUpdateOne {
+	smuo.mutation.ClearChildren()
+	return smuo
+}
+
+// RemoveChildIDs removes the "children" edge to SysMenu entities by IDs.
+func (smuo *SysMenuUpdateOne) RemoveChildIDs(ids ...uint64) *SysMenuUpdateOne {
+	smuo.mutation.RemoveChildIDs(ids...)
+	return smuo
+}
+
+// RemoveChildren removes "children" edges to SysMenu entities.
+func (smuo *SysMenuUpdateOne) RemoveChildren(s ...*SysMenu) *SysMenuUpdateOne {
+	ids := make([]uint64, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return smuo.RemoveChildIDs(ids...)
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
@@ -774,20 +1084,6 @@ func (smuo *SysMenuUpdateOne) sqlSave(ctx context.Context) (_node *SysMenu, err 
 			Column: sysmenu.FieldMenuType,
 		})
 	}
-	if value, ok := smuo.mutation.ParentID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint,
-			Value:  value,
-			Column: sysmenu.FieldParentID,
-		})
-	}
-	if value, ok := smuo.mutation.AddedParentID(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint,
-			Value:  value,
-			Column: sysmenu.FieldParentID,
-		})
-	}
 	if value, ok := smuo.mutation.Path(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -882,6 +1178,149 @@ func (smuo *SysMenuUpdateOne) sqlSave(ctx context.Context) (_node *SysMenu, err 
 			Type:   field.TypeTime,
 			Column: sysmenu.FieldDeletedAt,
 		})
+	}
+	if smuo.mutation.RolesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   sysmenu.RolesTable,
+			Columns: sysmenu.RolesPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: sysrole.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := smuo.mutation.RemovedRolesIDs(); len(nodes) > 0 && !smuo.mutation.RolesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   sysmenu.RolesTable,
+			Columns: sysmenu.RolesPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: sysrole.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := smuo.mutation.RolesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   sysmenu.RolesTable,
+			Columns: sysmenu.RolesPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: sysrole.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if smuo.mutation.ParentCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   sysmenu.ParentTable,
+			Columns: []string{sysmenu.ParentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: sysmenu.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := smuo.mutation.ParentIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   sysmenu.ParentTable,
+			Columns: []string{sysmenu.ParentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: sysmenu.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if smuo.mutation.ChildrenCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   sysmenu.ChildrenTable,
+			Columns: []string{sysmenu.ChildrenColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: sysmenu.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := smuo.mutation.RemovedChildrenIDs(); len(nodes) > 0 && !smuo.mutation.ChildrenCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   sysmenu.ChildrenTable,
+			Columns: []string{sysmenu.ChildrenColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: sysmenu.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := smuo.mutation.ChildrenIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   sysmenu.ChildrenTable,
+			Columns: []string{sysmenu.ChildrenColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: sysmenu.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_spec.AddModifiers(smuo.modifiers...)
 	_node = &SysMenu{config: smuo.config}

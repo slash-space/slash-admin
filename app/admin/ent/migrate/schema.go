@@ -81,7 +81,6 @@ var (
 		{Name: "id", Type: field.TypeUint64, Increment: true},
 		{Name: "menu_level", Type: field.TypeUint32},
 		{Name: "menu_type", Type: field.TypeUint32},
-		{Name: "parent_id", Type: field.TypeUint},
 		{Name: "path", Type: field.TypeString},
 		{Name: "name", Type: field.TypeString},
 		{Name: "redirect", Type: field.TypeString, Nullable: true, Default: ""},
@@ -92,17 +91,26 @@ var (
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
+		{Name: "parent_id", Type: field.TypeUint64, Nullable: true},
 	}
 	// SysMenuTable holds the schema information for the "sys_menu" table.
 	SysMenuTable = &schema.Table{
 		Name:       "sys_menu",
 		Columns:    SysMenuColumns,
 		PrimaryKey: []*schema.Column{SysMenuColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "sys_menu_sys_menu_children",
+				Columns:    []*schema.Column{SysMenuColumns[13]},
+				RefColumns: []*schema.Column{SysMenuColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 		Indexes: []*schema.Index{
 			{
 				Name:    "sysmenu_deleted_at",
 				Unique:  false,
-				Columns: []*schema.Column{SysMenuColumns[13]},
+				Columns: []*schema.Column{SysMenuColumns[12]},
 			},
 		},
 	}
@@ -252,6 +260,31 @@ var (
 			},
 		},
 	}
+	// SysMenuRolesColumns holds the columns for the "sys_menu_roles" table.
+	SysMenuRolesColumns = []*schema.Column{
+		{Name: "sys_menu_id", Type: field.TypeUint64},
+		{Name: "sys_role_id", Type: field.TypeUint64},
+	}
+	// SysMenuRolesTable holds the schema information for the "sys_menu_roles" table.
+	SysMenuRolesTable = &schema.Table{
+		Name:       "sys_menu_roles",
+		Columns:    SysMenuRolesColumns,
+		PrimaryKey: []*schema.Column{SysMenuRolesColumns[0], SysMenuRolesColumns[1]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "sys_menu_roles_sys_menu_id",
+				Columns:    []*schema.Column{SysMenuRolesColumns[0]},
+				RefColumns: []*schema.Column{SysMenuColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+			{
+				Symbol:     "sys_menu_roles_sys_role_id",
+				Columns:    []*schema.Column{SysMenuRolesColumns[1]},
+				RefColumns: []*schema.Column{SysRoleColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+		},
+	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		SysAPITable,
@@ -263,6 +296,7 @@ var (
 		SysRoleTable,
 		SysTokenTable,
 		SysUserTable,
+		SysMenuRolesTable,
 	}
 )
 
@@ -276,6 +310,7 @@ func init() {
 	SysDictionaryDetailTable.Annotation = &entsql.Annotation{
 		Table: "sys_dictionary_detail",
 	}
+	SysMenuTable.ForeignKeys[0].RefTable = SysMenuTable
 	SysMenuTable.Annotation = &entsql.Annotation{
 		Table: "sys_menu",
 	}
@@ -294,4 +329,6 @@ func init() {
 	SysUserTable.Annotation = &entsql.Annotation{
 		Table: "sys_user",
 	}
+	SysMenuRolesTable.ForeignKeys[0].RefTable = SysMenuTable
+	SysMenuRolesTable.ForeignKeys[1].RefTable = SysRoleTable
 }
