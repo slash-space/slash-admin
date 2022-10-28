@@ -60,7 +60,7 @@ definitions:
                 x-go-name: Email
             id:
                 description: User's id | 用户Id
-                format: int64
+                format: uint64
                 type: integer
                 x-go-name: ID
             mobile:
@@ -98,8 +98,6 @@ definitions:
                 maxLength: 20
                 type: string
                 x-go-name: Username
-        required:
-            - id
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
     GetUserInfoResp:

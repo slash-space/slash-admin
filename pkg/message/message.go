@@ -72,6 +72,11 @@ const (
 	// ZH_CN: 密码错误
 	WrongPassword string = "sys.user.wrongPassword"
 
+	// UserParamsError
+	// EN: User params error
+	// ZH_CN: 用户参数错误
+	UserParamsError string = "sys.user.userParamsError"
+
 	// GenerateTokenError
 	// EN: Generate token error
 	// ZH_CN: 生成token错误

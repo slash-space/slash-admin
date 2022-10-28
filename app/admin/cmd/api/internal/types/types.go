@@ -321,8 +321,7 @@ type PermCodeResp struct {
 // swagger:model CreateOrUpdateUserReq
 type CreateOrUpdateUserReq struct {
 	// User's id | 用户Id
-	// Required: true
-	ID int64 `json:"id,optional" validate:"omitempty,number"`
+	ID uint64 `json:"id,optional" validate:"omitempty,number"`
 	// User Name | 用户名
 	// Max length: 20
 	Username string `json:"username,optional" validate:"omitempty,alphanum,max=20"`
@@ -348,7 +347,7 @@ type CreateOrUpdateUserReq struct {
 	// The user's status | 用户状态
 	// 0 normal, 1 ban | 0 正常 1 拉黑
 	// Maximum: 2
-	Status uint8 `json:"status,optional" validate:"omitempty,number,max=2"`
+	Status *uint8 `json:"status,optional" validate:"omitempty,number,max=2"`
 }
 
 // Get user list request | 获取用户列表请求参数
