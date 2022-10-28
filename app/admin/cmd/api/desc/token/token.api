@@ -15,7 +15,7 @@ type (
     // swagger:response TokenInfo
     TokenInfo {
         // ID
-        Id uint64 `json:"id"`
+        ID uint64 `json:"id"`
 
         CreateAt int64 `json:"createAt"`
 
@@ -40,7 +40,7 @@ type (
     CreateOrUpdateTokenReq {
         // ID
         // Required: true
-        Id uint64 `json:"id" validate="number"`
+        ID uint64 `json:"id" validate="number"`
 
         // Create date | 创建日期
         // Required: true
@@ -83,7 +83,7 @@ type (
         // Get token list request params | token列表请求参数
         // swagger:model TokenListReq
     TokenListReq {
-        PageInfo
+        PageReq
         // User's UUID | 用户的UUID
         // Required: true
         // Max Length: 36

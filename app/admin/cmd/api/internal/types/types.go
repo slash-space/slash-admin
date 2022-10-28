@@ -116,7 +116,7 @@ type RoleInfo struct {
 }
 
 // The response data of role list | 角色列表数据
-// swagger:response RoleListResp
+// swagger:model RoleListResp
 type RoleListResp struct {
 	// in: body
 	Pagination *Pagination `json:"pagination"`
@@ -157,11 +157,11 @@ type LoginReq struct {
 	// Min length: 6
 	// Max length: 30
 	Password string `json:"password" validate:"max=30,min=6"`
-	// Captcha Id which store in redis | 验证码编号, 存在redis中
+	// Captcha Id | 验证码编号
 	// Required: true
 	// Max length: 20
 	CaptchaId string `json:"captchaId"  validate:"len=20"`
-	// The Captcha which users input | 用户输入的验证码
+	// The Captcha | 验证码
 	// Required: true
 	// Max length: 5
 	Captcha string `json:"captcha" validate:"len=5"`
@@ -232,6 +232,7 @@ type RegisterReq struct {
 	// The Captcha which users input | 用户输入的验证码
 	// Required: true
 	// Max length: 5
+	// Default: 00000
 	Captcha string `json:"captcha" validate:"len=5"`
 	// The user's email address | 用户的邮箱
 	// Required: true
@@ -282,14 +283,14 @@ type UserInfo struct {
 	// The user's layout mode | 用户的布局
 	SideMode string `json:"sideMode"`
 	// The user's status | 用户状态
-	// 1 normal, 2 ban | 1 正常 2 拉黑
+	// 0 正常 1 拉黑
 	Status   uint8 `json:"status"`
 	CreateAt int64 `json:"createAt"`
 	UpdateAt int64 `json:"updateAt"`
 }
 
 // The response data of user's basic information | 用户基本信息返回数据
-// swagger:response GetUserInfoResp
+// swagger:model GetUserInfoResp
 type GetUserInfoResp struct {
 	// user
 	// in: body
@@ -300,14 +301,13 @@ type GetUserInfoResp struct {
 }
 
 // The response data of user list | 用户列表数据
-// swagger:response UserListResp
+// swagger:model UserListResp
 type UserListResp struct {
-	// 分页信息
 	// in: body
 	Pagination *Pagination `json:"pagination"`
 	// The user list data | 用户列表数据
 	// in: body
-	List []*UserInfo `json:"data"`
+	List []*UserInfo `json:"list"`
 }
 
 // The permission code for front end permission control | 权限码： 用于前端权限控制

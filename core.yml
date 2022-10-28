@@ -110,6 +110,15 @@ definitions:
             - status
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    GetUserInfoResp:
+        description: The response data of user's basic information | 用户基本信息返回数据
+        properties:
+            roles:
+                $ref: '#/definitions/RoleMetaInfo'
+            user:
+                $ref: '#/definitions/UserInfo'
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
     GetUserListReq:
         description: Get user list request | 获取用户列表请求参数
         properties:
@@ -187,12 +196,12 @@ definitions:
         description: login request | 登录参数
         properties:
             captcha:
-                description: The Captcha which users input | 用户输入的验证码
+                description: The Captcha | 验证码
                 maxLength: 5
                 type: string
                 x-go-name: Captcha
             captchaId:
-                description: Captcha Id which store in redis | 验证码编号, 存在redis中
+                description: Captcha Id | 验证码编号
                 maxLength: 20
                 type: string
                 x-go-name: CaptchaId
@@ -253,6 +262,7 @@ definitions:
         description: register request | 注册参数
         properties:
             captcha:
+                default: "00000"
                 description: The Captcha which users input | 用户输入的验证码
                 maxLength: 5
                 type: string
@@ -332,6 +342,21 @@ definitions:
             - value
             - defaultRouter
             - orderNo
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    RoleListResp:
+        description: The response data of role list | 角色列表数据
+        properties:
+            data:
+                description: |-
+                    The role list data | 角色列表数据
+                    in: body
+                items:
+                    $ref: '#/definitions/RoleInfo'
+                type: array
+                x-go-name: List
+            pagination:
+                $ref: '#/definitions/Pagination'
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
     RoleMetaInfo:
@@ -464,7 +489,7 @@ definitions:
             status:
                 description: |-
                     The user's status | 用户状态
-                    1 normal, 2 ban | 1 正常 2 拉黑
+                    0 正常 1 拉黑
                 format: uint8
                 type: integer
                 x-go-name: Status
@@ -476,6 +501,21 @@ definitions:
                 description: User Name | 用户名
                 type: string
                 x-go-name: Username
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    UserListResp:
+        description: The response data of user list | 用户列表数据
+        properties:
+            list:
+                description: |-
+                    The user list data | 用户列表数据
+                    in: body
+                items:
+                    $ref: '#/definitions/UserInfo'
+                type: array
+                x-go-name: List
+            pagination:
+                $ref: '#/definitions/Pagination'
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
 host: localhost:9100
@@ -554,7 +594,9 @@ paths:
                     type: object
             responses:
                 "200":
-                    $ref: '#/responses/RoleListResp'
+                    description: RoleListResp
+                    schema:
+                        $ref: '#/definitions/RoleListResp'
             summary: '"Get role list | 获取角色列表"'
             tags:
                 - role
@@ -627,7 +669,9 @@ paths:
             operationId: GetUserInfo
             responses:
                 "200":
-                    $ref: '#/responses/GetUserInfoResp'
+                    description: GetUserInfoResp
+                    schema:
+                        $ref: '#/definitions/GetUserInfoResp'
             summary: '"Get user basic information | 获取用户基本信息"'
             tags:
                 - user
@@ -643,7 +687,9 @@ paths:
                     type: object
             responses:
                 "200":
-                    $ref: '#/responses/UserListResp'
+                    description: UserListResp
+                    schema:
+                        $ref: '#/definitions/UserListResp'
             summary: '"Get user list | 获取用户列表"'
             tags:
                 - user
@@ -744,10 +790,6 @@ responses:
                 type: string
             imgPath:
                 type: string
-    GetUserInfoResp:
-        description: The response data of user's basic information | 用户基本信息返回数据
-        schema:
-            $ref: '#/definitions/RoleMetaInfo'
     LoginResp:
         description: The login response data | 登录返回数据
         headers:
@@ -777,13 +819,6 @@ responses:
             user: {}
         schema:
             $ref: '#/definitions/UserInfo'
-    RoleListResp:
-        description: The response data of role list | 角色列表数据
-        schema:
-            $ref: '#/definitions/Pagination'
-            items:
-                $ref: '#/definitions/RoleInfo'
-            type: array
     SimpleMsgResp:
         description: The SimpleMsgResp | 简单信息Resp
         headers:
@@ -794,13 +829,6 @@ responses:
         description: The response data of user's information | 用户信息返回数据
         schema:
             $ref: '#/definitions/UserInfo'
-    UserListResp:
-        description: The response data of user list | 用户列表数据
-        schema:
-            $ref: '#/definitions/Pagination'
-            items:
-                $ref: '#/definitions/UserInfo'
-            type: array
 schemes:
     - http
     - https
