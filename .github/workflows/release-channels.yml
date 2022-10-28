@@ -41,7 +41,7 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v2
         with:
-          file: app/bff/admin/cmd/api/Dockerfile
+          file: app/admin/cmd/api/Dockerfile
           push: true
           tags: registry.cn-shenzhen.aliyuncs.com/go-slash/slash-admin:stable
 
