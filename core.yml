@@ -62,7 +62,7 @@ definitions:
                 description: User's id | 用户Id
                 format: int64
                 type: integer
-                x-go-name: Id
+                x-go-name: ID
             mobile:
                 description: User's mobile phone number | 用户的手机号码
                 maxLength: 18
@@ -88,9 +88,9 @@ definitions:
             status:
                 description: |-
                     The user's status | 用户状态
-                    1 normal, 2 ban | 1 正常 2 拉黑
+                    0 normal, 1 ban | 0 正常 1 拉黑
                 format: uint8
-                maximum: 20
+                maximum: 2
                 type: integer
                 x-go-name: Status
             username:
@@ -100,14 +100,6 @@ definitions:
                 x-go-name: Username
         required:
             - id
-            - username
-            - nickname
-            - password
-            - mobile
-            - roleId
-            - email
-            - avatar
-            - status
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
     GetUserInfoResp:

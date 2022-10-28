@@ -24,7 +24,9 @@ func NewCreateOrUpdateUserLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 }
 
 func (l *CreateOrUpdateUserLogic) CreateOrUpdateUser(req *types.CreateOrUpdateUserReq) (resp *types.SimpleMsgResp, err error) {
-	// todo: add your logic here and delete this line
+	if req.ID != 0 {
+
+	}
 
 	return
 }

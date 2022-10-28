@@ -2,6 +2,10 @@ package user
 
 import (
 	"context"
+	"fmt"
+	"github.com/zeromicro/go-zero/core/errorx"
+	"net/http"
+	"slash-admin/app/admin/cmd/api/internal/globalkey"
 
 	"slash-admin/app/admin/cmd/api/internal/svc"
 	"slash-admin/app/admin/cmd/api/internal/types"
@@ -24,7 +28,9 @@ func NewGetUserPermCodeLogic(ctx context.Context, svcCtx *svc.ServiceContext) *G
 }
 
 func (l *GetUserPermCodeLogic) GetUserPermCode() (resp *types.PermCodeResp, err error) {
-	// todo: add your logic here and delete this line
-
-	return
+	roleId := l.ctx.Value(globalkey.JWTRoleId)
+	if roleId == nil {
+		return nil, &errorx.ApiError{Code: http.StatusUnauthorized, Msg: "sys.login.requireLogin"}
+	}
+	return &types.PermCodeResp{Data: []string{fmt.Sprintf("%v", roleId)}}, nil
 }

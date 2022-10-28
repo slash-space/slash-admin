@@ -322,41 +322,33 @@ type PermCodeResp struct {
 type CreateOrUpdateUserReq struct {
 	// User's id | 用户Id
 	// Required: true
-	Id int64 `json:"id" validate:"number"`
+	ID int64 `json:"id,optional" validate:"omitempty,number"`
 	// User Name | 用户名
-	// Required: true
 	// Max length: 20
-	Username string `json:"username" validate:"alphanum,max=20"`
+	Username string `json:"username,optional" validate:"omitempty,alphanum,max=20"`
 	// User's nickname | 用户的昵称
-	// Required: true
 	// Max length: 10
-	Nickname string `json:"nickname" validate:"alphanumunicode,max=10"`
+	Nickname string `json:"nickname,optional" validate:"omitempty,alphanumunicode,max=10"`
 	// Password | 密码
-	// Required: true
 	// Max length: 30
 	// Min length: 6
-	Password string `json:"password" validate:"omitempty,max=30,min=6"`
+	Password string `json:"password,optional" validate:"omitempty,max=30,min=6"`
 	// User's mobile phone number | 用户的手机号码
-	// Required: true
 	// Max length: 18
-	Mobile string `json:"mobile" validate:"numeric,max=18"`
+	Mobile string `json:"mobile,optional" validate:"omitempty,numeric,max=18"`
 	// User's role id | 用户的角色Id
-	// Required: true
 	// Maximum: 1000
-	RoleID uint64 `json:"roleId" validate:"number,max=1000"`
+	RoleID uint64 `json:"roleId,optional" validate:"omitempty,number,max=1000"`
 	// The user's email address | 用户的邮箱
-	// Required: true
 	// Max length: 100
-	Email string `json:"email" validate:"email,max=100"`
+	Email string `json:"email,optional" validate:"omitempty,email,max=100"`
 	// The user's avatar path | 用户的头像路径
-	// Required: true
 	// Example: https://localhost/static/1.png
-	Avatar string `json:"avatar"`
+	Avatar string `json:"avatar,optional" validate:"omitempty,url"`
 	// The user's status | 用户状态
-	// 1 normal, 2 ban | 1 正常 2 拉黑
-	// Required: true
-	// Maximum: 20
-	Status uint8 `json:"status" validate:"number,max=20"`
+	// 0 normal, 1 ban | 0 正常 1 拉黑
+	// Maximum: 2
+	Status uint8 `json:"status,optional" validate:"omitempty,number,max=2"`
 }
 
 // Get user list request | 获取用户列表请求参数
