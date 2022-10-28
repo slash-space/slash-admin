@@ -168,10 +168,11 @@ type LoginReq struct {
 }
 
 // The login response data | 登录返回数据
-// swagger:response LoginResp
+// swagger:model LoginResp
 type LoginResp struct {
-	// User's UUID | 用户的UUID
-	UserId string `json:"userId"`
+	// 用户信息
+	//in: body
+	User *UserInfo `json:"user"`
 	// User's role information| 用户的角色信息
 	// in: body
 	Role *RoleMetaInfo `json:"role"`

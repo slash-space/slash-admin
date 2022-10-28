@@ -106,7 +106,7 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err erro
 	l.Infow("log in successfully", logx.Field("UUID", user.UUID))
 
 	return &types.LoginResp{
-		UserId:    user.UUID,
+		User:      l.svcCtx.Converter.ConvertSysUser(user),
 		Role:      roleMeta,
 		Token:     token,
 		ExpiredAt: expiredAt.Unix(),

@@ -37,8 +37,9 @@ type (
 
     // The login response data | 登录返回数据
     LoginResp {
-        // User's UUID | 用户的UUID
-        UserId string `json:"userId"`
+        // 用户信息
+        //in: body
+        User *UserInfo `json:"user"`
 
         // User's role information| 用户的角色信息
         // in: body

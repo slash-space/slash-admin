@@ -207,6 +207,24 @@ definitions:
             - captcha
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    LoginResp:
+        description: The login response data | 登录返回数据
+        properties:
+            expiredAt:
+                description: Expire timestamp | 过期时间戳
+                format: int64
+                type: integer
+                x-go-name: ExpiredAt
+            role:
+                $ref: '#/definitions/RoleMetaInfo'
+            token:
+                description: Token for authorization | 验证身份的token
+                type: string
+                x-go-name: Token
+            user:
+                $ref: '#/definitions/UserInfo'
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
     PageReq:
         description: The page request parameters | 列表请求参数
         properties:
@@ -689,7 +707,9 @@ paths:
                     type: object
             responses:
                 "200":
-                    $ref: '#/responses/LoginResp'
+                    description: LoginResp
+                    schema:
+                        $ref: '#/definitions/LoginResp'
             summary: '"Log in | 登录"'
             tags:
                 - user
@@ -774,21 +794,6 @@ responses:
                 type: string
             imgPath:
                 type: string
-    LoginResp:
-        description: The login response data | 登录返回数据
-        headers:
-            expiredAt:
-                description: Expire timestamp | 过期时间戳
-                format: int64
-                type: integer
-            token:
-                description: Token for authorization | 验证身份的token
-                type: string
-            userId:
-                description: User's UUID | 用户的UUID
-                type: string
-        schema:
-            $ref: '#/definitions/RoleMetaInfo'
     PermCodeResp:
         description: The permission code for front end permission control | 权限码： 用于前端权限控制
         headers:
