@@ -2,6 +2,8 @@ package user
 
 import (
 	"context"
+	"github.com/zeromicro/go-zero/core/errorx"
+	"slash-admin/app/admin/ent"
 
 	"slash-admin/app/admin/cmd/api/internal/svc"
 	"slash-admin/app/admin/cmd/api/internal/types"
@@ -24,7 +26,18 @@ func NewDeleteUserLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Delete
 }
 
 func (l *DeleteUserLogic) DeleteUser(req *types.IDReq) (resp *types.SimpleMsgResp, err error) {
-	// todo: add your logic here and delete this line
+	err = l.svcCtx.EntClient.SysUser.DeleteOneID(req.ID).Exec(l.ctx)
 
-	return
+	if err != nil {
+		if ent.IsNotFound(err) {
+			logx.Errorw("delete user failed, please check the user id", logx.Field("userId", req.ID))
+			return &types.SimpleMsgResp{Msg: errorx.DeleteFailed}, nil
+		}
+		logx.Errorw(errorx.DatabaseError, logx.Field("detail", err.Error()))
+		return nil, errorx.NewApiBadRequestError(errorx.DatabaseError)
+	}
+
+	logx.Infow("delete user successfully", logx.Field("userId", req.ID))
+
+	return &types.SimpleMsgResp{Msg: errorx.DeleteSuccess}, nil
 }
