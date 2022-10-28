@@ -2,6 +2,10 @@ package user
 
 import (
 	"context"
+	"github.com/zeromicro/go-zero/core/errorx"
+	"slash-admin/app/admin/cmd/api/internal/globalkey"
+	"slash-admin/app/admin/ent/systoken"
+	"time"
 
 	"slash-admin/app/admin/cmd/api/internal/svc"
 	"slash-admin/app/admin/cmd/api/internal/types"
@@ -24,7 +28,34 @@ func NewLogoutLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LogoutLogi
 }
 
 func (l *LogoutLogic) Logout() (resp *types.SimpleMsgResp, err error) {
-	// todo: add your logic here and delete this line
+	UUID := l.ctx.Value(globalkey.JWTUserId).(string)
 
-	return
+	_, err = l.svcCtx.EntClient.SysToken.Update().Where(systoken.UUIDEQ(UUID)).SetStatus(0).Save(l.ctx)
+
+	if err != nil {
+		logx.Errorw("logout: set token status to disabled", logx.Field("detail", err.Error()))
+		return nil, errorx.NewApiBadRequestError(errorx.DatabaseError)
+	}
+
+	allTokens, err := l.svcCtx.EntClient.SysToken.Query().
+		Where(systoken.UUIDEQ(UUID)).
+		Where(systoken.StatusEQ(0)).
+		Where(systoken.ExpiredAtGT(time.Now())).
+		All(l.ctx)
+
+	if err != nil {
+		logx.Errorw("logout: get all not expired tokens", logx.Field("detail", err.Error()))
+		return nil, errorx.NewApiBadRequestError(errorx.DatabaseError)
+	}
+
+	for _, v := range allTokens {
+		err := l.svcCtx.Redis.Set(globalkey.GetBlackListToken(v.Token), "1")
+		if err != nil {
+			logx.Errorw("logout: set token to redis", logx.Field("detail", err.Error()))
+			return nil, errorx.NewApiBadRequestError(errorx.RedisError)
+		}
+	}
+
+	return &types.SimpleMsgResp{Msg: errorx.UpdateSuccess}, nil
+
 }

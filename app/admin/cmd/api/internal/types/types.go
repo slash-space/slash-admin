@@ -178,7 +178,7 @@ type LoginResp struct {
 	// Token for authorization | 验证身份的token
 	Token string `json:"token"`
 	// Expire timestamp | 过期时间戳
-	Expire uint64 `json:"expire"`
+	ExpiredAt int64 `json:"expiredAt"`
 }
 
 // The profile response data | 个人信息返回数据

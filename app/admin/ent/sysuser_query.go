@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math"
 	"slash-admin/app/admin/ent/predicate"
+	"slash-admin/app/admin/ent/sysrole"
 	"slash-admin/app/admin/ent/sysuser"
 
 	"entgo.io/ent/dialect/sql"
@@ -23,6 +24,7 @@ type SysUserQuery struct {
 	order      []OrderFunc
 	fields     []string
 	predicates []predicate.SysUser
+	withRole   *SysRoleQuery
 	loadTotal  []func(context.Context, []*SysUser) error
 	modifiers  []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
@@ -59,6 +61,28 @@ func (suq *SysUserQuery) Unique(unique bool) *SysUserQuery {
 func (suq *SysUserQuery) Order(o ...OrderFunc) *SysUserQuery {
 	suq.order = append(suq.order, o...)
 	return suq
+}
+
+// QueryRole chains the current query on the "role" edge.
+func (suq *SysUserQuery) QueryRole() *SysRoleQuery {
+	query := &SysRoleQuery{config: suq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := suq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := suq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(sysuser.Table, sysuser.FieldID, selector),
+			sqlgraph.To(sysrole.Table, sysrole.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, sysuser.RoleTable, sysuser.RoleColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(suq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // First returns the first SysUser entity from the query.
@@ -242,11 +266,23 @@ func (suq *SysUserQuery) Clone() *SysUserQuery {
 		offset:     suq.offset,
 		order:      append([]OrderFunc{}, suq.order...),
 		predicates: append([]predicate.SysUser{}, suq.predicates...),
+		withRole:   suq.withRole.Clone(),
 		// clone intermediate query.
 		sql:    suq.sql.Clone(),
 		path:   suq.path,
 		unique: suq.unique,
 	}
+}
+
+// WithRole tells the query-builder to eager-load the nodes that are connected to
+// the "role" edge. The optional arguments are used to configure the query builder of the edge.
+func (suq *SysUserQuery) WithRole(opts ...func(*SysRoleQuery)) *SysUserQuery {
+	query := &SysRoleQuery{config: suq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	suq.withRole = query
+	return suq
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -315,8 +351,11 @@ func (suq *SysUserQuery) prepareQuery(ctx context.Context) error {
 
 func (suq *SysUserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*SysUser, error) {
 	var (
-		nodes = []*SysUser{}
-		_spec = suq.querySpec()
+		nodes       = []*SysUser{}
+		_spec       = suq.querySpec()
+		loadedTypes = [1]bool{
+			suq.withRole != nil,
+		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*SysUser).scanValues(nil, columns)
@@ -324,6 +363,7 @@ func (suq *SysUserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Sys
 	_spec.Assign = func(columns []string, values []any) error {
 		node := &SysUser{config: suq.config}
 		nodes = append(nodes, node)
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
 	if len(suq.modifiers) > 0 {
@@ -338,12 +378,45 @@ func (suq *SysUserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Sys
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+	if query := suq.withRole; query != nil {
+		if err := suq.loadRole(ctx, query, nodes, nil,
+			func(n *SysUser, e *SysRole) { n.Edges.Role = e }); err != nil {
+			return nil, err
+		}
+	}
 	for i := range suq.loadTotal {
 		if err := suq.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
+}
+
+func (suq *SysUserQuery) loadRole(ctx context.Context, query *SysRoleQuery, nodes []*SysUser, init func(*SysUser), assign func(*SysUser, *SysRole)) error {
+	ids := make([]uint64, 0, len(nodes))
+	nodeids := make(map[uint64][]*SysUser)
+	for i := range nodes {
+		fk := nodes[i].RoleID
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	query.Where(sysrole.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "role_id" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
 }
 
 func (suq *SysUserQuery) sqlCount(ctx context.Context) (int, error) {

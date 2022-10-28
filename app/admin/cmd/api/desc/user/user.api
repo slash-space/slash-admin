@@ -48,7 +48,7 @@ type (
         Token string `json:"token"`
 
         // Expire timestamp | 过期时间戳
-        Expire uint64 `json:"expire"`
+        ExpiredAt int64 `json:"expiredAt"`
     }
 
     // The profile response data | 个人信息返回数据

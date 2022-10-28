@@ -10,6 +10,7 @@ import (
 	"slash-admin/app/admin/ent/predicate"
 	"slash-admin/app/admin/ent/sysmenu"
 	"slash-admin/app/admin/ent/sysrole"
+	"slash-admin/app/admin/ent/sysuser"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -26,9 +27,11 @@ type SysRoleQuery struct {
 	fields         []string
 	predicates     []predicate.SysRole
 	withMenus      *SysMenuQuery
+	withRole       *SysUserQuery
 	loadTotal      []func(context.Context, []*SysRole) error
 	modifiers      []func(*sql.Selector)
 	withNamedMenus map[string]*SysMenuQuery
+	withNamedRole  map[string]*SysUserQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -80,6 +83,28 @@ func (srq *SysRoleQuery) QueryMenus() *SysMenuQuery {
 			sqlgraph.From(sysrole.Table, sysrole.FieldID, selector),
 			sqlgraph.To(sysmenu.Table, sysmenu.FieldID),
 			sqlgraph.Edge(sqlgraph.M2M, true, sysrole.MenusTable, sysrole.MenusPrimaryKey...),
+		)
+		fromU = sqlgraph.SetNeighbors(srq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryRole chains the current query on the "role" edge.
+func (srq *SysRoleQuery) QueryRole() *SysUserQuery {
+	query := &SysUserQuery{config: srq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := srq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := srq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(sysrole.Table, sysrole.FieldID, selector),
+			sqlgraph.To(sysuser.Table, sysuser.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, sysrole.RoleTable, sysrole.RoleColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(srq.driver.Dialect(), step)
 		return fromU, nil
@@ -269,6 +294,7 @@ func (srq *SysRoleQuery) Clone() *SysRoleQuery {
 		order:      append([]OrderFunc{}, srq.order...),
 		predicates: append([]predicate.SysRole{}, srq.predicates...),
 		withMenus:  srq.withMenus.Clone(),
+		withRole:   srq.withRole.Clone(),
 		// clone intermediate query.
 		sql:    srq.sql.Clone(),
 		path:   srq.path,
@@ -284,6 +310,17 @@ func (srq *SysRoleQuery) WithMenus(opts ...func(*SysMenuQuery)) *SysRoleQuery {
 		opt(query)
 	}
 	srq.withMenus = query
+	return srq
+}
+
+// WithRole tells the query-builder to eager-load the nodes that are connected to
+// the "role" edge. The optional arguments are used to configure the query builder of the edge.
+func (srq *SysRoleQuery) WithRole(opts ...func(*SysUserQuery)) *SysRoleQuery {
+	query := &SysUserQuery{config: srq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	srq.withRole = query
 	return srq
 }
 
@@ -355,8 +392,9 @@ func (srq *SysRoleQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Sys
 	var (
 		nodes       = []*SysRole{}
 		_spec       = srq.querySpec()
-		loadedTypes = [1]bool{
+		loadedTypes = [2]bool{
 			srq.withMenus != nil,
+			srq.withRole != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -387,10 +425,24 @@ func (srq *SysRoleQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Sys
 			return nil, err
 		}
 	}
+	if query := srq.withRole; query != nil {
+		if err := srq.loadRole(ctx, query, nodes,
+			func(n *SysRole) { n.Edges.Role = []*SysUser{} },
+			func(n *SysRole, e *SysUser) { n.Edges.Role = append(n.Edges.Role, e) }); err != nil {
+			return nil, err
+		}
+	}
 	for name, query := range srq.withNamedMenus {
 		if err := srq.loadMenus(ctx, query, nodes,
 			func(n *SysRole) { n.appendNamedMenus(name) },
 			func(n *SysRole, e *SysMenu) { n.appendNamedMenus(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range srq.withNamedRole {
+		if err := srq.loadRole(ctx, query, nodes,
+			func(n *SysRole) { n.appendNamedRole(name) },
+			func(n *SysRole, e *SysUser) { n.appendNamedRole(name, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -457,6 +509,33 @@ func (srq *SysRoleQuery) loadMenus(ctx context.Context, query *SysMenuQuery, nod
 		for kn := range nodes {
 			assign(kn, n)
 		}
+	}
+	return nil
+}
+func (srq *SysRoleQuery) loadRole(ctx context.Context, query *SysUserQuery, nodes []*SysRole, init func(*SysRole), assign func(*SysRole, *SysUser)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[uint64]*SysRole)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.Where(predicate.SysUser(func(s *sql.Selector) {
+		s.Where(sql.InValues(sysrole.RoleColumn, fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.RoleID
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "role_id" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
 	}
 	return nil
 }
@@ -584,6 +663,20 @@ func (srq *SysRoleQuery) WithNamedMenus(name string, opts ...func(*SysMenuQuery)
 		srq.withNamedMenus = make(map[string]*SysMenuQuery)
 	}
 	srq.withNamedMenus[name] = query
+	return srq
+}
+
+// WithNamedRole tells the query-builder to eager-load the nodes that are connected to the "role"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (srq *SysRoleQuery) WithNamedRole(name string, opts ...func(*SysUserQuery)) *SysRoleQuery {
+	query := &SysUserQuery{config: srq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	if srq.withNamedRole == nil {
+		srq.withNamedRole = make(map[string]*SysUserQuery)
+	}
+	srq.withNamedRole[name] = query
 	return srq
 }
 

@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"slash-admin/app/admin/ent/sysrole"
 	"slash-admin/app/admin/ent/sysuser"
 	"slash-admin/pkg/types"
 	"time"
@@ -205,6 +206,11 @@ func (suc *SysUserCreate) SetNillableDeletedAt(t *time.Time) *SysUserCreate {
 func (suc *SysUserCreate) SetID(u uint64) *SysUserCreate {
 	suc.mutation.SetID(u)
 	return suc
+}
+
+// SetRole sets the "role" edge to the SysRole entity.
+func (suc *SysUserCreate) SetRole(s *SysRole) *SysUserCreate {
+	return suc.SetRoleID(s.ID)
 }
 
 // Mutation returns the SysUserMutation object of the builder.
@@ -436,14 +442,6 @@ func (suc *SysUserCreate) createSpec() (*SysUser, *sqlgraph.CreateSpec) {
 		})
 		_node.ActiveColor = value
 	}
-	if value, ok := suc.mutation.RoleID(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeUint64,
-			Value:  value,
-			Column: sysuser.FieldRoleID,
-		})
-		_node.RoleID = value
-	}
 	if value, ok := suc.mutation.Mobile(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -491,6 +489,26 @@ func (suc *SysUserCreate) createSpec() (*SysUser, *sqlgraph.CreateSpec) {
 			Column: sysuser.FieldDeletedAt,
 		})
 		_node.DeletedAt = &value
+	}
+	if nodes := suc.mutation.RoleIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   sysuser.RoleTable,
+			Columns: []string{sysuser.RoleColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: sysrole.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.RoleID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }
@@ -673,12 +691,6 @@ func (u *SysUserUpsert) SetRoleID(v uint64) *SysUserUpsert {
 // UpdateRoleID sets the "role_id" field to the value that was provided on create.
 func (u *SysUserUpsert) UpdateRoleID() *SysUserUpsert {
 	u.SetExcluded(sysuser.FieldRoleID)
-	return u
-}
-
-// AddRoleID adds v to the "role_id" field.
-func (u *SysUserUpsert) AddRoleID(v uint64) *SysUserUpsert {
-	u.Add(sysuser.FieldRoleID, v)
 	return u
 }
 
@@ -982,13 +994,6 @@ func (u *SysUserUpsertOne) ClearActiveColor() *SysUserUpsertOne {
 func (u *SysUserUpsertOne) SetRoleID(v uint64) *SysUserUpsertOne {
 	return u.Update(func(s *SysUserUpsert) {
 		s.SetRoleID(v)
-	})
-}
-
-// AddRoleID adds v to the "role_id" field.
-func (u *SysUserUpsertOne) AddRoleID(v uint64) *SysUserUpsertOne {
-	return u.Update(func(s *SysUserUpsert) {
-		s.AddRoleID(v)
 	})
 }
 
@@ -1479,13 +1484,6 @@ func (u *SysUserUpsertBulk) ClearActiveColor() *SysUserUpsertBulk {
 func (u *SysUserUpsertBulk) SetRoleID(v uint64) *SysUserUpsertBulk {
 	return u.Update(func(s *SysUserUpsert) {
 		s.SetRoleID(v)
-	})
-}
-
-// AddRoleID adds v to the "role_id" field.
-func (u *SysUserUpsertBulk) AddRoleID(v uint64) *SysUserUpsertBulk {
-	return u.Update(func(s *SysUserUpsert) {
-		s.AddRoleID(v)
 	})
 }
 

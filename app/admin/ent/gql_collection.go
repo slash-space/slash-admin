@@ -333,6 +333,18 @@ func (sr *SysRoleQuery) collectField(ctx context.Context, op *graphql.OperationC
 			sr.WithNamedMenus(alias, func(wq *SysMenuQuery) {
 				*wq = *query
 			})
+		case "role":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = &SysUserQuery{config: sr.config}
+			)
+			if err := query.collectField(ctx, op, field, path, satisfies...); err != nil {
+				return err
+			}
+			sr.WithNamedRole(alias, func(wq *SysUserQuery) {
+				*wq = *query
+			})
 		}
 	}
 	return nil
@@ -421,6 +433,20 @@ func (su *SysUserQuery) CollectFields(ctx context.Context, satisfies ...string) 
 
 func (su *SysUserQuery) collectField(ctx context.Context, op *graphql.OperationContext, field graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
+	for _, field := range graphql.CollectFields(op, field.Selections, satisfies) {
+		switch field.Name {
+		case "role":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = &SysRoleQuery{config: su.config}
+			)
+			if err := query.collectField(ctx, op, field, path, satisfies...); err != nil {
+				return err
+			}
+			su.withRole = query
+		}
+	}
 	return nil
 }
 

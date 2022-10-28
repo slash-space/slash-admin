@@ -595,7 +595,7 @@ func (sr *SysRole) Node(ctx context.Context) (node *Node, err error) {
 		ID:     sr.ID,
 		Type:   "SysRole",
 		Fields: make([]*Field, 9),
-		Edges:  make([]*Edge, 1),
+		Edges:  make([]*Edge, 2),
 	}
 	var buf []byte
 	if buf, err = json.Marshal(sr.Name); err != nil {
@@ -677,6 +677,16 @@ func (sr *SysRole) Node(ctx context.Context) (node *Node, err error) {
 	err = sr.QueryMenus().
 		Select(sysmenu.FieldID).
 		Scan(ctx, &node.Edges[0].IDs)
+	if err != nil {
+		return nil, err
+	}
+	node.Edges[1] = &Edge{
+		Type: "SysUser",
+		Name: "role",
+	}
+	err = sr.QueryRole().
+		Select(sysuser.FieldID).
+		Scan(ctx, &node.Edges[1].IDs)
 	if err != nil {
 		return nil, err
 	}
@@ -763,7 +773,7 @@ func (su *SysUser) Node(ctx context.Context) (node *Node, err error) {
 		ID:     su.ID,
 		Type:   "SysUser",
 		Fields: make([]*Field, 15),
-		Edges:  make([]*Edge, 0),
+		Edges:  make([]*Edge, 1),
 	}
 	var buf []byte
 	if buf, err = json.Marshal(su.UUID); err != nil {
@@ -885,6 +895,16 @@ func (su *SysUser) Node(ctx context.Context) (node *Node, err error) {
 		Type:  "time.Time",
 		Name:  "deleted_at",
 		Value: string(buf),
+	}
+	node.Edges[0] = &Edge{
+		Type: "SysRole",
+		Name: "role",
+	}
+	err = su.QueryRole().
+		Select(sysrole.FieldID).
+		Scan(ctx, &node.Edges[0].IDs)
+	if err != nil {
+		return nil, err
 	}
 	return node, nil
 }

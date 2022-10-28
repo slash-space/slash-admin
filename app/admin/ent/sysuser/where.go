@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 // ID filters vertices based on their ID field.
@@ -1070,34 +1071,6 @@ func RoleIDNotIn(vs ...uint64) predicate.SysUser {
 	})
 }
 
-// RoleIDGT applies the GT predicate on the "role_id" field.
-func RoleIDGT(v uint64) predicate.SysUser {
-	return predicate.SysUser(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldRoleID), v))
-	})
-}
-
-// RoleIDGTE applies the GTE predicate on the "role_id" field.
-func RoleIDGTE(v uint64) predicate.SysUser {
-	return predicate.SysUser(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldRoleID), v))
-	})
-}
-
-// RoleIDLT applies the LT predicate on the "role_id" field.
-func RoleIDLT(v uint64) predicate.SysUser {
-	return predicate.SysUser(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldRoleID), v))
-	})
-}
-
-// RoleIDLTE applies the LTE predicate on the "role_id" field.
-func RoleIDLTE(v uint64) predicate.SysUser {
-	return predicate.SysUser(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldRoleID), v))
-	})
-}
-
 // RoleIDIsNil applies the IsNil predicate on the "role_id" field.
 func RoleIDIsNil() predicate.SysUser {
 	return predicate.SysUser(func(s *sql.Selector) {
@@ -1619,6 +1592,34 @@ func DeletedAtIsNil() predicate.SysUser {
 func DeletedAtNotNil() predicate.SysUser {
 	return predicate.SysUser(func(s *sql.Selector) {
 		s.Where(sql.NotNull(s.C(FieldDeletedAt)))
+	})
+}
+
+// HasRole applies the HasEdge predicate on the "role" edge.
+func HasRole() predicate.SysUser {
+	return predicate.SysUser(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(RoleTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, RoleTable, RoleColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasRoleWith applies the HasEdge predicate on the "role" edge with a given conditions (other predicates).
+func HasRoleWith(preds ...predicate.SysRole) predicate.SysUser {
+	return predicate.SysUser(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(RoleInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, RoleTable, RoleColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
 	})
 }
 

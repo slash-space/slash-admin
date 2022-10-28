@@ -51,3 +51,23 @@ func (sr *SysRole) Menus(ctx context.Context) (result []*SysMenu, err error) {
 	}
 	return result, err
 }
+
+func (sr *SysRole) Role(ctx context.Context) (result []*SysUser, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = sr.NamedRole(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = sr.Edges.RoleOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = sr.QueryRole().All(ctx)
+	}
+	return result, err
+}
+
+func (su *SysUser) Role(ctx context.Context) (*SysRole, error) {
+	result, err := su.Edges.RoleOrErr()
+	if IsNotLoaded(err) {
+		result, err = su.QueryRole().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}

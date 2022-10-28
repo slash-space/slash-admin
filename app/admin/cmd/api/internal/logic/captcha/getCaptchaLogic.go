@@ -37,7 +37,7 @@ func NewGetCaptchaLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetCap
 }
 
 func (l *GetCaptchaLogic) GetCaptcha() (resp *types.CaptchaInfoResp, err error) {
-	captchaStore, digit := GetCaptchaStore(l.svcCtx.Config, l.svcCtx.RedisClient)
+	captchaStore, digit := GetCaptchaStore(l.svcCtx.Config, l.svcCtx.Redis)
 	gen := base64Captcha.NewCaptcha(digit, captchaStore)
 
 	id, b64s, err := gen.Generate()

@@ -44,13 +44,16 @@ type SysRole struct {
 type SysRoleEdges struct {
 	// Menus holds the value of the menus edge.
 	Menus []*SysMenu `json:"menus,omitempty"`
+	// 用户
+	Role []*SysUser `json:"role,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [2]bool
 	// totalCount holds the count of the edges above.
-	totalCount [1]map[string]int
+	totalCount [2]map[string]int
 
 	namedMenus map[string][]*SysMenu
+	namedRole  map[string][]*SysUser
 }
 
 // MenusOrErr returns the Menus value or an error if the edge
@@ -60,6 +63,15 @@ func (e SysRoleEdges) MenusOrErr() ([]*SysMenu, error) {
 		return e.Menus, nil
 	}
 	return nil, &NotLoadedError{edge: "menus"}
+}
+
+// RoleOrErr returns the Role value or an error if the edge
+// was not loaded in eager-loading.
+func (e SysRoleEdges) RoleOrErr() ([]*SysUser, error) {
+	if e.loadedTypes[1] {
+		return e.Role, nil
+	}
+	return nil, &NotLoadedError{edge: "role"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -161,6 +173,11 @@ func (sr *SysRole) QueryMenus() *SysMenuQuery {
 	return (&SysRoleClient{config: sr.config}).QueryMenus(sr)
 }
 
+// QueryRole queries the "role" edge of the SysRole entity.
+func (sr *SysRole) QueryRole() *SysUserQuery {
+	return (&SysRoleClient{config: sr.config}).QueryRole(sr)
+}
+
 // Update returns a builder for updating this SysRole.
 // Note that you need to call SysRole.Unwrap() before calling this method if this SysRole
 // was returned from a transaction, and the transaction was committed or rolled back.
@@ -237,6 +254,30 @@ func (sr *SysRole) appendNamedMenus(name string, edges ...*SysMenu) {
 		sr.Edges.namedMenus[name] = []*SysMenu{}
 	} else {
 		sr.Edges.namedMenus[name] = append(sr.Edges.namedMenus[name], edges...)
+	}
+}
+
+// NamedRole returns the Role named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (sr *SysRole) NamedRole(name string) ([]*SysUser, error) {
+	if sr.Edges.namedRole == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := sr.Edges.namedRole[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (sr *SysRole) appendNamedRole(name string, edges ...*SysUser) {
+	if sr.Edges.namedRole == nil {
+		sr.Edges.namedRole = make(map[string][]*SysUser)
+	}
+	if len(edges) == 0 {
+		sr.Edges.namedRole[name] = []*SysUser{}
+	} else {
+		sr.Edges.namedRole[name] = append(sr.Edges.namedRole[name], edges...)
 	}
 }
 

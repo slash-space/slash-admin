@@ -29,11 +29,12 @@ func NewRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Register
 }
 
 func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.SimpleMsgResp, err error) {
-	store, _ := captcha.GetCaptchaStore(l.svcCtx.Config, l.svcCtx.RedisClient)
-	ok := store.Verify(req.CaptchaId, req.Captcha, true)
-	if !ok {
+	store, _ := captcha.GetCaptchaStore(l.svcCtx.Config, l.svcCtx.Redis)
+
+	if ok := store.Verify(req.CaptchaId, req.Captcha, true); !ok {
 		return nil, errorx.NewApiBadRequestError(message.WrongCaptcha)
 	}
+
 	save, err := l.svcCtx.EntClient.SysUser.
 		Create().
 		SetUUID(uuid.NewString()).

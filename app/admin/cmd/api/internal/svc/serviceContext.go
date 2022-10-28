@@ -12,11 +12,11 @@ import (
 )
 
 type ServiceContext struct {
-	RedisClient *redis.Redis
-	EntClient   *ent.Client
-	Config      config.Config
-	Authority   rest.Middleware
-	Converter   converter.Converter
+	Redis     *redis.Redis
+	EntClient *ent.Client
+	Config    config.Config
+	Authority rest.Middleware
+	Converter converter.Converter
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -35,10 +35,10 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	}
 
 	return &ServiceContext{
-		RedisClient: redisClient,
-		EntClient:   entClient,
-		Config:      c,
-		Authority:   middleware.NewAuthorityMiddleware(nil, redisClient).Handle,
-		Converter:   &generated.ConverterImpl{},
+		Redis:     redisClient,
+		EntClient: entClient,
+		Config:    c,
+		Authority: middleware.NewAuthorityMiddleware(nil, redisClient).Handle,
+		Converter: &generated.ConverterImpl{},
 	}
 }

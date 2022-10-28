@@ -32,6 +32,8 @@ const (
 	FieldDeletedAt = "deleted_at"
 	// EdgeMenus holds the string denoting the menus edge name in mutations.
 	EdgeMenus = "menus"
+	// EdgeRole holds the string denoting the role edge name in mutations.
+	EdgeRole = "role"
 	// Table holds the table name of the sysrole in the database.
 	Table = "sys_role"
 	// MenusTable is the table that holds the menus relation/edge. The primary key declared below.
@@ -39,6 +41,13 @@ const (
 	// MenusInverseTable is the table name for the SysMenu entity.
 	// It exists in this package in order to avoid circular dependency with the "sysmenu" package.
 	MenusInverseTable = "sys_menu"
+	// RoleTable is the table that holds the role relation/edge.
+	RoleTable = "sys_user"
+	// RoleInverseTable is the table name for the SysUser entity.
+	// It exists in this package in order to avoid circular dependency with the "sysuser" package.
+	RoleInverseTable = "sys_user"
+	// RoleColumn is the table column denoting the role relation/edge.
+	RoleColumn = "role_id"
 )
 
 // Columns holds all SQL columns for sysrole fields.

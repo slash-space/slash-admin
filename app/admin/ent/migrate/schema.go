@@ -256,24 +256,32 @@ var (
 		{Name: "avatar", Type: field.TypeString, Nullable: true, Default: "", SchemaType: map[string]string{"mysql": "varchar(512)"}},
 		{Name: "base_color", Type: field.TypeString, Nullable: true, Default: "#fff"},
 		{Name: "active_color", Type: field.TypeString, Nullable: true, Default: "#1890ff"},
-		{Name: "role_id", Type: field.TypeUint64, Nullable: true, Default: 2},
 		{Name: "mobile", Type: field.TypeString, Nullable: true},
 		{Name: "email", Type: field.TypeString, Nullable: true},
 		{Name: "status", Type: field.TypeUint8, Nullable: true, Default: 0, SchemaType: map[string]string{"mysql": "tinyint unsigned"}},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
+		{Name: "role_id", Type: field.TypeUint64, Nullable: true},
 	}
 	// SysUserTable holds the schema information for the "sys_user" table.
 	SysUserTable = &schema.Table{
 		Name:       "sys_user",
 		Columns:    SysUserColumns,
 		PrimaryKey: []*schema.Column{SysUserColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "sys_user_sys_role_role",
+				Columns:    []*schema.Column{SysUserColumns[15]},
+				RefColumns: []*schema.Column{SysRoleColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 		Indexes: []*schema.Index{
 			{
 				Name:    "sysuser_deleted_at",
 				Unique:  false,
-				Columns: []*schema.Column{SysUserColumns[15]},
+				Columns: []*schema.Column{SysUserColumns[14]},
 			},
 		},
 	}
@@ -347,6 +355,7 @@ func init() {
 	SysTokenTable.Annotation = &entsql.Annotation{
 		Table: "sys_token",
 	}
+	SysUserTable.ForeignKeys[0].RefTable = SysRoleTable
 	SysUserTable.Annotation = &entsql.Annotation{
 		Table: "sys_user",
 	}

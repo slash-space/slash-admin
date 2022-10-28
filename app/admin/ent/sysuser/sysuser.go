@@ -42,8 +42,17 @@ const (
 	FieldUpdatedAt = "updated_at"
 	// FieldDeletedAt holds the string denoting the deleted_at field in the database.
 	FieldDeletedAt = "deleted_at"
+	// EdgeRole holds the string denoting the role edge name in mutations.
+	EdgeRole = "role"
 	// Table holds the table name of the sysuser in the database.
 	Table = "sys_user"
+	// RoleTable is the table that holds the role relation/edge.
+	RoleTable = "sys_user"
+	// RoleInverseTable is the table name for the SysRole entity.
+	// It exists in this package in order to avoid circular dependency with the "sysrole" package.
+	RoleInverseTable = "sys_role"
+	// RoleColumn is the table column denoting the role relation/edge.
+	RoleColumn = "role_id"
 )
 
 // Columns holds all SQL columns for sysuser fields.

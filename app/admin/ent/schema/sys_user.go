@@ -5,6 +5,7 @@ import (
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
 	"slash-admin/pkg/types"
@@ -50,7 +51,13 @@ func (SysUser) Fields() []ent.Field {
 }
 
 func (SysUser) Edges() []ent.Edge {
-	return nil
+	return []ent.Edge{
+		edge.From("role", SysRole.Type).
+			Field("role_id").
+			Ref("role").
+			Unique().
+			Comment("角色"),
+	}
 }
 
 func (SysUser) Indexes() []ent.Index {

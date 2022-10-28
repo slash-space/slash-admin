@@ -967,6 +967,22 @@ func (c *SysRoleClient) QueryMenus(sr *SysRole) *SysMenuQuery {
 	return query
 }
 
+// QueryRole queries the role edge of a SysRole.
+func (c *SysRoleClient) QueryRole(sr *SysRole) *SysUserQuery {
+	query := &SysUserQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := sr.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(sysrole.Table, sysrole.FieldID, id),
+			sqlgraph.To(sysuser.Table, sysuser.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, sysrole.RoleTable, sysrole.RoleColumn),
+		)
+		fromV = sqlgraph.Neighbors(sr.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *SysRoleClient) Hooks() []Hook {
 	return c.hooks.SysRole
@@ -1145,6 +1161,22 @@ func (c *SysUserClient) GetX(ctx context.Context, id uint64) *SysUser {
 		panic(err)
 	}
 	return obj
+}
+
+// QueryRole queries the role edge of a SysUser.
+func (c *SysUserClient) QueryRole(su *SysUser) *SysRoleQuery {
+	query := &SysRoleQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := su.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(sysuser.Table, sysuser.FieldID, id),
+			sqlgraph.To(sysrole.Table, sysrole.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, sysuser.RoleTable, sysuser.RoleColumn),
+		)
+		fromV = sqlgraph.Neighbors(su.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
 }
 
 // Hooks returns the client hooks.

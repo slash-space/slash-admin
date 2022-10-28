@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"slash-admin/app/admin/ent/sysmenu"
 	"slash-admin/app/admin/ent/sysrole"
+	"slash-admin/app/admin/ent/sysuser"
 	"slash-admin/pkg/types"
 	"time"
 
@@ -145,6 +146,21 @@ func (src *SysRoleCreate) AddMenus(s ...*SysMenu) *SysRoleCreate {
 		ids[i] = s[i].ID
 	}
 	return src.AddMenuIDs(ids...)
+}
+
+// AddRoleIDs adds the "role" edge to the SysUser entity by IDs.
+func (src *SysRoleCreate) AddRoleIDs(ids ...uint64) *SysRoleCreate {
+	src.mutation.AddRoleIDs(ids...)
+	return src
+}
+
+// AddRole adds the "role" edges to the SysUser entity.
+func (src *SysRoleCreate) AddRole(s ...*SysUser) *SysRoleCreate {
+	ids := make([]uint64, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return src.AddRoleIDs(ids...)
 }
 
 // Mutation returns the SysRoleMutation object of the builder.
@@ -386,6 +402,25 @@ func (src *SysRoleCreate) createSpec() (*SysRole, *sqlgraph.CreateSpec) {
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeUint64,
 					Column: sysmenu.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := src.mutation.RoleIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   sysrole.RoleTable,
+			Columns: []string{sysrole.RoleColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: sysuser.FieldID,
 				},
 			},
 		}

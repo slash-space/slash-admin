@@ -42,7 +42,7 @@ func NewInitDatabaseLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Init
 
 func (l *InitDatabaseLogic) InitDatabase() (resp *types.SimpleMsgResp, err error) {
 	// add lock to avoid duplicate initialization
-	lock := redis.NewRedisLock(l.svcCtx.RedisClient, globalkey.InitDatabaseLock)
+	lock := redis.NewRedisLock(l.svcCtx.Redis, globalkey.InitDatabaseLock)
 	lock.SetExpire(60)
 
 	if ok, err := lock.Acquire(); !ok || err != nil {
@@ -68,18 +68,18 @@ func (l *InitDatabaseLogic) InitDatabase() (resp *types.SimpleMsgResp, err error
 		return &types.SimpleMsgResp{Msg: errorx.AlreadyInit}, nil
 	}
 
-	if err := l.svcCtx.RedisClient.Set(globalkey.InitDatabaseState, "1"); err != nil {
+	if err := l.svcCtx.Redis.Set(globalkey.InitDatabaseState, "1"); err != nil {
 		logx.Errorw(errorx.RedisError, logx.Field("detail", err.Error()))
 		return nil, errorx.NewApiError(http.StatusInternalServerError, errorx.RedisError)
 	}
 
 	// set default state value
-	l.svcCtx.RedisClient.Setex(globalkey.InitDatabaseErrorMsg, "", 300)
-	l.svcCtx.RedisClient.Set(globalkey.InitDatabaseState, "0")
+	l.svcCtx.Redis.Setex(globalkey.InitDatabaseErrorMsg, "", 300)
+	l.svcCtx.Redis.Set(globalkey.InitDatabaseState, "0")
 
 	if err := l.svcCtx.EntClient.Schema.Create(l.ctx, migrate.WithForeignKeys(false)); err != nil {
 		logx.Errorw(errorx.DatabaseError, logx.Field("detail", err.Error()))
-		l.svcCtx.RedisClient.Setex(globalkey.InitDatabaseErrorMsg, err.Error(), 300)
+		l.svcCtx.Redis.Setex(globalkey.InitDatabaseErrorMsg, err.Error(), 300)
 		return nil, errorx.NewApiError(http.StatusInternalServerError, errorx.DatabaseError)
 	}
 
@@ -87,28 +87,28 @@ func (l *InitDatabaseLogic) InitDatabase() (resp *types.SimpleMsgResp, err error
 
 	if err != nil {
 		logx.Errorw(errorx.DatabaseError, logx.Field("detail", err.Error()))
-		l.svcCtx.RedisClient.Setex(globalkey.InitDatabaseErrorMsg, err.Error(), 300)
+		l.svcCtx.Redis.Setex(globalkey.InitDatabaseErrorMsg, err.Error(), 300)
 		return nil, errorx.NewApiError(http.StatusInternalServerError, errorx.DatabaseError)
 	}
 
 	err = l.insertRoleData()
 	if err != nil {
 		logx.Errorw(errorx.DatabaseError, logx.Field("detail", err.Error()))
-		l.svcCtx.RedisClient.Setex(globalkey.InitDatabaseErrorMsg, err.Error(), 300)
+		l.svcCtx.Redis.Setex(globalkey.InitDatabaseErrorMsg, err.Error(), 300)
 		return nil, errorx.NewApiError(http.StatusInternalServerError, errorx.DatabaseError)
 	}
 
 	err = l.insertMenuData()
 	if err != nil {
 		logx.Errorw(errorx.DatabaseError, logx.Field("detail", err.Error()))
-		l.svcCtx.RedisClient.Setex(globalkey.InitDatabaseErrorMsg, err.Error(), 300)
+		l.svcCtx.Redis.Setex(globalkey.InitDatabaseErrorMsg, err.Error(), 300)
 		return nil, errorx.NewApiError(http.StatusInternalServerError, errorx.DatabaseError)
 	}
 
 	err = l.insertProviderData()
 	if err != nil {
 		logx.Errorw(errorx.DatabaseError, logx.Field("detail", err.Error()))
-		l.svcCtx.RedisClient.Setex(globalkey.InitDatabaseErrorMsg, err.Error(), 300)
+		l.svcCtx.Redis.Setex(globalkey.InitDatabaseErrorMsg, err.Error(), 300)
 		return nil, errorx.NewApiError(http.StatusInternalServerError, errorx.DatabaseError)
 	}
 
@@ -116,21 +116,21 @@ func (l *InitDatabaseLogic) InitDatabase() (resp *types.SimpleMsgResp, err error
 	if err != nil {
 		logx.Errorw(errorx.DatabaseError, logx.Field("detail", err.Error()))
 
-		l.svcCtx.RedisClient.Setex(globalkey.InitDatabaseErrorMsg, err.Error(), 300)
+		l.svcCtx.Redis.Setex(globalkey.InitDatabaseErrorMsg, err.Error(), 300)
 		return nil, errorx.NewApiError(http.StatusInternalServerError, errorx.DatabaseError)
 	}
 
 	err = l.insertApiData()
 	if err != nil {
 		logx.Errorw(errorx.DatabaseError, logx.Field("detail", err.Error()))
-		l.svcCtx.RedisClient.Setex(globalkey.InitDatabaseErrorMsg, err.Error(), 300)
+		l.svcCtx.Redis.Setex(globalkey.InitDatabaseErrorMsg, err.Error(), 300)
 		return nil, errorx.NewApiError(http.StatusInternalServerError, errorx.DatabaseError)
 	}
 
 	err = l.insertCasbinPoliciesData()
 	if err != nil {
 		logx.Errorw(errorx.DatabaseError, logx.Field("detail", err.Error()))
-		l.svcCtx.RedisClient.Setex(globalkey.InitDatabaseErrorMsg, err.Error(), 300)
+		l.svcCtx.Redis.Setex(globalkey.InitDatabaseErrorMsg, err.Error(), 300)
 		return nil, errorx.NewApiError(http.StatusInternalServerError, errorx.DatabaseError)
 	}
 

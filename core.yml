@@ -787,9 +787,9 @@ responses:
     LoginResp:
         description: The login response data | 登录返回数据
         headers:
-            expire:
+            expiredAt:
                 description: Expire timestamp | 过期时间戳
-                format: uint64
+                format: int64
                 type: integer
             token:
                 description: Token for authorization | 验证身份的token

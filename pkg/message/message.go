@@ -72,6 +72,11 @@ const (
 	// ZH_CN: 密码错误
 	WrongPassword string = "sys.user.wrongPassword"
 
+	// GenerateTokenError
+	// EN: Generate token error
+	// ZH_CN: 生成token错误
+	GenerateTokenError string = "sys.user.generateTokenError"
+
 	// ApiAlreadyExists
 	// En: API already exists
 	// ZH_CN: API已存在
