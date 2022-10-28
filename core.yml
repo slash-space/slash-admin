@@ -420,7 +420,7 @@ definitions:
         properties:
             avatar:
                 description: The user's avatar path | 用户的头像路径
-                maxLength: 30
+                maxLength: 512
                 type: string
                 x-go-name: Avatar
             email:

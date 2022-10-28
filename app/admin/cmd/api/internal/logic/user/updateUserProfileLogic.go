@@ -2,6 +2,9 @@ package user
 
 import (
 	"context"
+	"github.com/zeromicro/go-zero/core/errorx"
+	"slash-admin/app/admin/cmd/api/internal/globalkey"
+	"slash-admin/app/admin/ent/sysuser"
 
 	"slash-admin/app/admin/cmd/api/internal/svc"
 	"slash-admin/app/admin/cmd/api/internal/types"
@@ -24,7 +27,30 @@ func NewUpdateUserProfileLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 }
 
 func (l *UpdateUserProfileLogic) UpdateUserProfile(req *types.UpdateProfileReq) (resp *types.SimpleMsgResp, err error) {
-	// todo: add your logic here and delete this line
+	uuid := l.ctx.Value(globalkey.JWTUserId).(string)
 
-	return
+	updateOne := l.svcCtx.EntClient.SysUser.Update().
+		Where(sysuser.UUID(uuid)).
+		SetNillableAvatar(req.Avatar).
+		SetNillableMobile(req.Mobile).
+		SetNillableEmail(req.Email)
+
+	if req.Nickname != nil {
+		updateOne.SetNickname(*req.Nickname)
+	}
+
+	affect, err := updateOne.Save(l.ctx)
+
+	if err != nil {
+		l.Errorf("UpdateUserProfile error: %v", err)
+		return nil, errorx.NewApiBadRequestError(errorx.DatabaseError)
+	}
+
+	if affect == 0 {
+		return nil, errorx.NewApiBadRequestError(errorx.UpdateFailed)
+	}
+
+	return &types.SimpleMsgResp{
+		Msg: errorx.UpdateSuccess,
+	}, nil
 }

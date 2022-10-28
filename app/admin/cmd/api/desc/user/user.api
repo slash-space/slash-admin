@@ -60,19 +60,19 @@ type (
     UpdateProfileReq {
         // user's nickname | 用户的昵称
         // Max length: 10
-        Nickname string `json:"nickname" validate:"alphanumunicode,max=10"`
+        Nickname *string `json:"nickname,optional" validate:"alphanumunicode,max=10"`
 
         // The user's avatar path | 用户的头像路径
-        // Max length: 30
-        Avatar string `json:"avatar"`
+        // Max length: 512
+        Avatar *string `json:"avatar,optional" validate:"max=512"`
 
         // User's mobile phone number | 用户的手机号码
         // Max length: 18
-        Mobile string `json:"mobile" validate:"numeric,max=18"`
+        Mobile *string `json:"mobile,optional" validate:"numeric,max=18"`
 
         // The user's email address | 用户的邮箱
         // Max length: 100
-        Email string `json:"email" validate:"email,max=100"`
+        Email *string `json:"email" validate:"email,max=100"`
     }
 
     // role meta info | 角色meta数据
