@@ -92,4 +92,4 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
-replace github.com/zeromicro/go-zero v1.4.1 => /Users/waltcow/go-slash/go-zero-enhanced
+replace github.com/zeromicro/go-zero v1.4.1 => github.com/go-slash/go-zero-enhanced v1.0.2
