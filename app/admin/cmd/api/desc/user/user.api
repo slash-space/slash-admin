@@ -12,9 +12,8 @@ import "base.api"
 
 type (
     // login request | 登录参数
-    // swagger:model LoginReq
     LoginReq {
-        // User Name | 用户名
+        // UserName | 用户名
         // Required: true
         // Max length: 20
         Username string `json:"username" validate:"alphanum,max=20"`
@@ -37,14 +36,13 @@ type (
     }
 
     // The login response data | 登录返回数据
-    // swagger:response LoginResp
     LoginResp {
         // User's UUID | 用户的UUID
         UserId string `json:"userId"`
 
         // User's role information| 用户的角色信息
         // in: body
-        Role RoleInfoSimple `json:"role"`
+        Role *RoleMetaInfo `json:"role"`
 
         // Token for authorization | 验证身份的token
         Token string `json:"token"`
@@ -54,48 +52,31 @@ type (
     }
 
     // The profile response data | 个人信息返回数据
-    // swagger:response ProfileResp
     ProfileResp {
-        // user's nickname | 用户的昵称
-        Nickname string `json:"nickname"`
-
-        // The user's avatar path | 用户的头像路径
-        Avatar string `json:"avatar"`
-
-        // User's mobile phone number | 用户的手机号码
-        Mobile string `json:"mobile"`
-
-        // The user's email address | 用户的邮箱
-        Email string `json:"email"`
+        User *UserInfo `json:"user"`
     }
 
-    // The profile request data | 个人信息请求参数
-    // swagger:model ProfileReq
-    ProfileReq {
+    // The profile update request data | 个人信息udpate请求参数
+    UpdateProfileReq {
         // user's nickname | 用户的昵称
-        // Required: true
         // Max length: 10
         Nickname string `json:"nickname" validate:"alphanumunicode,max=10"`
 
         // The user's avatar path | 用户的头像路径
-        // Required: true
         // Max length: 30
         Avatar string `json:"avatar"`
 
         // User's mobile phone number | 用户的手机号码
-        // Required: true
         // Max length: 18
         Mobile string `json:"mobile" validate:"numeric,max=18"`
 
         // The user's email address | 用户的邮箱
-        // Required: true
         // Max length: 100
         Email string `json:"email" validate:"email,max=100"`
     }
 
-    // The simple role data | 简单的角色数据
-    // swagger:response RoleInfoSimple
-    RoleInfoSimple {
+    // role meta info | 角色meta数据
+    RoleMetaInfo {
         // Role name | 角色名
         RoleName string `json:"roleName"`
 
@@ -104,7 +85,6 @@ type (
     }
 
     // register request | 注册参数
-    // swagger:model RegisterReq
     RegisterReq {
         // User Name | 用户名
         // Required: true
@@ -134,7 +114,6 @@ type (
     }
 
     // change user's password request | 修改密码请求参数
-    // swagger:model ChangePasswordReq
     ChangePasswordReq {
         // User's old password | 用户旧密码
         // Required: true
@@ -149,8 +128,13 @@ type (
 
 
     // The response data of user's information | 用户信息返回数据
-    // swagger:response UserInfoResp
     UserInfoResp {
+        // in: body
+        User *UserInfo `json:"user"`
+    }
+
+    //  用户信息
+    UserInfo {
         // User's id | 用户Id
         Id int64 `json:"id"`
 
@@ -180,7 +164,7 @@ type (
 
         // The user's status | 用户状态
         // 1 normal, 2 ban | 1 正常 2 拉黑
-        Status int32 `json:"status"`
+        Status uint8 `json:"status"`
 
         CreateAt int64 `json:"createAt"`
 
@@ -188,55 +172,35 @@ type (
     }
 
         // The response data of user's basic information | 用户基本信息返回数据
-        // swagger:response GetUserInfoResp
     GetUserInfoResp {
-        // User's UUID | 用户的UUID
-        UUID string `json:"UUID"`
-
-        // User name | 用户名
-        Username string `json:"username"`
-
-        // user's nickname | 用户的昵称
-        Nickname string `json:"nickname"`
-
-        // The user's avatar path | 用户的头像路径
-        Avatar string `json:"avatar"`
-
-        // User's role information| 用户的角色信息
+        // user
         // in: body
-        Roles GetUserRoleInfo `json:"roles"`
+        User *UserInfo `json:"user"`
+
+        // User's role information| 用户的角色Meta信息
+        // in: body
+        Roles *RoleMetaInfo `json:"roles"`
     }
 
-    // The response data of user's basic role information | 用户角色信息数据
-    // swagger:model GetUserRoleInfo
-    GetUserRoleInfo {
-        // Role name | 角色名
-        RoleName string `json:"roleName"`
-
-        // Role value for permission control | 角色值用于前端页面组件显示权限
-        Value string `json:"value"`
-    }
 
     // The response data of user list | 用户列表数据
-    // swagger:response UserListResp
     UserListResp {
-        // The total number of data | 数据总数
-        Total uint64 `json:"total"`
+        // 分页信息
+        // in: body
+        Pagination *Pagination `json:"pagination"`
 
         // The user list data | 用户列表数据
         // in: body
-        Data []UserInfoResp `json:"data"`
+        List []*UserInfo `json:"data"`
     }
 
     // The permission code for front end permission control | 权限码： 用于前端权限控制
-    // swagger:response PermCodeResp
     PermCodeResp {
         // Permission code data | 权限码数据
         Data []string `json:"data"`
     }
 
     // Create or update user information request | 创建或更新用户信息
-    // swagger:model CreateOrUpdateUserReq
     CreateOrUpdateUserReq {
         // User's id | 用户Id
         // Required: true
@@ -282,11 +246,10 @@ type (
         // 1 normal, 2 ban | 1 正常 2 拉黑
         // Required: true
         // Maximum: 20
-        Status int32 `json:"status" validate:"number,max=20"`
+        Status uint8 `json:"status" validate:"number,max=20"`
     }
 
     // Get user list request | 获取用户列表请求参数
-    // swagger:model GetUserListReq
     GetUserListReq {
         // Page number | 第几页
         // Required: true
@@ -341,7 +304,7 @@ service core {
         description: "注册"
     )
     @handler register
-    post /user/register (RegisterReq) returns (SimpleMsg)
+    post /user/register (RegisterReq) returns (SimpleMsgResp)
 }
 
 @server(
@@ -355,7 +318,7 @@ service core {
         description: "修改用户密码"
     )
     @handler changePassword
-    post /user/change-password (ChangePasswordReq) returns (SimpleMsg)
+    post /user/change-password (ChangePasswordReq) returns (SimpleMsgResp)
 
     @doc(
         summary: "Get user basic information | 获取用户基本信息"
@@ -369,7 +332,7 @@ service core {
         description: "新增或更新用户"
     )
     @handler createOrUpdateUser
-    post /user (CreateOrUpdateUserReq) returns (SimpleMsg)
+    post /user (CreateOrUpdateUserReq) returns (SimpleMsgResp)
 
     @doc (
         summary: "Get user list | 获取用户列表"
@@ -383,7 +346,7 @@ service core {
         description: "删除用户信息"
     )
     @handler deleteUser
-    delete /user (IDReq) returns (SimpleMsg)
+    delete /user (IDReq) returns (SimpleMsgResp)
 
     @doc (
         summary: "Get user's permission code | 获取用户权限码"
@@ -404,12 +367,12 @@ service core {
         description: "更新用户个人信息"
     )
     @handler updateUserProfile
-    post /user/profile (ProfileReq) returns (SimpleMsg)
+    post /user/profile (UpdateProfileReq) returns (SimpleMsgResp)
 
     @doc(
         summary: "Log out | 退出登陆"
         description: "退出登陆"
     )
     @handler logout
-    get /user/logout returns (SimpleMsg)
+    get /user/logout returns (SimpleMsgResp)
 }

@@ -27,6 +27,139 @@ definitions:
                 x-go-name: UpdatedAt
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    ChangePasswordReq:
+        description: change user's password request | 修改密码请求参数
+        properties:
+            newPassword:
+                description: User's new password | 用户新密码
+                maxLength: 30
+                type: string
+                x-go-name: NewPassword
+            oldPassword:
+                description: User's old password | 用户旧密码
+                maxLength: 30
+                type: string
+                x-go-name: OldPassword
+        required:
+            - oldPassword
+            - newPassword
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    CreateOrUpdateUserReq:
+        description: Create or update user information request | 创建或更新用户信息
+        properties:
+            avatar:
+                description: The user's avatar path | 用户的头像路径
+                example: https://localhost/static/1.png
+                type: string
+                x-go-name: Avatar
+            email:
+                description: The user's email address | 用户的邮箱
+                maxLength: 100
+                type: string
+                x-go-name: Email
+            id:
+                description: User's id | 用户Id
+                format: int64
+                type: integer
+                x-go-name: Id
+            mobile:
+                description: User's mobile phone number | 用户的手机号码
+                maxLength: 18
+                type: string
+                x-go-name: Mobile
+            nickname:
+                description: User's nickname | 用户的昵称
+                maxLength: 10
+                type: string
+                x-go-name: Nickname
+            password:
+                description: Password | 密码
+                maxLength: 30
+                minLength: 6
+                type: string
+                x-go-name: Password
+            roleId:
+                description: User's role id | 用户的角色Id
+                format: uint32
+                maximum: 1000
+                type: integer
+                x-go-name: RoleId
+            status:
+                description: |-
+                    The user's status | 用户状态
+                    1 normal, 2 ban | 1 正常 2 拉黑
+                format: uint8
+                maximum: 20
+                type: integer
+                x-go-name: Status
+            username:
+                description: User Name | 用户名
+                maxLength: 20
+                type: string
+                x-go-name: Username
+        required:
+            - id
+            - username
+            - nickname
+            - password
+            - mobile
+            - roleId
+            - email
+            - avatar
+            - status
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    GetUserListReq:
+        description: Get user list request | 获取用户列表请求参数
+        properties:
+            email:
+                description: The user's email address | 用户的邮箱
+                maxLength: 100
+                type: string
+                x-go-name: Email
+            mobile:
+                description: User's mobile phone number | 用户的手机号码
+                maxLength: 18
+                type: string
+                x-go-name: Mobile
+            nickname:
+                description: User's nickname | 用户的昵称
+                maxLength: 10
+                type: string
+                x-go-name: Nickname
+            page:
+                description: Page number | 第几页
+                format: uint64
+                type: integer
+                x-go-name: Page
+            pageSize:
+                description: Page size | 单页数据行数
+                format: uint64
+                maximum: 100000
+                type: integer
+                x-go-name: PageSize
+            roleId:
+                description: User's role ID | 用户的角色Id
+                format: uint64
+                maximum: 1000
+                type: integer
+                x-go-name: RoleId
+            username:
+                description: User Name | 用户名
+                maxLength: 20
+                type: string
+                x-go-name: Username
+        required:
+            - page
+            - pageSize
+            - username
+            - nickname
+            - mobile
+            - email
+            - roleId
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
     IDPathReq:
         description: Basic id request | 基础id参数请求
         properties:
@@ -48,6 +181,37 @@ definitions:
                 x-go-name: ID
         required:
             - id
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    LoginReq:
+        description: login request | 登录参数
+        properties:
+            captcha:
+                description: The Captcha which users input | 用户输入的验证码
+                maxLength: 5
+                type: string
+                x-go-name: Captcha
+            captchaId:
+                description: Captcha Id which store in redis | 验证码编号, 存在redis中
+                maxLength: 20
+                type: string
+                x-go-name: CaptchaId
+            password:
+                description: Password | 密码
+                maxLength: 30
+                minLength: 6
+                type: string
+                x-go-name: Password
+            username:
+                description: UserName | 用户名
+                maxLength: 20
+                type: string
+                x-go-name: Username
+        required:
+            - username
+            - password
+            - captchaId
+            - captcha
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
     PageReq:
@@ -85,6 +249,43 @@ definitions:
                 x-go-name: Total
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    RegisterReq:
+        description: register request | 注册参数
+        properties:
+            captcha:
+                description: The Captcha which users input | 用户输入的验证码
+                maxLength: 5
+                type: string
+                x-go-name: Captcha
+            captchaId:
+                description: Captcha Id which store in redis | 验证码编号, 存在redis中
+                maxLength: 20
+                type: string
+                x-go-name: CaptchaId
+            email:
+                description: The user's email address | 用户的邮箱
+                maxLength: 100
+                type: string
+                x-go-name: Email
+            password:
+                description: Password | 密码
+                maxLength: 30
+                minLength: 6
+                type: string
+                x-go-name: Password
+            username:
+                description: User Name | 用户名
+                maxLength: 20
+                type: string
+                x-go-name: Username
+        required:
+            - username
+            - password
+            - captchaId
+            - captcha
+            - email
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
     RoleInfo:
         description: Create or update role information params | 创建或更新角色信息参数
         properties:
@@ -94,9 +295,9 @@ definitions:
                 type: string
                 x-go-name: DefaultRouter
             id:
+                default: 0
                 description: Role ID | 角色 ID
                 format: uint64
-                maximum: 1000
                 type: integer
                 x-go-name: ID
             name:
@@ -127,11 +328,23 @@ definitions:
                 type: string
                 x-go-name: Value
         required:
-            - id
             - name
             - value
             - defaultRouter
             - orderNo
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    RoleMetaInfo:
+        description: role meta info | 角色meta数据
+        properties:
+            roleName:
+                description: Role name | 角色名
+                type: string
+                x-go-name: RoleName
+            value:
+                description: Role value | 角色值
+                type: string
+                x-go-name: Value
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
     SetBooleanStatusReq:
@@ -183,12 +396,104 @@ definitions:
             - UUID
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    UpdateProfileReq:
+        description: The profile update request data | 个人信息udpate请求参数
+        properties:
+            avatar:
+                description: The user's avatar path | 用户的头像路径
+                maxLength: 30
+                type: string
+                x-go-name: Avatar
+            email:
+                description: The user's email address | 用户的邮箱
+                maxLength: 100
+                type: string
+                x-go-name: Email
+            mobile:
+                description: User's mobile phone number | 用户的手机号码
+                maxLength: 18
+                type: string
+                x-go-name: Mobile
+            nickname:
+                description: user's nickname | 用户的昵称
+                maxLength: 10
+                type: string
+                x-go-name: Nickname
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    UserInfo:
+        description: 用户信息
+        properties:
+            UUID:
+                description: User's UUID | 用户的UUID
+                type: string
+            avatar:
+                description: The user's avatar path | 用户的头像路径
+                type: string
+                x-go-name: Avatar
+            createAt:
+                format: int64
+                type: integer
+                x-go-name: CreateAt
+            email:
+                description: The user's email address | 用户的邮箱
+                type: string
+                x-go-name: Email
+            id:
+                description: User's id | 用户Id
+                format: int64
+                type: integer
+                x-go-name: Id
+            mobile:
+                description: User's mobile phone number | 用户的手机号码
+                type: string
+                x-go-name: Mobile
+            nickname:
+                description: User's nickname | 用户的昵称
+                type: string
+                x-go-name: Nickname
+            roleId:
+                description: User's role id | 用户的角色Id
+                format: uint32
+                type: integer
+                x-go-name: RoleId
+            sideMode:
+                description: The user's layout mode | 用户的布局
+                type: string
+                x-go-name: SideMode
+            status:
+                description: |-
+                    The user's status | 用户状态
+                    1 normal, 2 ban | 1 正常 2 拉黑
+                format: uint8
+                type: integer
+                x-go-name: Status
+            updateAt:
+                format: int64
+                type: integer
+                x-go-name: UpdateAt
+            username:
+                description: User Name | 用户名
+                type: string
+                x-go-name: Username
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
 host: localhost:9100
 info:
     description: 'Description: core service'
     title: System Name
     version: 0.0.1
 paths:
+    /captcha:
+        get:
+            description: '"获取验证码"'
+            operationId: GetCaptcha
+            responses:
+                "200":
+                    $ref: '#/responses/CaptchaInfoResp'
+            summary: '"Get captcha | 获取验证码"'
+            tags:
+                - captcha
     /core/health:
         get:
             description: '"检查系统状态"'
@@ -269,6 +574,156 @@ paths:
             summary: '"Set role status | 设置角色状态"'
             tags:
                 - role
+    /user:
+        delete:
+            description: '"删除用户信息"'
+            operationId: DeleteUser
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/IDReq'
+                    type: object
+            responses:
+                "200":
+                    $ref: '#/responses/SimpleMsgResp'
+            summary: '"Delete user information | 删除用户信息"'
+            tags:
+                - user
+        post:
+            description: '"新增或更新用户"'
+            operationId: CreateOrUpdateUser
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/CreateOrUpdateUserReq'
+                    type: object
+            responses:
+                "200":
+                    $ref: '#/responses/SimpleMsgResp'
+            summary: '"Create or update user''s information | 新增或更新用户"'
+            tags:
+                - user
+    /user/change-password:
+        post:
+            description: '"修改用户密码"'
+            operationId: ChangePassword
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/ChangePasswordReq'
+                    type: object
+            responses:
+                "200":
+                    $ref: '#/responses/SimpleMsgResp'
+            summary: '"Change Password | 修改密码"'
+            tags:
+                - user
+    /user/info:
+        get:
+            description: '"获取用户基本信息"'
+            operationId: GetUserInfo
+            responses:
+                "200":
+                    $ref: '#/responses/GetUserInfoResp'
+            summary: '"Get user basic information | 获取用户基本信息"'
+            tags:
+                - user
+    /user/list:
+        post:
+            description: '"获取用户列表"'
+            operationId: GetUserList
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/GetUserListReq'
+                    type: object
+            responses:
+                "200":
+                    $ref: '#/responses/UserListResp'
+            summary: '"Get user list | 获取用户列表"'
+            tags:
+                - user
+    /user/login:
+        post:
+            description: '"登录"'
+            operationId: Login
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/LoginReq'
+                    type: object
+            responses:
+                "200":
+                    $ref: '#/responses/LoginResp'
+            summary: '"Log in | 登录"'
+            tags:
+                - user
+    /user/logout:
+        get:
+            description: '"退出登陆"'
+            operationId: Logout
+            responses:
+                "200":
+                    $ref: '#/responses/SimpleMsgResp'
+            summary: '"Log out | 退出登陆"'
+            tags:
+                - user
+    /user/perm:
+        get:
+            description: '"获取用户权限码"'
+            operationId: GetUserPermCode
+            responses:
+                "200":
+                    $ref: '#/responses/PermCodeResp'
+            summary: '"Get user''s permission code | 获取用户权限码"'
+            tags:
+                - user
+    /user/profile:
+        get:
+            description: '"获取用户个人信息"'
+            operationId: GetUserProfile
+            responses:
+                "200":
+                    $ref: '#/responses/ProfileResp'
+            summary: '"Get user''s profile | 获取用户个人信息"'
+            tags:
+                - user
+        post:
+            description: '"更新用户个人信息"'
+            operationId: UpdateUserProfile
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/UpdateProfileReq'
+                    type: object
+            responses:
+                "200":
+                    $ref: '#/responses/SimpleMsgResp'
+            summary: '"Update user''s profile | 更新用户个人信息"'
+            tags:
+                - user
+    /user/register:
+        post:
+            description: '"注册"'
+            operationId: Register
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/RegisterReq'
+                    type: object
+            responses:
+                "200":
+                    $ref: '#/responses/SimpleMsgResp'
+            summary: '"Register | 注册"'
+            tags:
+                - user
 produces:
     - application/json
 responses:
@@ -282,6 +737,46 @@ responses:
                 type: string
             msg:
                 type: string
+    CaptchaInfoResp:
+        description: The response data of captcha | 验证码返回数据
+        headers:
+            captchaId:
+                type: string
+            imgPath:
+                type: string
+    GetUserInfoResp:
+        description: The response data of user's basic information | 用户基本信息返回数据
+        schema:
+            $ref: '#/definitions/RoleMetaInfo'
+    LoginResp:
+        description: The login response data | 登录返回数据
+        headers:
+            expire:
+                description: Expire timestamp | 过期时间戳
+                format: uint64
+                type: integer
+            token:
+                description: Token for authorization | 验证身份的token
+                type: string
+            userId:
+                description: User's UUID | 用户的UUID
+                type: string
+        schema:
+            $ref: '#/definitions/RoleMetaInfo'
+    PermCodeResp:
+        description: The permission code for front end permission control | 权限码： 用于前端权限控制
+        headers:
+            data:
+                description: Permission code data | 权限码数据
+                items:
+                    type: string
+                type: array
+    ProfileResp:
+        description: The profile response data | 个人信息返回数据
+        headers:
+            user: {}
+        schema:
+            $ref: '#/definitions/UserInfo'
     RoleListResp:
         description: The response data of role list | 角色列表数据
         schema:
@@ -295,6 +790,17 @@ responses:
             msg:
                 description: Message | 信息
                 type: string
+    UserInfoResp:
+        description: The response data of user's information | 用户信息返回数据
+        schema:
+            $ref: '#/definitions/UserInfo'
+    UserListResp:
+        description: The response data of user list | 用户列表数据
+        schema:
+            $ref: '#/definitions/Pagination'
+            items:
+                $ref: '#/definitions/UserInfo'
+            type: array
 schemes:
     - http
     - https

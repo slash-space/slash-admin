@@ -137,3 +137,256 @@ type SetStatusReq struct {
 	// Maximum: 10
 	Status uint8 `json:"status" validate:"number,max=10"`
 }
+
+// The response data of captcha | 验证码返回数据
+// swagger:response CaptchaInfoResp
+type CaptchaInfoResp struct {
+	CaptchaId string `json:"captchaId"`
+	ImgPath   string `json:"imgPath"`
+}
+
+// login request | 登录参数
+// swagger:model LoginReq
+type LoginReq struct {
+	// UserName | 用户名
+	// Required: true
+	// Max length: 20
+	Username string `json:"username" validate:"alphanum,max=20"`
+	// Password | 密码
+	// Required: true
+	// Min length: 6
+	// Max length: 30
+	Password string `json:"password" validate:"max=30,min=6"`
+	// Captcha Id which store in redis | 验证码编号, 存在redis中
+	// Required: true
+	// Max length: 20
+	CaptchaId string `json:"captchaId"  validate:"len=20"`
+	// The Captcha which users input | 用户输入的验证码
+	// Required: true
+	// Max length: 5
+	Captcha string `json:"captcha" validate:"len=5"`
+}
+
+// The login response data | 登录返回数据
+// swagger:response LoginResp
+type LoginResp struct {
+	// User's UUID | 用户的UUID
+	UserId string `json:"userId"`
+	// User's role information| 用户的角色信息
+	// in: body
+	Role *RoleMetaInfo `json:"role"`
+	// Token for authorization | 验证身份的token
+	Token string `json:"token"`
+	// Expire timestamp | 过期时间戳
+	Expire uint64 `json:"expire"`
+}
+
+// The profile response data | 个人信息返回数据
+// swagger:response ProfileResp
+type ProfileResp struct {
+	User *UserInfo `json:"user"`
+}
+
+// The profile update request data | 个人信息udpate请求参数
+// swagger:model UpdateProfileReq
+type UpdateProfileReq struct {
+	// user's nickname | 用户的昵称
+	// Max length: 10
+	Nickname string `json:"nickname" validate:"alphanumunicode,max=10"`
+	// The user's avatar path | 用户的头像路径
+	// Max length: 30
+	Avatar string `json:"avatar"`
+	// User's mobile phone number | 用户的手机号码
+	// Max length: 18
+	Mobile string `json:"mobile" validate:"numeric,max=18"`
+	// The user's email address | 用户的邮箱
+	// Max length: 100
+	Email string `json:"email" validate:"email,max=100"`
+}
+
+// role meta info | 角色meta数据
+// swagger:model RoleMetaInfo
+type RoleMetaInfo struct {
+	// Role name | 角色名
+	RoleName string `json:"roleName"`
+	// Role value | 角色值
+	Value string `json:"value"`
+}
+
+// register request | 注册参数
+// swagger:model RegisterReq
+type RegisterReq struct {
+	// User Name | 用户名
+	// Required: true
+	// Max length: 20
+	Username string `json:"username" validate:"alphanum,max=20"`
+	// Password | 密码
+	// Required: true
+	// Min length: 6
+	// Max length: 30
+	Password string `json:"password" validate:"max=30,min=6"`
+	// Captcha Id which store in redis | 验证码编号, 存在redis中
+	// Required: true
+	// Max length: 20
+	CaptchaId string `json:"captchaId" validate:"len=20"`
+	// The Captcha which users input | 用户输入的验证码
+	// Required: true
+	// Max length: 5
+	Captcha string `json:"captcha" validate:"len=5"`
+	// The user's email address | 用户的邮箱
+	// Required: true
+	// Max length: 100
+	Email string `json:"email" validate:"email,max=100"`
+}
+
+// change user's password request | 修改密码请求参数
+// swagger:model ChangePasswordReq
+type ChangePasswordReq struct {
+	// User's old password | 用户旧密码
+	// Required: true
+	// Max length: 30
+	OldPassword string `json:"oldPassword" validate:"max=30"`
+	// User's new password | 用户新密码
+	// Required: true
+	// Max length: 30
+	NewPassword string `json:"newPassword" validate:"max=30"`
+}
+
+// The response data of user's information | 用户信息返回数据
+// swagger:response UserInfoResp
+type UserInfoResp struct {
+	// in: body
+	User *UserInfo `json:"user"`
+}
+
+//	用户信息
+//
+// swagger:model UserInfo
+type UserInfo struct {
+	// User's id | 用户Id
+	Id int64 `json:"id"`
+	// User's UUID | 用户的UUID
+	UUID string `json:"UUID"`
+	// User Name | 用户名
+	Username string `json:"username"`
+	// User's nickname | 用户的昵称
+	Nickname string `json:"nickname"`
+	// User's mobile phone number | 用户的手机号码
+	Mobile string `json:"mobile"`
+	// User's role id | 用户的角色Id
+	RoleId uint32 `json:"roleId"`
+	// The user's email address | 用户的邮箱
+	Email string `json:"email"`
+	// The user's avatar path | 用户的头像路径
+	Avatar string `json:"avatar"`
+	// The user's layout mode | 用户的布局
+	SideMode string `json:"sideMode"`
+	// The user's status | 用户状态
+	// 1 normal, 2 ban | 1 正常 2 拉黑
+	Status   uint8 `json:"status"`
+	CreateAt int64 `json:"createAt"`
+	UpdateAt int64 `json:"updateAt"`
+}
+
+// The response data of user's basic information | 用户基本信息返回数据
+// swagger:response GetUserInfoResp
+type GetUserInfoResp struct {
+	// user
+	// in: body
+	User *UserInfo `json:"user"`
+	// User's role information| 用户的角色Meta信息
+	// in: body
+	Roles *RoleMetaInfo `json:"roles"`
+}
+
+// The response data of user list | 用户列表数据
+// swagger:response UserListResp
+type UserListResp struct {
+	// 分页信息
+	// in: body
+	Pagination *Pagination `json:"pagination"`
+	// The user list data | 用户列表数据
+	// in: body
+	List []*UserInfo `json:"data"`
+}
+
+// The permission code for front end permission control | 权限码： 用于前端权限控制
+// swagger:response PermCodeResp
+type PermCodeResp struct {
+	// Permission code data | 权限码数据
+	Data []string `json:"data"`
+}
+
+// Create or update user information request | 创建或更新用户信息
+// swagger:model CreateOrUpdateUserReq
+type CreateOrUpdateUserReq struct {
+	// User's id | 用户Id
+	// Required: true
+	Id int64 `json:"id" validate:"number"`
+	// User Name | 用户名
+	// Required: true
+	// Max length: 20
+	Username string `json:"username" validate:"alphanum,max=20"`
+	// User's nickname | 用户的昵称
+	// Required: true
+	// Max length: 10
+	Nickname string `json:"nickname" validate:"alphanumunicode,max=10"`
+	// Password | 密码
+	// Required: true
+	// Max length: 30
+	// Min length: 6
+	Password string `json:"password" validate:"omitempty,max=30,min=6"`
+	// User's mobile phone number | 用户的手机号码
+	// Required: true
+	// Max length: 18
+	Mobile string `json:"mobile" validate:"numeric,max=18"`
+	// User's role id | 用户的角色Id
+	// Required: true
+	// Maximum: 1000
+	RoleId uint32 `json:"roleId" validate:"number,max=1000"`
+	// The user's email address | 用户的邮箱
+	// Required: true
+	// Max length: 100
+	Email string `json:"email" validate:"email,max=100"`
+	// The user's avatar path | 用户的头像路径
+	// Required: true
+	// Example: https://localhost/static/1.png
+	Avatar string `json:"avatar"`
+	// The user's status | 用户状态
+	// 1 normal, 2 ban | 1 正常 2 拉黑
+	// Required: true
+	// Maximum: 20
+	Status uint8 `json:"status" validate:"number,max=20"`
+}
+
+// Get user list request | 获取用户列表请求参数
+// swagger:model GetUserListReq
+type GetUserListReq struct {
+	// Page number | 第几页
+	// Required: true
+	Page uint64 `json:"page" validate:"number"`
+	// Page size | 单页数据行数
+	// Required: true
+	// Maximum: 100000
+	PageSize uint64 `json:"pageSize" validate:"number,max=100000"`
+	// User Name | 用户名
+	// Required: true
+	// Max length: 20
+	Username string `json:"username" validate:"omitempty,alphanum,max=20"`
+	// User's nickname | 用户的昵称
+	// Required: true
+	// Max length: 10
+	Nickname string `json:"nickname" validate:"omitempty,alphanumunicode,max=10"`
+	// User's mobile phone number | 用户的手机号码
+	// Required: true
+	// Max length: 18
+	Mobile string `json:"mobile" validate:"omitempty,numeric,max=18"`
+	// The user's email address | 用户的邮箱
+	// Required: true
+	// Max length: 100
+	Email string `json:"email" validate:"omitempty,email,max=100"`
+	// User's role ID | 用户的角色Id
+	// Required: true
+	// Maximum: 1000
+	RoleId uint64 `json:"roleId" validate:"omitempty,number,max=1000"`
+}

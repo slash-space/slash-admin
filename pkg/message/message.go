@@ -13,6 +13,11 @@ const (
 	// ZH_CN: 用户不存在
 	UserNotExists string = "sys.login.userNotExist"
 
+	// CaptchaCreateFail
+	// EN: Failed to create captcha
+	// ZH_CN: 生成验证码失败
+	CaptchaCreateFail string = "sys.captcha.createFail"
+
 	// WrongCaptcha
 	// EN: Wrong captcha
 	// ZH_CN: 验证码错误

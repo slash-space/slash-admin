@@ -18,4 +18,7 @@ type Config struct {
 
 	// database config
 	Database slconfig.DatabaseConf
+
+	// captcha config
+	Captcha slconfig.CaptchaConf
 }

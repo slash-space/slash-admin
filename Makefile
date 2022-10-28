@@ -15,6 +15,9 @@ init:
 
 goctl-admin-api:
 	goctls api go --swagger --api ./app/admin/cmd/api/desc/admin.api --dir ./app/admin/cmd/api -style=goZero
+	@echo "generate goctl-admin-api success \n"
+	swagger generate spec --output=./core.yml --scan-models
+	@echo "generate swagger docs success \n"
 
 scan-admin-swagger:
 	swagger generate spec --output=./core.yml --scan-models
