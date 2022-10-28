@@ -2,7 +2,6 @@ package role
 
 import (
 	"context"
-	"fmt"
 	"github.com/zeromicro/go-zero/core/errorx"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -81,9 +80,9 @@ func (l *CreateOrUpdateRoleLogic) UpdateRoleInfoInRedis() error {
 		return errorx.NewApiError(http.StatusInternalServerError, errorx.DatabaseError)
 	}
 	for _, v := range roleData {
-		err := l.svcCtx.Redis.Hset(globalkey.RoleList, fmt.Sprintf("%d", v.ID), v.Name)
-		err = l.svcCtx.Redis.Hset(globalkey.RoleList, fmt.Sprintf("%d_value", v.ID), v.Value)
-		err = l.svcCtx.Redis.Hset(globalkey.RoleList, fmt.Sprintf("%d_status", v.ID), strconv.Itoa(int(v.Status)))
+		err := l.svcCtx.Redis.Hset(globalkey.RoleList, globalkey.GetRoleListID(v.ID), v.Name)
+		err = l.svcCtx.Redis.Hset(globalkey.RoleList, globalkey.GetRoleListValue(v.ID), v.Value)
+		err = l.svcCtx.Redis.Hset(globalkey.RoleList, globalkey.GetRoleListStatus(v.ID), strconv.Itoa(int(v.Status)))
 		if err != nil {
 			return status.Error(codes.Internal, errorx.RedisError)
 		}
