@@ -81,10 +81,10 @@ definitions:
                 x-go-name: Password
             roleId:
                 description: User's role id | 用户的角色Id
-                format: uint32
+                format: uint64
                 maximum: 1000
                 type: integer
-                x-go-name: RoleId
+                x-go-name: RoleID
             status:
                 description: |-
                     The user's status | 用户状态
@@ -137,15 +137,17 @@ definitions:
                 maxLength: 10
                 type: string
                 x-go-name: Nickname
-            page:
+            pageNo:
                 description: Page number | 第几页
-                format: uint64
+                format: int64
+                minimum: 1
                 type: integer
-                x-go-name: Page
+                x-go-name: PageNo
             pageSize:
+                default: 10
                 description: Page size | 单页数据行数
-                format: uint64
-                maximum: 100000
+                format: int64
+                maximum: 100
                 type: integer
                 x-go-name: PageSize
             roleId:
@@ -159,14 +161,6 @@ definitions:
                 maxLength: 20
                 type: string
                 x-go-name: Username
-        required:
-            - page
-            - pageSize
-            - username
-            - nickname
-            - mobile
-            - email
-            - roleId
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
     IDPathReq:
@@ -459,16 +453,16 @@ definitions:
             createAt:
                 format: int64
                 type: integer
-                x-go-name: CreateAt
+                x-go-name: CreatedAt
             email:
                 description: The user's email address | 用户的邮箱
                 type: string
                 x-go-name: Email
             id:
                 description: User's id | 用户Id
-                format: int64
+                format: uint64
                 type: integer
-                x-go-name: Id
+                x-go-name: ID
             mobile:
                 description: User's mobile phone number | 用户的手机号码
                 type: string
@@ -479,9 +473,9 @@ definitions:
                 x-go-name: Nickname
             roleId:
                 description: User's role id | 用户的角色Id
-                format: uint32
+                format: uint64
                 type: integer
-                x-go-name: RoleId
+                x-go-name: RoleID
             sideMode:
                 description: The user's layout mode | 用户的布局
                 type: string
@@ -496,7 +490,7 @@ definitions:
             updateAt:
                 format: int64
                 type: integer
-                x-go-name: UpdateAt
+                x-go-name: UpdatedAt
             username:
                 description: User Name | 用户名
                 type: string

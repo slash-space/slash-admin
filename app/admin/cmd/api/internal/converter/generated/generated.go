@@ -50,6 +50,21 @@ func (c *ConverterImpl) ConvertSysRoleToRoleInfoList(source []*ent.SysRole) []*t
 	}
 	return pTypesRoleInfoList
 }
+func (c *ConverterImpl) ConvertSysUser(source *ent.SysUser) *types.UserInfo {
+	var pTypesUserInfo *types.UserInfo
+	if source != nil {
+		typesUserInfo := c.entSysUserToTypesUserInfo(*source)
+		pTypesUserInfo = &typesUserInfo
+	}
+	return pTypesUserInfo
+}
+func (c *ConverterImpl) ConvertSysUserList(source []*ent.SysUser) []*types.UserInfo {
+	pTypesUserInfoList := make([]*types.UserInfo, len(source))
+	for i := 0; i < len(source); i++ {
+		pTypesUserInfoList[i] = c.ConvertSysUser(source[i])
+	}
+	return pTypesUserInfoList
+}
 func (c *ConverterImpl) entPageDetailsToTypesPagination(source ent.PageDetails) types.Pagination {
 	var typesPagination types.Pagination
 	typesPagination.Page = source.Page
@@ -67,6 +82,22 @@ func (c *ConverterImpl) entSysRoleToTypesRoleInfo(source ent.SysRole) types.Role
 	typesRoleInfo.Remark = source.Remark
 	typesRoleInfo.OrderNo = source.OrderNo
 	return typesRoleInfo
+}
+func (c *ConverterImpl) entSysUserToTypesUserInfo(source ent.SysUser) types.UserInfo {
+	var typesUserInfo types.UserInfo
+	typesUserInfo.ID = source.ID
+	typesUserInfo.UUID = source.UUID
+	typesUserInfo.Username = source.Username
+	typesUserInfo.Nickname = source.Nickname
+	typesUserInfo.Mobile = source.Mobile
+	typesUserInfo.RoleID = source.RoleID
+	typesUserInfo.Email = source.Email
+	typesUserInfo.Avatar = source.Avatar
+	typesUserInfo.SideMode = source.SideMode
+	typesUserInfo.Status = converter.StatusToUint8(source.Status)
+	typesUserInfo.CreatedAt = converter.TimeToUnixMilli(source.CreatedAt)
+	typesUserInfo.UpdatedAt = converter.TimeToUnixMilli(source.UpdatedAt)
+	return typesUserInfo
 }
 func (c *ConverterImpl) typesRoleInfoToEntCreateSysRoleInput(source types.RoleInfo) ent.CreateSysRoleInput {
 	var entCreateSysRoleInput ent.CreateSysRoleInput

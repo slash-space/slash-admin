@@ -2,6 +2,10 @@ package user
 
 import (
 	"context"
+	"github.com/zeromicro/go-zero/core/errorx"
+	"net/http"
+	"slash-admin/app/admin/ent/predicate"
+	"slash-admin/app/admin/ent/sysuser"
 
 	"slash-admin/app/admin/cmd/api/internal/svc"
 	"slash-admin/app/admin/cmd/api/internal/types"
@@ -24,7 +28,32 @@ func NewGetUserListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetUs
 }
 
 func (l *GetUserListLogic) GetUserList(req *types.GetUserListReq) (resp *types.UserListResp, err error) {
-	// todo: add your logic here and delete this line
+	var predicates []predicate.SysUser
+	if req.Username != "" {
+		predicates = append(predicates, sysuser.UsernameContains(req.Username))
+	}
+	if req.Nickname != "" {
+		predicates = append(predicates, sysuser.NicknameContains(req.Nickname))
+	}
+	if req.Email != "" {
+		predicates = append(predicates, sysuser.EmailContains(req.Email))
+	}
+	if req.Mobile != "" {
+		predicates = append(predicates, sysuser.MobileContains(req.Mobile))
+	}
+	if req.RoleId != 0 {
+		predicates = append(predicates, sysuser.RoleIDEQ(req.RoleId))
+	}
 
-	return
+	pageResult, err := l.svcCtx.EntClient.SysUser.Query().Where(predicates...).Page(l.ctx, req.PageNo, req.PageSize)
+
+	if err != nil {
+		logx.Errorw(errorx.DatabaseError, logx.Field("detail", err.Error()))
+		return nil, errorx.NewApiError(http.StatusInternalServerError, errorx.DatabaseError)
+	}
+
+	return &types.UserListResp{
+		Pagination: l.svcCtx.Converter.ConvertPagination(pageResult.PageDetails),
+		List:       l.svcCtx.Converter.ConvertSysUserList(pageResult.List),
+	}, nil
 }

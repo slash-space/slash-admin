@@ -265,7 +265,7 @@ type UserInfoResp struct {
 // swagger:model UserInfo
 type UserInfo struct {
 	// User's id | 用户Id
-	Id int64 `json:"id"`
+	ID uint64 `json:"id"`
 	// User's UUID | 用户的UUID
 	UUID string `json:"UUID"`
 	// User Name | 用户名
@@ -275,7 +275,7 @@ type UserInfo struct {
 	// User's mobile phone number | 用户的手机号码
 	Mobile string `json:"mobile"`
 	// User's role id | 用户的角色Id
-	RoleId uint32 `json:"roleId"`
+	RoleID uint64 `json:"roleId"`
 	// The user's email address | 用户的邮箱
 	Email string `json:"email"`
 	// The user's avatar path | 用户的头像路径
@@ -284,9 +284,9 @@ type UserInfo struct {
 	SideMode string `json:"sideMode"`
 	// The user's status | 用户状态
 	// 0 正常 1 拉黑
-	Status   uint8 `json:"status"`
-	CreateAt int64 `json:"createAt"`
-	UpdateAt int64 `json:"updateAt"`
+	Status    uint8 `json:"status"`
+	CreatedAt int64 `json:"createAt"`
+	UpdatedAt int64 `json:"updateAt"`
 }
 
 // The response data of user's basic information | 用户基本信息返回数据
@@ -343,7 +343,7 @@ type CreateOrUpdateUserReq struct {
 	// User's role id | 用户的角色Id
 	// Required: true
 	// Maximum: 1000
-	RoleId uint32 `json:"roleId" validate:"number,max=1000"`
+	RoleID uint64 `json:"roleId" validate:"number,max=1000"`
 	// The user's email address | 用户的邮箱
 	// Required: true
 	// Max length: 100
@@ -362,31 +362,20 @@ type CreateOrUpdateUserReq struct {
 // Get user list request | 获取用户列表请求参数
 // swagger:model GetUserListReq
 type GetUserListReq struct {
-	// Page number | 第几页
-	// Required: true
-	Page uint64 `json:"page" validate:"number"`
-	// Page size | 单页数据行数
-	// Required: true
-	// Maximum: 100000
-	PageSize uint64 `json:"pageSize" validate:"number,max=100000"`
+	PageReq
 	// User Name | 用户名
-	// Required: true
 	// Max length: 20
-	Username string `json:"username" validate:"omitempty,alphanum,max=20"`
+	Username string `json:"username,optional" validate:"omitempty,alphanum,max=20"`
 	// User's nickname | 用户的昵称
-	// Required: true
 	// Max length: 10
-	Nickname string `json:"nickname" validate:"omitempty,alphanumunicode,max=10"`
+	Nickname string `json:"nickname,optional" validate:"omitempty,alphanumunicode,max=10"`
 	// User's mobile phone number | 用户的手机号码
-	// Required: true
 	// Max length: 18
-	Mobile string `json:"mobile" validate:"omitempty,numeric,max=18"`
+	Mobile string `json:"mobile,optional" validate:"omitempty,numeric,max=18"`
 	// The user's email address | 用户的邮箱
-	// Required: true
 	// Max length: 100
-	Email string `json:"email" validate:"omitempty,email,max=100"`
+	Email string `json:"email,optional" validate:"omitempty,email,max=100"`
 	// User's role ID | 用户的角色Id
-	// Required: true
 	// Maximum: 1000
-	RoleId uint64 `json:"roleId" validate:"omitempty,number,max=1000"`
+	RoleId uint64 `json:"roleId,optional" validate:"omitempty,number,max=1000"`
 }
