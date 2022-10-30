@@ -36,7 +36,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				{
 					Method:  http.MethodPost,
 					Path:    "/role",
-					Handler: role.CreateOrUpdateRoleHandler(serverCtx),
+					Handler: role.CreateRoleHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPut,
+					Path:    "/role",
+					Handler: role.UpdateRoleHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodDelete,
@@ -55,6 +60,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
 	)
 
 	server.AddRoutes(
@@ -99,7 +105,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				{
 					Method:  http.MethodPost,
 					Path:    "/user",
-					Handler: user.CreateOrUpdateUserHandler(serverCtx),
+					Handler: user.CreateUserHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPut,
+					Path:    "/user",
+					Handler: user.UpdateUserHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,

@@ -91,6 +91,14 @@ func (sru *SysRoleUpdate) SetRemark(s string) *SysRoleUpdate {
 	return sru
 }
 
+// SetNillableRemark sets the "remark" field if the given value is not nil.
+func (sru *SysRoleUpdate) SetNillableRemark(s *string) *SysRoleUpdate {
+	if s != nil {
+		sru.SetRemark(*s)
+	}
+	return sru
+}
+
 // SetOrderNo sets the "order_no" field.
 func (sru *SysRoleUpdate) SetOrderNo(u uint32) *SysRoleUpdate {
 	sru.mutation.ResetOrderNo()
@@ -590,6 +598,14 @@ func (sruo *SysRoleUpdateOne) ClearStatus() *SysRoleUpdateOne {
 // SetRemark sets the "remark" field.
 func (sruo *SysRoleUpdateOne) SetRemark(s string) *SysRoleUpdateOne {
 	sruo.mutation.SetRemark(s)
+	return sruo
+}
+
+// SetNillableRemark sets the "remark" field if the given value is not nil.
+func (sruo *SysRoleUpdateOne) SetNillableRemark(s *string) *SysRoleUpdateOne {
+	if s != nil {
+		sruo.SetRemark(*s)
+	}
 	return sruo
 }
 

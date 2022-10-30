@@ -6,7 +6,6 @@ import (
 	converter "slash-admin/app/admin/cmd/api/internal/converter"
 	types "slash-admin/app/admin/cmd/api/internal/types"
 	ent "slash-admin/app/admin/ent"
-	types1 "slash-admin/pkg/types"
 )
 
 type ConverterImpl struct{}
@@ -18,22 +17,6 @@ func (c *ConverterImpl) ConvertPagination(source *ent.PageDetails) *types.Pagina
 		pTypesPagination = &typesPagination
 	}
 	return pTypesPagination
-}
-func (c *ConverterImpl) ConvertRoleInfoToCreateSysRoleInput(source *types.RoleInfo) *ent.CreateSysRoleInput {
-	var pEntCreateSysRoleInput *ent.CreateSysRoleInput
-	if source != nil {
-		entCreateSysRoleInput := c.typesRoleInfoToEntCreateSysRoleInput(*source)
-		pEntCreateSysRoleInput = &entCreateSysRoleInput
-	}
-	return pEntCreateSysRoleInput
-}
-func (c *ConverterImpl) ConvertRoleInfoToUpdateSysRoleInput(source *types.RoleInfo) *ent.UpdateSysRoleInput {
-	var pEntUpdateSysRoleInput *ent.UpdateSysRoleInput
-	if source != nil {
-		entUpdateSysRoleInput := c.typesRoleInfoToEntUpdateSysRoleInput(*source)
-		pEntUpdateSysRoleInput = &entUpdateSysRoleInput
-	}
-	return pEntUpdateSysRoleInput
 }
 func (c *ConverterImpl) ConvertSysRoleToRoleInfo(source *ent.SysRole) *types.RoleInfo {
 	var pTypesRoleInfo *types.RoleInfo
@@ -98,40 +81,4 @@ func (c *ConverterImpl) entSysUserToTypesUserInfo(source ent.SysUser) types.User
 	typesUserInfo.CreatedAt = converter.TimeToUnixMilli(source.CreatedAt)
 	typesUserInfo.UpdatedAt = converter.TimeToUnixMilli(source.UpdatedAt)
 	return typesUserInfo
-}
-func (c *ConverterImpl) typesRoleInfoToEntCreateSysRoleInput(source types.RoleInfo) ent.CreateSysRoleInput {
-	var entCreateSysRoleInput ent.CreateSysRoleInput
-	pUint64 := source.ID
-	entCreateSysRoleInput.ID = &pUint64
-	pString := source.Name
-	entCreateSysRoleInput.Name = &pString
-	pString2 := source.Value
-	entCreateSysRoleInput.Value = &pString2
-	pString3 := source.DefaultRouter
-	entCreateSysRoleInput.DefaultRouter = &pString3
-	pTypesStatus := types1.Status(source.Status)
-	entCreateSysRoleInput.Status = &pTypesStatus
-	pString4 := source.Remark
-	entCreateSysRoleInput.Remark = &pString4
-	pUint32 := source.OrderNo
-	entCreateSysRoleInput.OrderNo = &pUint32
-	return entCreateSysRoleInput
-}
-func (c *ConverterImpl) typesRoleInfoToEntUpdateSysRoleInput(source types.RoleInfo) ent.UpdateSysRoleInput {
-	var entUpdateSysRoleInput ent.UpdateSysRoleInput
-	pUint64 := source.ID
-	entUpdateSysRoleInput.ID = &pUint64
-	pString := source.Name
-	entUpdateSysRoleInput.Name = &pString
-	pString2 := source.Value
-	entUpdateSysRoleInput.Value = &pString2
-	pString3 := source.DefaultRouter
-	entUpdateSysRoleInput.DefaultRouter = &pString3
-	pTypesStatus := types1.Status(source.Status)
-	entUpdateSysRoleInput.Status = &pTypesStatus
-	pString4 := source.Remark
-	entUpdateSysRoleInput.Remark = &pString4
-	pUint32 := source.OrderNo
-	entUpdateSysRoleInput.OrderNo = &pUint32
-	return entUpdateSysRoleInput
 }

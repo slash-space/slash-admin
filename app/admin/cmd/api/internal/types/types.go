@@ -85,34 +85,79 @@ type SetBooleanStatusReq struct {
 	Status uint32 `json:"status" validate:"number"`
 }
 
-// Create or update role information params | 创建或更新角色信息参数
 // swagger:model RoleInfo
 type RoleInfo struct {
 	// Role ID | 角色 ID
-	// Default: 0
-	ID uint64 `json:"id,optional,default=0" validate:"number"`
+	ID uint64 `json:"id,optional,default=0"`
+	// Role Name | 角色名
+	Name string `json:"name"`
+	// Role value | 角色值
+	Value string `json:"value"`
+	// Role's default page | 角色默认管理页面
+	DefaultRouter string `json:"defaultRouter"`
+	// Role status | 角色状态
+	Status uint8 `json:"status,default=0"`
+	// Role remark | 角色备注
+	Remark string `json:"remark,default=''"`
+	// Role's sorting number | 角色排序
+	OrderNo uint32 `json:"orderNo"`
+}
+
+// swagger:model CreateRoleReq
+type CreateRoleReq struct {
 	// Role Name | 角色名
 	// Required : true
 	// Max length: 20
+	// Example: "admin"
 	Name string `json:"name" validate:"max=20"`
 	// Role value | 角色值
 	// Required : true
 	// Max length: 10
+	// Example: "admin"
 	Value string `json:"value" validate:"max=10"`
 	// Role's default page | 角色默认管理页面
-	// Required : true
 	// Max length: 20
-	DefaultRouter string `json:"defaultRouter" validate:"max=50"`
+	// Example: "/dashboard"
+	DefaultRouter string `json:"defaultRouter,optional,default='dashboard'" validate:"max=50"`
 	// Role status | 角色状态
-	// Maximum: 10
-	Status uint8 `json:"status,default=0" validate:"number,max=10"`
+	// Maximum: 1
+	// Example: 0
+	Status uint8 `json:"status,optional,default=0" validate:"number,oneof=0 1"`
 	// Role remark | 角色备注
 	// Max length: 200
-	Remark string `json:"remark,default=''" validate:"omitempty,max=200"`
+	// Example: "admin remark"
+	Remark string `json:"remark,optional,default=''" validate:"omitempty,max=200"`
+	// Role's sorting number | 角色排序
+	// Maximum: 1000
+	// Example: 0
+	OrderNo uint32 `json:"orderNo,optional,default=0" validate:"number,max=1000"`
+}
+
+// swagger:model UpdateRoleReq
+type UpdateRoleReq struct {
+	// Role ID | 角色 ID
+	// Required : true
+	// Default: 1
+	ID uint64 `json:"id" validate:"number,max=1000"`
+	// Role Name | 角色名
+	// Max length: 20
+	Name *string `json:"name,optional" validate:"omitempty,max=20"`
+	// Role value | 角色值
+	// Max length: 10
+	Value *string `json:"value,optional" validate:"omitempty,max=10"`
+	// Role's default page | 角色默认管理页面
+	// Max length: 20
+	DefaultRouter *string `json:"defaultRouter,optional" validate:"omitempty,max=50"`
+	// Role status | 角色状态
+	// Maximum: 10
+	Status *uint8 `json:"status,optional" validate:"omitempty,number,max=10"`
+	// Role remark | 角色备注
+	// Max length: 200
+	Remark *string `json:"remark,default=''" validate:"omitempty,max=200"`
 	// Role's sorting number | 角色排序
 	// Required : true
 	// Maximum: 1000
-	OrderNo uint32 `json:"orderNo" validate:"number,max=1000"`
+	OrderNo *uint32 `json:"orderNo" validate:"omitempty,number,max=1000"`
 }
 
 // The response data of role list | 角色列表数据
@@ -134,8 +179,8 @@ type SetStatusReq struct {
 	ID uint64 `json:"id" validate:"number,max=1000"`
 	// Status code | 状态码
 	// Required: true
-	// Maximum: 10
-	Status uint8 `json:"status" validate:"number,max=10"`
+	// Maximum: 1
+	Status uint8 `json:"status" validate:"number,oneof=0 1"`
 }
 
 // The response data of captcha | 验证码返回数据
@@ -318,33 +363,84 @@ type PermCodeResp struct {
 	Data []string `json:"data"`
 }
 
-// Create or update user information request | 创建或更新用户信息
-// swagger:model CreateOrUpdateUserReq
-type CreateOrUpdateUserReq struct {
-	// User's id | 用户Id
-	ID uint64 `json:"id,optional" validate:"omitempty,number"`
+// Create user information request | 创建新用户信息
+// swagger:model CreateUserReq
+type CreateUserReq struct {
 	// User Name | 用户名
 	// Max length: 20
-	Username string `json:"username,optional" validate:"omitempty,alphanum,max=20"`
+	// Required: true
+	// Example: admin
+	Username string `json:"username" validate:"alphanum,max=20"`
 	// User's nickname | 用户的昵称
-	// Max length: 10
-	Nickname string `json:"nickname,optional" validate:"omitempty,alphanumunicode,max=10"`
+	// Max length: 20
+	// Required: true
+	// Example: admin nickname
+	Nickname string `json:"nickname" validate:"alphanumunicode,max=20"`
 	// Password | 密码
 	// Max length: 30
 	// Min length: 6
-	Password string `json:"password,optional" validate:"omitempty,max=30,min=6"`
-	// User's mobile phone number | 用户的手机号码
-	// Max length: 18
-	Mobile string `json:"mobile,optional" validate:"omitempty,numeric,max=18"`
-	// User's role id | 用户的角色Id
-	// Maximum: 1000
-	RoleID uint64 `json:"roleId,optional" validate:"omitempty,number,max=1000"`
+	// Required: true
+	// Example: 123456
+	Password string `json:"password" validate:"max=30,min=6"`
 	// The user's email address | 用户的邮箱
 	// Max length: 100
+	// Required: true
+	// Example: admin@gmail.com
 	Email string `json:"email,optional" validate:"omitempty,email,max=100"`
+	// User's mobile phone number | 用户的手机号码
+	// Max length: 18
+	// Example: 13888888888
+	Mobile *string `json:"mobile,optional" validate:"omitempty,numeric,max=18"`
+	// User's role id | 用户的角色Id
+	// Minimum: 1
+	// Maximum: 10
+	// Example: 1
+	RoleID *uint64 `json:"roleId,optional" validate:"omitempty,number,max=10"`
 	// The user's avatar path | 用户的头像路径
 	// Example: https://localhost/static/1.png
-	Avatar string `json:"avatar,optional" validate:"omitempty,url"`
+	Avatar *string `json:"avatar,optional" validate:"omitempty,url"`
+	// The user's status | 用户状态
+	// 0 normal, 1 ban | 0 正常 1 拉黑
+	// Maximum: 0
+	Status *uint8 `json:"status,optional" validate:"omitempty,number,max=2"`
+}
+
+// Update user information request | 更新用户信息
+// swagger:model UpdateUserReq
+type UpdateUserReq struct {
+	// User's id | 用户Id
+	// Minimum: 1
+	// Required: true
+	// Example: 1
+	ID uint64 `json:"id,optional" validate:"omitempty,number"`
+	// User Name | 用户名
+	// Max length: 20
+	// Example: admin
+	Username *string `json:"username,optional" validate:"omitempty,alphanum,max=20"`
+	// User's nickname | 用户的昵称
+	// Max length: 10
+	// Example: admin nickname
+	Nickname *string `json:"nickname,optional" validate:"omitempty,alphanumunicode,max=20"`
+	// Password | 密码
+	// Max length: 30
+	// Min length: 6
+	// Example: 123456
+	Password *string `json:"password,optional" validate:"omitempty,max=30,min=6"`
+	// User's mobile phone number | 用户的手机号码
+	// Max length: 18
+	// Example: 13888888888
+	Mobile *string `json:"mobile,optional" validate:"omitempty,numeric,max=18"`
+	// User's role id | 用户的角色Id
+	// Maximum: 1000
+	// Example: 1
+	RoleID *uint64 `json:"roleId,optional" validate:"omitempty,number,max=1000"`
+	// The user's email address | 用户的邮箱
+	// Max length: 100
+	// Example: admin@gmail.com
+	Email *string `json:"email,optional" validate:"omitempty,email,max=100"`
+	// The user's avatar path | 用户的头像路径
+	// Example: https://localhost/static/1.png
+	Avatar *string `json:"avatar,optional" validate:"omitempty,url"`
 	// The user's status | 用户状态
 	// 0 normal, 1 ban | 0 正常 1 拉黑
 	// Maximum: 2

@@ -11,41 +11,96 @@ info(
 import "base.api"
 
 type (
-    // Create or update role information params | 创建或更新角色信息参数
+
     RoleInfo {
         // Role ID | 角色 ID
-        // Default: 0
-        ID            uint64 `json:"id,optional,default=0" validate:"number"`
+        ID uint64 `json:"id,optional,default=0"`
 
+        // Role Name | 角色名
+        Name string `json:"name"`
+
+        // Role value | 角色值
+        Value string `json:"value"`
+
+        // Role's default page | 角色默认管理页面
+        DefaultRouter string `json:"defaultRouter"`
+
+        // Role status | 角色状态
+        Status uint8 `json:"status,default=0"`
+
+        // Role remark | 角色备注
+        Remark string `json:"remark,default=''"`
+
+        // Role's sorting number | 角色排序
+        OrderNo uint32 `json:"orderNo"`
+    }
+
+    CreateRoleReq {
         // Role Name | 角色名
         // Required : true
         // Max length: 20
-        Name          string `json:"name" validate:"max=20"`
+        // Example: "admin"
+        Name string `json:"name" validate:"max=20"`
 
         // Role value | 角色值
         // Required : true
         // Max length: 10
-        Value         string `json:"value" validate:"max=10"`
+        // Example: "admin"
+        Value string `json:"value" validate:"max=10"`
 
         // Role's default page | 角色默认管理页面
-        // Required : true
         // Max length: 20
-        DefaultRouter string `json:"defaultRouter" validate:"max=50"`
+        // Example: "/dashboard"
+        DefaultRouter string `json:"defaultRouter,optional,default='dashboard'" validate:"max=50"`
 
         // Role status | 角色状态
-        // Maximum: 10
-        Status        uint8 `json:"status,default=0" validate:"number,max=10"`
+        // Maximum: 1
+        // Example: 0
+        Status uint8 `json:"status,optional,default=0" validate:"number,oneof=0 1"`
 
         // Role remark | 角色备注
         // Max length: 200
-        Remark        string `json:"remark,default=''" validate:"omitempty,max=200"`
+        // Example: "admin remark"
+        Remark string `json:"remark,optional,default=''" validate:"omitempty,max=200"`
+
+        // Role's sorting number | 角色排序
+        // Maximum: 1000
+        // Example: 0
+        OrderNo uint32 `json:"orderNo,optional,default=0" validate:"number,max=1000"`
+    }
+
+    UpdateRoleReq {
+        // Role ID | 角色 ID
+        // Required : true
+        // Default: 1
+        ID uint64 `json:"id" validate:"number,max=1000"`
+
+        // Role Name | 角色名
+        // Max length: 20
+        Name *string `json:"name,optional" validate:"omitempty,max=20"`
+
+        // Role value | 角色值
+        // Max length: 10
+        Value *string `json:"value,optional" validate:"omitempty,max=10"`
+
+        // Role's default page | 角色默认管理页面
+        // Max length: 20
+        DefaultRouter *string `json:"defaultRouter,optional" validate:"omitempty,max=50"`
+
+        // Role status | 角色状态
+        // Maximum: 10
+        Status *uint8 `json:"status,optional" validate:"omitempty,number,max=10"`
+
+        // Role remark | 角色备注
+        // Max length: 200
+        Remark *string `json:"remark,default=''" validate:"omitempty,max=200"`
 
         // Role's sorting number | 角色排序
         // Required : true
         // Maximum: 1000
-        OrderNo       uint32 `json:"orderNo" validate:"number,max=1000"`
-
+        OrderNo *uint32 `json:"orderNo" validate:"omitempty,number,max=1000"`
     }
+
 
     // The response data of role list | 角色列表数据
     RoleListResp {
@@ -56,36 +111,43 @@ type (
 
         // The role list data | 角色列表数据
         // in: body
-        List  []*RoleInfo  `json:"data"`
+        List []*RoleInfo `json:"data"`
     }
 
-        // The request params of setting role status | 设置角色状态参数
+    // The request params of setting role status | 设置角色状态参数
     SetStatusReq {
         // ID
         // Required: true
         // Maximum: 1000
-        ID     uint64  `json:"id" validate:"number,max=1000"`
+        ID uint64 `json:"id" validate:"number,max=1000"`
 
         // Status code | 状态码
         // Required: true
-        // Maximum: 10
-        Status uint8  `json:"status" validate:"number,max=10"`
+        // Maximum: 1
+        Status uint8 `json:"status" validate:"number,oneof=0 1"`
     }
 )
 
 @server(
-    //jwt: Auth
+    jwt: Auth
     group: role
     middleware: Authority
 )
 
 service core {
     @doc(
-        summary : "Create or update role information | 创建或更新角色"
+        summary : "Create role information | 创建角色"
         description: "创建或更新角色"
     )
-    @handler createOrUpdateRole
-    post /role (RoleInfo) returns (SimpleMsgResp)
+    @handler createRole
+    post /role (CreateRoleReq) returns (SimpleMsgResp)
+
+    @doc(
+        summary: "Update role information | 更新角色"
+        description: "更新角色"
+    )
+    @handler updateRole
+    put /role (UpdateRoleReq) returns (SimpleMsgResp)
 
     @doc(
         summary: "Delete role information | 删除角色信息"

@@ -45,8 +45,53 @@ definitions:
             - newPassword
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
-    CreateOrUpdateUserReq:
-        description: Create or update user information request | 创建或更新用户信息
+    CreateRoleReq:
+        properties:
+            defaultRouter:
+                description: Role's default page | 角色默认管理页面
+                example: '"/dashboard"'
+                maxLength: 20
+                type: string
+                x-go-name: DefaultRouter
+            name:
+                description: Role Name | 角色名
+                example: '"admin"'
+                maxLength: 20
+                type: string
+                x-go-name: Name
+            orderNo:
+                description: Role's sorting number | 角色排序
+                example: 0
+                format: uint32
+                maximum: 1000
+                type: integer
+                x-go-name: OrderNo
+            remark:
+                description: Role remark | 角色备注
+                example: '"admin remark"'
+                maxLength: 200
+                type: string
+                x-go-name: Remark
+            status:
+                description: Role status | 角色状态
+                example: 0
+                format: uint8
+                maximum: 1
+                type: integer
+                x-go-name: Status
+            value:
+                description: Role value | 角色值
+                example: '"admin"'
+                maxLength: 10
+                type: string
+                x-go-name: Value
+        required:
+            - name
+            - value
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    CreateUserReq:
+        description: Create user information request | 创建新用户信息
         properties:
             avatar:
                 description: The user's avatar path | 用户的头像路径
@@ -55,34 +100,35 @@ definitions:
                 x-go-name: Avatar
             email:
                 description: The user's email address | 用户的邮箱
+                example: admin@gmail.com
                 maxLength: 100
                 type: string
                 x-go-name: Email
-            id:
-                description: User's id | 用户Id
-                format: uint64
-                type: integer
-                x-go-name: ID
             mobile:
                 description: User's mobile phone number | 用户的手机号码
+                example: "13888888888"
                 maxLength: 18
                 type: string
                 x-go-name: Mobile
             nickname:
                 description: User's nickname | 用户的昵称
-                maxLength: 10
+                example: admin nickname
+                maxLength: 20
                 type: string
                 x-go-name: Nickname
             password:
                 description: Password | 密码
+                example: "123456"
                 maxLength: 30
                 minLength: 6
                 type: string
                 x-go-name: Password
             roleId:
                 description: User's role id | 用户的角色Id
+                example: 1
                 format: uint64
-                maximum: 1000
+                maximum: 10
+                minimum: 1
                 type: integer
                 x-go-name: RoleID
             status:
@@ -90,14 +136,20 @@ definitions:
                     The user's status | 用户状态
                     0 normal, 1 ban | 0 正常 1 拉黑
                 format: uint8
-                maximum: 2
+                maximum: 0
                 type: integer
                 x-go-name: Status
             username:
                 description: User Name | 用户名
+                example: admin
                 maxLength: 20
                 type: string
                 x-go-name: Username
+        required:
+            - username
+            - nickname
+            - password
+            - email
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
     GetUserInfoResp:
@@ -299,51 +351,38 @@ definitions:
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
     RoleInfo:
-        description: Create or update role information params | 创建或更新角色信息参数
         properties:
             defaultRouter:
                 description: Role's default page | 角色默认管理页面
-                maxLength: 20
                 type: string
                 x-go-name: DefaultRouter
             id:
-                default: 0
                 description: Role ID | 角色 ID
                 format: uint64
                 type: integer
                 x-go-name: ID
             name:
                 description: Role Name | 角色名
-                maxLength: 20
                 type: string
                 x-go-name: Name
             orderNo:
                 description: Role's sorting number | 角色排序
                 format: uint32
-                maximum: 1000
                 type: integer
                 x-go-name: OrderNo
             remark:
                 description: Role remark | 角色备注
-                maxLength: 200
                 type: string
                 x-go-name: Remark
             status:
                 description: Role status | 角色状态
                 format: uint8
-                maximum: 10
                 type: integer
                 x-go-name: Status
             value:
                 description: Role value | 角色值
-                maxLength: 10
                 type: string
                 x-go-name: Value
-        required:
-            - name
-            - value
-            - defaultRouter
-            - orderNo
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
     RoleListResp:
@@ -404,7 +443,7 @@ definitions:
             status:
                 description: Status code | 状态码
                 format: uint8
-                maximum: 10
+                maximum: 1
                 type: integer
                 x-go-name: Status
         required:
@@ -446,6 +485,116 @@ definitions:
                 maxLength: 10
                 type: string
                 x-go-name: Nickname
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    UpdateRoleReq:
+        properties:
+            defaultRouter:
+                description: Role's default page | 角色默认管理页面
+                maxLength: 20
+                type: string
+                x-go-name: DefaultRouter
+            id:
+                default: 1
+                description: Role ID | 角色 ID
+                format: uint64
+                type: integer
+                x-go-name: ID
+            name:
+                description: Role Name | 角色名
+                maxLength: 20
+                type: string
+                x-go-name: Name
+            orderNo:
+                description: Role's sorting number | 角色排序
+                format: uint32
+                maximum: 1000
+                type: integer
+                x-go-name: OrderNo
+            remark:
+                description: Role remark | 角色备注
+                maxLength: 200
+                type: string
+                x-go-name: Remark
+            status:
+                description: Role status | 角色状态
+                format: uint8
+                maximum: 10
+                type: integer
+                x-go-name: Status
+            value:
+                description: Role value | 角色值
+                maxLength: 10
+                type: string
+                x-go-name: Value
+        required:
+            - id
+            - orderNo
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    UpdateUserReq:
+        description: Update user information request | 更新用户信息
+        properties:
+            avatar:
+                description: The user's avatar path | 用户的头像路径
+                example: https://localhost/static/1.png
+                type: string
+                x-go-name: Avatar
+            email:
+                description: The user's email address | 用户的邮箱
+                example: admin@gmail.com
+                maxLength: 100
+                type: string
+                x-go-name: Email
+            id:
+                description: User's id | 用户Id
+                example: 1
+                format: uint64
+                minimum: 1
+                type: integer
+                x-go-name: ID
+            mobile:
+                description: User's mobile phone number | 用户的手机号码
+                example: "13888888888"
+                maxLength: 18
+                type: string
+                x-go-name: Mobile
+            nickname:
+                description: User's nickname | 用户的昵称
+                example: admin nickname
+                maxLength: 10
+                type: string
+                x-go-name: Nickname
+            password:
+                description: Password | 密码
+                example: "123456"
+                maxLength: 30
+                minLength: 6
+                type: string
+                x-go-name: Password
+            roleId:
+                description: User's role id | 用户的角色Id
+                example: 1
+                format: uint64
+                maximum: 1000
+                type: integer
+                x-go-name: RoleID
+            status:
+                description: |-
+                    The user's status | 用户状态
+                    0 normal, 1 ban | 0 正常 1 拉黑
+                format: uint8
+                maximum: 2
+                type: integer
+                x-go-name: Status
+            username:
+                description: User Name | 用户名
+                example: admin
+                maxLength: 20
+                type: string
+                x-go-name: Username
+        required:
+            - id
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
     UserInfo:
@@ -571,17 +720,32 @@ paths:
                 - role
         post:
             description: '"创建或更新角色"'
-            operationId: CreateOrUpdateRole
+            operationId: CreateRole
             parameters:
                 - in: body
                   name: body
                   schema:
-                    $ref: '#/definitions/RoleInfo'
+                    $ref: '#/definitions/CreateRoleReq'
                     type: object
             responses:
                 "200":
                     $ref: '#/responses/SimpleMsgResp'
-            summary: '"Create or update role information | 创建或更新角色"'
+            summary: '"Create role information | 创建角色"'
+            tags:
+                - role
+        put:
+            description: '"更新角色"'
+            operationId: UpdateRole
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/UpdateRoleReq'
+                    type: object
+            responses:
+                "200":
+                    $ref: '#/responses/SimpleMsgResp'
+            summary: '"Update role information | 更新角色"'
             tags:
                 - role
     /role/list:
@@ -635,18 +799,33 @@ paths:
             tags:
                 - user
         post:
-            description: '"新增或更新用户"'
-            operationId: CreateOrUpdateUser
+            description: '"新增用户"'
+            operationId: CreateUser
             parameters:
                 - in: body
                   name: body
                   schema:
-                    $ref: '#/definitions/CreateOrUpdateUserReq'
+                    $ref: '#/definitions/CreateUserReq'
                     type: object
             responses:
                 "200":
                     $ref: '#/responses/SimpleMsgResp'
-            summary: '"Create or update user''s information | 新增或更新用户"'
+            summary: '"Create user''s information | 新增用户"'
+            tags:
+                - user
+        put:
+            description: '"更新用户"'
+            operationId: UpdateUser
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/UpdateUserReq'
+                    type: object
+            responses:
+                "200":
+                    $ref: '#/responses/SimpleMsgResp'
+            summary: '"Update user''s information | 更新用户"'
             tags:
                 - user
     /user/change-password:

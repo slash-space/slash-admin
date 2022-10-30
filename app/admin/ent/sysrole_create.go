@@ -71,6 +71,14 @@ func (src *SysRoleCreate) SetRemark(s string) *SysRoleCreate {
 	return src
 }
 
+// SetNillableRemark sets the "remark" field if the given value is not nil.
+func (src *SysRoleCreate) SetNillableRemark(s *string) *SysRoleCreate {
+	if s != nil {
+		src.SetRemark(*s)
+	}
+	return src
+}
+
 // SetOrderNo sets the "order_no" field.
 func (src *SysRoleCreate) SetOrderNo(u uint32) *SysRoleCreate {
 	src.mutation.SetOrderNo(u)
@@ -247,6 +255,10 @@ func (src *SysRoleCreate) defaults() {
 	if _, ok := src.mutation.Status(); !ok {
 		v := sysrole.DefaultStatus
 		src.mutation.SetStatus(v)
+	}
+	if _, ok := src.mutation.Remark(); !ok {
+		v := sysrole.DefaultRemark
+		src.mutation.SetRemark(v)
 	}
 	if _, ok := src.mutation.OrderNo(); !ok {
 		v := sysrole.DefaultOrderNo

@@ -85,6 +85,8 @@ var (
 	DefaultDefaultRouter string
 	// DefaultStatus holds the default value on creation for the "status" field.
 	DefaultStatus types.Status
+	// DefaultRemark holds the default value on creation for the "remark" field.
+	DefaultRemark string
 	// DefaultOrderNo holds the default value on creation for the "order_no" field.
 	DefaultOrderNo uint32
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.

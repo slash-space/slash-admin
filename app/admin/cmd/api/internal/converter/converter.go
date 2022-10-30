@@ -19,11 +19,6 @@ type Converter interface {
 	ConvertSysRoleToRoleInfo(input *ent.SysRole) (output *types.RoleInfo)
 
 	ConvertSysRoleToRoleInfoList(input []*ent.SysRole) (output []*types.RoleInfo)
-
-	// goverter:ignore CreatedAt UpdatedAt DeletedAt
-	ConvertRoleInfoToCreateSysRoleInput(input *types.RoleInfo) (output *ent.CreateSysRoleInput)
-	// goverter:ignore CreatedAt UpdatedAt DeletedAt
-	ConvertRoleInfoToUpdateSysRoleInput(input *types.RoleInfo) (output *ent.UpdateSysRoleInput)
 }
 
 func StatusToUint8(v pType.Status) uint8 {
