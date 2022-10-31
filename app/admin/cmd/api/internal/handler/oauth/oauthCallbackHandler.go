@@ -11,9 +11,9 @@ import (
 
 // swagger:route get /oauth/login/callback oauth OauthCallback
 //
-// "Oauth log in callback route | Oauth 登录回调接口"
+//  Oauth log in callback route | Oauth 登录回调接口
 //
-// "Oauth 登录回调接口"
+//  Oauth log in callback route | Oauth 登录回调接口
 //
 // Responses:
 //  200: CallbackResp

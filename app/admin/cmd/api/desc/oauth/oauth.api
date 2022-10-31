@@ -216,17 +216,11 @@ type (
     group: oauth
 )
 service core {
-    @doc(
-        summary: "Oauth log in | Oauth 登录"
-        description: "Oauth log in | Oauth 登录"
-    )
+    // Oauth log in | Oauth 登录
     @handler oauthLogin
     post /oauth/login (OauthLoginReq) returns (RedirectResp)
 
-    @doc(
-        summary: "Oauth log in callback route | Oauth 登录回调接口"
-        description: "Oauth 登录回调接口"
-    )
+    // Oauth log in callback route | Oauth 登录回调接口
     @handler oauthCallback
     get /oauth/login/callback(OauthCallbackParamReq) returns (CallbackResp)
 }
@@ -237,31 +231,19 @@ service core {
     middleware: Authority
 )
 service core {
-    @doc(
-        summary: "Create provider information | 创建提供商信息"
-        description: "创建提供商信息"
-    )
+    // Create provider information | 创建提供商信息
     @handler createProvider
     post /oauth/provider (CreateProviderReq) returns (SimpleMsgResp)
 
-    @doc(
-        summary: "Update provider information | 更新提供商信息"
-        description: "更新提供商信息"
-    )
+    // Update provider information | 更新提供商信息
     @handler updateProvider
     put /oauth/provider (UpdateProviderReq) returns (SimpleMsgResp)
 
-    @doc(
-        summary: "Delete provider information | 删除提供商信息"
-        description: "删除提供商信息"
-    )
+    // Delete provider information | 删除提供商信息
     @handler deleteProvider
     delete /oauth/provider (IDReq) returns (SimpleMsgResp)
 
-    @doc(
-        summary: "Get provider list | 获取提供商列表"
-        description: "获取提供商列表"
-    )
+    // Get provider list | 获取提供商列表
     @handler getProviderList
     post /oauth/provider/list (PageReq) returns (ProviderListResp)
 }

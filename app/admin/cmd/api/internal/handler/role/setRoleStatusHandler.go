@@ -11,9 +11,9 @@ import (
 
 // swagger:route post /role/status role SetRoleStatus
 //
-// "Set role status | 设置角色状态"
+//  Set role status | 设置角色状态
 //
-// "设置角色状态"
+//  Set role status | 设置角色状态
 //
 // Parameters:
 //  + name: body

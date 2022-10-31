@@ -11,9 +11,9 @@ import (
 
 // swagger:route post /token token CreateToken
 //
-// "Create Token information | 创建Token"
+//  Create Token information | 创建Token
 //
-// "Create Token information"
+//  Create Token information | 创建Token
 //
 // Parameters:
 //  + name: body

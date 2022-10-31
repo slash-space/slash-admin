@@ -11,9 +11,9 @@ import (
 
 // swagger:route delete /role role DeleteRole
 //
-// "Delete role information | 删除角色信息"
+//  Delete role information | 删除角色信息
 //
-// "删除角色信息"
+//  Delete role information | 删除角色信息
 //
 // Parameters:
 //  + name: body

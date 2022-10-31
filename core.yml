@@ -1223,7 +1223,7 @@ info:
 paths:
     /api:
         delete:
-            description: '"Delete API information | 删除API信息"'
+            description: Delete API information | 删除API信息
             operationId: DeleteApi
             parameters:
                 - in: body
@@ -1234,11 +1234,11 @@ paths:
             responses:
                 "200":
                     $ref: '#/responses/SimpleMsgResp'
-            summary: '"删除API信息"'
+            summary: Delete API information | 删除API信息
             tags:
                 - api
         post:
-            description: '"Create API information | 创建或更新API"'
+            description: Create API information | 创建或更新API
             operationId: CreateApi
             parameters:
                 - in: body
@@ -1249,11 +1249,11 @@ paths:
             responses:
                 "200":
                     $ref: '#/responses/SimpleMsgResp'
-            summary: '"创建API"'
+            summary: Create API information | 创建或更新API
             tags:
                 - api
         put:
-            description: '"Update API information | 创建或更新API"'
+            description: Update API information | 创建或更新API
             operationId: UpdateApi
             parameters:
                 - in: body
@@ -1264,12 +1264,12 @@ paths:
             responses:
                 "200":
                     $ref: '#/responses/SimpleMsgResp'
-            summary: '"更新API"'
+            summary: Update API information | 创建或更新API
             tags:
                 - api
     /api/list:
         post:
-            description: '"Get API list | 获取API列表"'
+            description: Get API list | 获取API列表
             operationId: GetApiList
             parameters:
                 - in: body
@@ -1282,39 +1282,39 @@ paths:
                     description: ApiListResp
                     schema:
                         $ref: '#/definitions/ApiListResp'
-            summary: '"获取API列表"'
+            summary: Get API list | 获取API列表
             tags:
                 - api
     /captcha:
         get:
-            description: '"获取验证码"'
+            description: Get captcha | 获取验证码
             operationId: GetCaptcha
             responses:
                 "200":
                     $ref: '#/responses/CaptchaInfoResp'
-            summary: '"Get captcha | 获取验证码"'
+            summary: Get captcha | 获取验证码
             tags:
                 - captcha
     /core/health:
         get:
-            description: '"检查系统状态"'
+            description: Check the system status | 检查系统状态
             operationId: HealthCheck
-            summary: '"Check the system status | 检查系统状态"'
+            summary: Check the system status | 检查系统状态
             tags:
                 - core
     /core/init/database:
         get:
-            description: '"初始化数据库"'
+            description: Initialize database | 初始化数据库
             operationId: InitDatabase
             responses:
                 "200":
                     $ref: '#/responses/SimpleMsgResp'
-            summary: '"Initialize database | 初始化数据库"'
+            summary: Initialize database | 初始化数据库
             tags:
                 - core
     /oauth/login:
         post:
-            description: '"Oauth log in | Oauth 登录"'
+            description: Oauth log in | Oauth 登录
             operationId: OauthLogin
             parameters:
                 - in: body
@@ -1325,12 +1325,12 @@ paths:
             responses:
                 "200":
                     $ref: '#/responses/RedirectResp'
-            summary: '"Oauth log in | Oauth 登录"'
+            summary: Oauth log in | Oauth 登录
             tags:
                 - oauth
     /oauth/login/callback:
         get:
-            description: '"Oauth 登录回调接口"'
+            description: Oauth log in callback route | Oauth 登录回调接口
             operationId: OauthCallback
             parameters:
                 - in: query
@@ -1346,12 +1346,12 @@ paths:
             responses:
                 "200":
                     $ref: '#/responses/CallbackResp'
-            summary: '"Oauth log in callback route | Oauth 登录回调接口"'
+            summary: Oauth log in callback route | Oauth 登录回调接口
             tags:
                 - oauth
     /oauth/provider:
         delete:
-            description: '"删除提供商信息"'
+            description: Delete provider information | 删除提供商信息
             operationId: DeleteProvider
             parameters:
                 - in: body
@@ -1362,11 +1362,11 @@ paths:
             responses:
                 "200":
                     $ref: '#/responses/SimpleMsgResp'
-            summary: '"Delete provider information | 删除提供商信息"'
+            summary: Delete provider information | 删除提供商信息
             tags:
                 - oauth
         post:
-            description: '"创建提供商信息"'
+            description: Create provider information | 创建提供商信息
             operationId: CreateProvider
             parameters:
                 - in: body
@@ -1377,11 +1377,11 @@ paths:
             responses:
                 "200":
                     $ref: '#/responses/SimpleMsgResp'
-            summary: '"Create provider information | 创建提供商信息"'
+            summary: Create provider information | 创建提供商信息
             tags:
                 - oauth
         put:
-            description: '"更新提供商信息"'
+            description: Update provider information | 更新提供商信息
             operationId: UpdateProvider
             parameters:
                 - in: body
@@ -1392,12 +1392,12 @@ paths:
             responses:
                 "200":
                     $ref: '#/responses/SimpleMsgResp'
-            summary: '"Update provider information | 更新提供商信息"'
+            summary: Update provider information | 更新提供商信息
             tags:
                 - oauth
     /oauth/provider/list:
         post:
-            description: '"获取提供商列表"'
+            description: Get provider list | 获取提供商列表
             operationId: GetProviderList
             parameters:
                 - in: body
@@ -1410,12 +1410,12 @@ paths:
                     description: ProviderListResp
                     schema:
                         $ref: '#/definitions/ProviderListResp'
-            summary: '"Get provider list | 获取提供商列表"'
+            summary: Get provider list | 获取提供商列表
             tags:
                 - oauth
     /role:
         delete:
-            description: '"删除角色信息"'
+            description: Delete role information | 删除角色信息
             operationId: DeleteRole
             parameters:
                 - in: body
@@ -1426,11 +1426,11 @@ paths:
             responses:
                 "200":
                     $ref: '#/responses/SimpleMsgResp'
-            summary: '"Delete role information | 删除角色信息"'
+            summary: Delete role information | 删除角色信息
             tags:
                 - role
         post:
-            description: '"创建或更新角色"'
+            description: Create role information | 创建角色
             operationId: CreateRole
             parameters:
                 - in: body
@@ -1441,11 +1441,11 @@ paths:
             responses:
                 "200":
                     $ref: '#/responses/SimpleMsgResp'
-            summary: '"Create role information | 创建角色"'
+            summary: Create role information | 创建角色
             tags:
                 - role
         put:
-            description: '"更新角色"'
+            description: Update role information | 更新角色
             operationId: UpdateRole
             parameters:
                 - in: body
@@ -1456,12 +1456,12 @@ paths:
             responses:
                 "200":
                     $ref: '#/responses/SimpleMsgResp'
-            summary: '"Update role information | 更新角色"'
+            summary: Update role information | 更新角色
             tags:
                 - role
     /role/list:
         post:
-            description: '"获取角色列表"'
+            description: Get role list | 获取角色列表
             operationId: GetRoleList
             parameters:
                 - in: body
@@ -1474,12 +1474,12 @@ paths:
                     description: RoleListResp
                     schema:
                         $ref: '#/definitions/RoleListResp'
-            summary: '"Get role list | 获取角色列表"'
+            summary: Get role list | 获取角色列表
             tags:
                 - role
     /role/status:
         post:
-            description: '"设置角色状态"'
+            description: Set role status | 设置角色状态
             operationId: SetRoleStatus
             parameters:
                 - in: body
@@ -1490,12 +1490,12 @@ paths:
             responses:
                 "200":
                     $ref: '#/responses/SimpleMsgResp'
-            summary: '"Set role status | 设置角色状态"'
+            summary: Set role status | 设置角色状态
             tags:
                 - role
     /token:
         delete:
-            description: '"Delete token information"'
+            description: Delete token information | 删除token信息
             operationId: DeleteToken
             parameters:
                 - in: body
@@ -1506,11 +1506,11 @@ paths:
             responses:
                 "200":
                     $ref: '#/responses/SimpleMsgResp'
-            summary: '"Delete token information | 删除token信息"'
+            summary: Delete token information | 删除token信息
             tags:
                 - token
         post:
-            description: '"Create Token information"'
+            description: Create Token information | 创建Token
             operationId: CreateToken
             parameters:
                 - in: body
@@ -1521,11 +1521,11 @@ paths:
             responses:
                 "200":
                     $ref: '#/responses/SimpleMsgResp'
-            summary: '"Create Token information | 创建Token"'
+            summary: Create Token information | 创建Token
             tags:
                 - token
         put:
-            description: '"Update Token information"'
+            description: Update Token information | 更新Token
             operationId: UpdateToken
             parameters:
                 - in: body
@@ -1536,12 +1536,12 @@ paths:
             responses:
                 "200":
                     $ref: '#/responses/SimpleMsgResp'
-            summary: '"Update Token information | 更新Token"'
+            summary: Update Token information | 更新Token
             tags:
                 - token
     /token/list:
         post:
-            description: '"Get Token list"'
+            description: Get Token list | 获取token列表
             operationId: GetTokenList
             parameters:
                 - in: body
@@ -1554,12 +1554,12 @@ paths:
                     description: TokenListResp
                     schema:
                         $ref: '#/definitions/TokenListResp'
-            summary: '"Get Token list | 获取token列表"'
+            summary: Get Token list | 获取token列表
             tags:
                 - token
     /token/logout:
         post:
-            description: '"Force logging out by user UUID"'
+            description: Force logging out by user UUID | 根据UUID强制用户退出
             operationId: Logout
             parameters:
                 - in: body
@@ -1570,12 +1570,12 @@ paths:
             responses:
                 "200":
                     $ref: '#/responses/SimpleMsgResp'
-            summary: '"Force logging out by user UUID | 根据UUID强制用户退出"'
+            summary: Force logging out by user UUID | 根据UUID强制用户退出
             tags:
                 - token
     /token/status:
         post:
-            description: '"Set token status"'
+            description: Set token status | 设置token状态
             operationId: SetTokenStatus
             parameters:
                 - in: body
@@ -1586,12 +1586,12 @@ paths:
             responses:
                 "200":
                     $ref: '#/responses/SimpleMsgResp'
-            summary: '"Set token status | 设置token状态"'
+            summary: Set token status | 设置token状态
             tags:
                 - token
     /user:
         delete:
-            description: '"删除用户信息"'
+            description: '"Delete user information | 删除用户信息'
             operationId: DeleteUser
             parameters:
                 - in: body
@@ -1602,11 +1602,11 @@ paths:
             responses:
                 "200":
                     $ref: '#/responses/SimpleMsgResp'
-            summary: '"Delete user information | 删除用户信息"'
+            summary: '"Delete user information | 删除用户信息'
             tags:
                 - user
         post:
-            description: '"新增用户"'
+            description: Create user's information | 新增用户
             operationId: CreateUser
             parameters:
                 - in: body
@@ -1617,11 +1617,11 @@ paths:
             responses:
                 "200":
                     $ref: '#/responses/SimpleMsgResp'
-            summary: '"Create user''s information | 新增用户"'
+            summary: Create user's information | 新增用户
             tags:
                 - user
         put:
-            description: '"更新用户"'
+            description: Update user's information | 更新用户
             operationId: UpdateUser
             parameters:
                 - in: body
@@ -1632,12 +1632,12 @@ paths:
             responses:
                 "200":
                     $ref: '#/responses/SimpleMsgResp'
-            summary: '"Update user''s information | 更新用户"'
+            summary: Update user's information | 更新用户
             tags:
                 - user
     /user/change-password:
         post:
-            description: '"修改用户密码"'
+            description: Change Password | 修改密码
             operationId: ChangePassword
             parameters:
                 - in: body
@@ -1648,24 +1648,24 @@ paths:
             responses:
                 "200":
                     $ref: '#/responses/SimpleMsgResp'
-            summary: '"Change Password | 修改密码"'
+            summary: Change Password | 修改密码
             tags:
                 - user
     /user/info:
         get:
-            description: '"获取用户基本信息"'
+            description: Get user basic information | 获取用户基本信息
             operationId: GetUserInfo
             responses:
                 "200":
                     description: GetUserInfoResp
                     schema:
                         $ref: '#/definitions/GetUserInfoResp'
-            summary: '"Get user basic information | 获取用户基本信息"'
+            summary: Get user basic information | 获取用户基本信息
             tags:
                 - user
     /user/list:
         post:
-            description: '"获取用户列表"'
+            description: Get user list | 获取用户列表
             operationId: GetUserList
             parameters:
                 - in: body
@@ -1678,12 +1678,12 @@ paths:
                     description: UserListResp
                     schema:
                         $ref: '#/definitions/UserListResp'
-            summary: '"Get user list | 获取用户列表"'
+            summary: Get user list | 获取用户列表
             tags:
                 - user
     /user/login:
         post:
-            description: '"登录"'
+            description: Login | 登录
             operationId: Login
             parameters:
                 - in: body
@@ -1696,41 +1696,41 @@ paths:
                     description: LoginResp
                     schema:
                         $ref: '#/definitions/LoginResp'
-            summary: '"Log in | 登录"'
+            summary: Login | 登录
             tags:
                 - user
     /user/logout:
         get:
-            description: '"退出登陆"'
+            description: Log out | 退出登陆
             operationId: Logout
             responses:
                 "200":
                     $ref: '#/responses/SimpleMsgResp'
-            summary: '"Log out | 退出登陆"'
+            summary: Log out | 退出登陆
             tags:
                 - user
     /user/perm:
         get:
-            description: '"获取用户权限码"'
+            description: Get user's permission code | 获取用户权限码
             operationId: GetUserPermCode
             responses:
                 "200":
                     $ref: '#/responses/PermCodeResp'
-            summary: '"Get user''s permission code | 获取用户权限码"'
+            summary: Get user's permission code | 获取用户权限码
             tags:
                 - user
     /user/profile:
         get:
-            description: '"获取用户个人信息"'
+            description: Get user's profile | 获取用户个人信息
             operationId: GetUserProfile
             responses:
                 "200":
                     $ref: '#/responses/ProfileResp'
-            summary: '"Get user''s profile | 获取用户个人信息"'
+            summary: Get user's profile | 获取用户个人信息
             tags:
                 - user
         post:
-            description: '"更新用户个人信息"'
+            description: Update user's profile | 更新用户个人信息
             operationId: UpdateUserProfile
             parameters:
                 - in: body
@@ -1741,12 +1741,12 @@ paths:
             responses:
                 "200":
                     $ref: '#/responses/SimpleMsgResp'
-            summary: '"Update user''s profile | 更新用户个人信息"'
+            summary: Update user's profile | 更新用户个人信息
             tags:
                 - user
     /user/register:
         post:
-            description: '"注册"'
+            description: Register | 注册
             operationId: Register
             parameters:
                 - in: body
@@ -1757,7 +1757,7 @@ paths:
             responses:
                 "200":
                     $ref: '#/responses/SimpleMsgResp'
-            summary: '"Register | 注册"'
+            summary: Register | 注册
             tags:
                 - user
 produces:

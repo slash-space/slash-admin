@@ -11,9 +11,9 @@ import (
 
 // swagger:route post /token/status token SetTokenStatus
 //
-// "Set token status | 设置token状态"
+//  Set token status | 设置token状态
 //
-// "Set token status"
+//  Set token status | 设置token状态
 //
 // Parameters:
 //  + name: body

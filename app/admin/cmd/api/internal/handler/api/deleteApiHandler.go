@@ -11,9 +11,9 @@ import (
 
 // swagger:route delete /api api DeleteApi
 //
-// "删除API信息"
+//  Delete API information | 删除API信息
 //
-// "Delete API information | 删除API信息"
+//  Delete API information | 删除API信息
 //
 // Parameters:
 //  + name: body

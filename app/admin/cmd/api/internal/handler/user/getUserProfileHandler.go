@@ -10,9 +10,9 @@ import (
 
 // swagger:route get /user/profile user GetUserProfile
 //
-// "Get user's profile | 获取用户个人信息"
+//  Get user's profile | 获取用户个人信息
 //
-// "获取用户个人信息"
+//  Get user's profile | 获取用户个人信息
 //
 // Responses:
 //  200: ProfileResp

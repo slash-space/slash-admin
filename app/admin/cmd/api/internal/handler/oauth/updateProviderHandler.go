@@ -11,9 +11,9 @@ import (
 
 // swagger:route put /oauth/provider oauth UpdateProvider
 //
-// "Update provider information | 更新提供商信息"
+//  Update provider information | 更新提供商信息
 //
-// "更新提供商信息"
+//  Update provider information | 更新提供商信息
 //
 // Parameters:
 //  + name: body

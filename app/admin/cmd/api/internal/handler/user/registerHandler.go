@@ -11,9 +11,9 @@ import (
 
 // swagger:route post /user/register user Register
 //
-// "Register | 注册"
+//  Register | 注册
 //
-// "注册"
+//  Register | 注册
 //
 // Parameters:
 //  + name: body

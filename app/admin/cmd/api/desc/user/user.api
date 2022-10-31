@@ -320,18 +320,11 @@ type (
     group: user
 )
 service core {
-
-    @doc(
-        summary: "Log in | 登录"
-        description: "登录"
-    )
+    // Login | 登录
     @handler login
     post /user/login (LoginReq) returns (LoginResp)
 
-    @doc(
-        summary: "Register | 注册"
-        description: "注册"
-    )
+    // Register | 注册
     @handler register
     post /user/register (RegisterReq) returns (SimpleMsgResp)
 }
@@ -342,73 +335,43 @@ service core {
     middleware: Authority
 )
 service core {
-    @doc(
-        summary: "Change Password | 修改密码"
-        description: "修改用户密码"
-    )
+    // Change Password | 修改密码
     @handler changePassword
     post /user/change-password (ChangePasswordReq) returns (SimpleMsgResp)
 
-    @doc(
-        summary: "Get user basic information | 获取用户基本信息"
-        description: "获取用户基本信息"
-    )
+    // Get user basic information | 获取用户基本信息
     @handler getUserInfo
     get /user/info returns (GetUserInfoResp)
 
-    @doc(
-        summary: "Create user's information | 新增用户"
-        description: "新增用户"
-    )
+    // Create user's information | 新增用户
     @handler createUser
     post /user (CreateUserReq) returns (SimpleMsgResp)
 
-    @doc(
-        summary: "Update user's information | 更新用户"
-        description: "更新用户"
-    )
+    // Update user's information | 更新用户
     @handler updateUser
     put /user (UpdateUserReq) returns (SimpleMsgResp)
 
-    @doc (
-        summary: "Get user list | 获取用户列表"
-        description: "获取用户列表"
-    )
+    // Get user list | 获取用户列表
     @handler getUserList
     post /user/list (GetUserListReq) returns (UserListResp)
 
-    @doc(
-        summary: "Delete user information | 删除用户信息"
-        description: "删除用户信息"
-    )
+    // "Delete user information | 删除用户信息
     @handler deleteUser
     delete /user (IDReq) returns (SimpleMsgResp)
 
-    @doc (
-        summary: "Get user's permission code | 获取用户权限码"
-        description: "获取用户权限码"
-    )
+    // Get user's permission code | 获取用户权限码
     @handler getUserPermCode
     get /user/perm returns (PermCodeResp)
 
-    @doc(
-        summary: "Get user's profile | 获取用户个人信息"
-        description: "获取用户个人信息"
-    )
+    // Get user's profile | 获取用户个人信息
     @handler getUserProfile
     get /user/profile returns (ProfileResp)
 
-    @doc(
-        summary: "Update user's profile | 更新用户个人信息"
-        description: "更新用户个人信息"
-    )
+    // Update user's profile | 更新用户个人信息
     @handler updateUserProfile
     post /user/profile (UpdateProfileReq) returns (SimpleMsgResp)
 
-    @doc(
-        summary: "Log out | 退出登陆"
-        description: "退出登陆"
-    )
+    // Log out | 退出登陆
     @handler logout
     get /user/logout returns (SimpleMsgResp)
 }

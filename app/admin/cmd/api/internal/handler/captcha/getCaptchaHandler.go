@@ -10,9 +10,9 @@ import (
 
 // swagger:route get /captcha captcha GetCaptcha
 //
-// "Get captcha | 获取验证码"
+//  Get captcha | 获取验证码
 //
-// "获取验证码"
+//  Get captcha | 获取验证码
 //
 // Responses:
 //  200: CaptchaInfoResp

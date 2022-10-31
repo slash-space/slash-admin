@@ -10,9 +10,9 @@ import (
 
 // swagger:route get /core/health core HealthCheck
 //
-// "Check the system status | 检查系统状态"
+//  Check the system status | 检查系统状态
 //
-// "检查系统状态"
+//  Check the system status | 检查系统状态
 //
 
 func HealthCheckHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {

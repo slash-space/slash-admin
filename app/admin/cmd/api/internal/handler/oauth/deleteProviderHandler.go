@@ -11,9 +11,9 @@ import (
 
 // swagger:route delete /oauth/provider oauth DeleteProvider
 //
-// "Delete provider information | 删除提供商信息"
+//  Delete provider information | 删除提供商信息
 //
-// "删除提供商信息"
+//  Delete provider information | 删除提供商信息
 //
 // Parameters:
 //  + name: body
