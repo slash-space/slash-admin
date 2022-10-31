@@ -18,6 +18,21 @@ func (c *ConverterImpl) ConvertPagination(source *ent.PageDetails) *types.Pagina
 	}
 	return pTypesPagination
 }
+func (c *ConverterImpl) ConvertSysApi(source *ent.SysApi) *types.ApiInfo {
+	var pTypesApiInfo *types.ApiInfo
+	if source != nil {
+		typesApiInfo := c.entSysApiToTypesApiInfo(*source)
+		pTypesApiInfo = &typesApiInfo
+	}
+	return pTypesApiInfo
+}
+func (c *ConverterImpl) ConvertSysApiList(source []*ent.SysApi) []*types.ApiInfo {
+	pTypesApiInfoList := make([]*types.ApiInfo, len(source))
+	for i := 0; i < len(source); i++ {
+		pTypesApiInfoList[i] = c.ConvertSysApi(source[i])
+	}
+	return pTypesApiInfoList
+}
 func (c *ConverterImpl) ConvertSysOauthProvider(source *ent.SysOauthProvider) *types.OauthProviderInfo {
 	var pTypesOauthProviderInfo *types.OauthProviderInfo
 	if source != nil {
@@ -84,6 +99,16 @@ func (c *ConverterImpl) entPageDetailsToTypesPagination(source ent.PageDetails) 
 	typesPagination.Limit = source.Limit
 	typesPagination.Total = source.Total
 	return typesPagination
+}
+func (c *ConverterImpl) entSysApiToTypesApiInfo(source ent.SysApi) types.ApiInfo {
+	var typesApiInfo types.ApiInfo
+	typesApiInfo.ID = source.ID
+	typesApiInfo.Path = source.Path
+	typesApiInfo.Description = source.Description
+	typesApiInfo.Group = source.APIGroup
+	typesApiInfo.Method = source.Method
+	typesApiInfo.CreatedAt = converter.TimeToUnixMilli(source.CreatedAt)
+	return typesApiInfo
 }
 func (c *ConverterImpl) entSysOauthProviderToTypesOauthProviderInfo(source ent.SysOauthProvider) types.OauthProviderInfo {
 	var typesOauthProviderInfo types.OauthProviderInfo

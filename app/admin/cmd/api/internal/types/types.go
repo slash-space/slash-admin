@@ -36,6 +36,8 @@ type IDReq struct {
 	ID uint64 `json:"id" validate:"number"`
 }
 
+// Page information return ｜ 分页信息返回
+// swagger:model Pagination
 type Pagination struct {
 	Page  int `json:"page"`
 	Limit int `json:"limit"`
@@ -59,6 +61,8 @@ type UUIDReq struct {
 	UUID string `json:"UUID" validate:"len=36"`
 }
 
+// The base response data | 基础信息
+// swagger:model BaseInfo
 type BaseInfo struct {
 	// ID
 	ID uint64 `json:"id"`
@@ -81,6 +85,8 @@ type SetBooleanStatusReq struct {
 	Status uint8 `json:"status" validate:"number"`
 }
 
+// role meta info | 角色meta数据
+// swagger:model RoleMetaInfo
 type RoleMetaInfo struct {
 	// Role name | 角色名
 	RoleName string `json:"roleName"`
@@ -88,6 +94,7 @@ type RoleMetaInfo struct {
 	Value string `json:"value"`
 }
 
+// swagger:model RoleInfo
 type RoleInfo struct {
 	// Role ID | 角色 ID
 	ID uint64 `json:"id,optional,default=0"`
@@ -299,6 +306,9 @@ type UserInfoResp struct {
 	User *UserInfo `json:"user"`
 }
 
+//	用户信息
+//
+// swagger:model UserInfo
 type UserInfo struct {
 	// User's id | 用户Id
 	ID uint64 `json:"id"`
@@ -458,6 +468,102 @@ type GetUserListReq struct {
 	RoleId uint64 `json:"roleId,optional" validate:"omitempty,number,max=1000"`
 }
 
+// The response data of API information | API信息
+// swagger:model ApiInfo
+type ApiInfo struct {
+	// ID
+	ID uint64 `json:"id"`
+	// API path | API路径
+	Path string `json:"path"`
+	// API Description | API 描述
+	Description string `json:"description"`
+	// API group | API分组
+	Group string `json:"group"`
+	// API request method e.g. POST | API请求类型 如POST
+	Method string `json:"method"`
+	// created time | 创建时间
+	CreatedAt int64 `json:"createdAt"`
+}
+
+// Create API information request | 创建或更新API信息
+// swagger:model CreateApiReq
+type CreateApiReq struct {
+	// API path | API路径
+	// Required: true
+	// Min length: 1
+	// Max length: 50
+	Path string `json:"path" validate:"min=1,max=50"`
+	// API Description | API 描述
+	// Required: true
+	// Max length: 50
+	Description string `json:"description" validate:"max=50"`
+	// API group | API分组
+	// Require: true
+	// Min length: 1
+	// Max length: 10
+	Group string `json:"group" validate:"alphanum,min=1,max=10"`
+	// API request method e.g. POST | API请求类型 如POST
+	// Required: true
+	// Example: POST
+	// Min length: 3
+	// Max length: 4
+	Method string `json:"method" validate:"uppercase,min=3,max=4"`
+}
+
+// Update API information request | 创建或更新API信息
+// swagger:model UpdateApiReq
+type UpdateApiReq struct {
+	// ID
+	// Required: true
+	ID uint64 `json:"id" validate:"number"`
+	// API path | API路径
+	// Min length: 1
+	// Max length: 50
+	Path *string `json:"path,optional" validate:"omitempty,min=1,max=50"`
+	// API Description | API 描述
+	// Max length: 50
+	Description *string `json:"description,optional" validate:"omitempty,max=50"`
+	// API group | API分组
+	// Min length: 1
+	// Max length: 10
+	Group *string `json:"group,optional" validate:"omitempty,alphanum,min=1,max=10"`
+	// API request method e.g. POST | API请求类型 如POST
+	// Min length: 3
+	// Max length: 4
+	Method *string `json:"method,optional" validate:"omitempty,uppercase,min=3,max=4"`
+}
+
+// The response data of API list | API列表数据
+// swagger:model ApiListResp
+type ApiListResp struct {
+	// Page information | 分页信息
+	// in: body
+	Pagination *Pagination `json:"pagination"`
+	// The API list data | API列表数据
+	// in: body
+	List []*ApiInfo `json:"data"`
+}
+
+// Get API list request params | API列表请求参数
+// swagger:model ApiListReq
+type ApiListReq struct {
+	PageReq
+	// API path | API路径
+	// Max length: 100
+	Path *string `json:"path,optional" validate:"omitempty,max=100"`
+	// API Description | API 描述
+	// Max length: 50
+	Description *string `json:"description,optional" validate:"omitempty,max=50"`
+	// API group | API分组
+	// Max length: 10
+	Group *string `json:"group,optional" validate:"omitempty,alphanum,max=10"`
+	// API request method e.g. POST | API请求类型 如POST
+	// Max length: 4
+	Method *string `json:"method,optional" validate:"omitempty,uppercase,max=4"`
+}
+
+// The response data of oauth provider information | 提供者信息
+// swagger:model OauthProviderInfo
 type OauthProviderInfo struct {
 	// ID
 	ID uint64 `json:"id"`
@@ -630,6 +736,8 @@ type CallbackResp struct {
 	ExpiredAt uint64 `json:"expiredAt"`
 }
 
+// The response data of Token information | Token信息
+// swagger:model TokenInfo
 type TokenInfo struct {
 	// ID
 	ID uint64 `json:"id"`
