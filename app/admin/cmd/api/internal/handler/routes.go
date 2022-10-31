@@ -6,6 +6,7 @@ import (
 
 	captcha "slash-admin/app/admin/cmd/api/internal/handler/captcha"
 	core "slash-admin/app/admin/cmd/api/internal/handler/core"
+	oauth "slash-admin/app/admin/cmd/api/internal/handler/oauth"
 	role "slash-admin/app/admin/cmd/api/internal/handler/role"
 	token "slash-admin/app/admin/cmd/api/internal/handler/token"
 	user "slash-admin/app/admin/cmd/api/internal/handler/user"
@@ -142,6 +143,50 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Method:  http.MethodGet,
 					Path:    "/user/logout",
 					Handler: user.LogoutHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodPost,
+				Path:    "/oauth/login",
+				Handler: oauth.OauthLoginHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/oauth/login/callback",
+				Handler: oauth.OauthCallbackHandler(serverCtx),
+			},
+		},
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Authority},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/oauth/provider",
+					Handler: oauth.CreateProviderHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPut,
+					Path:    "/oauth/provider",
+					Handler: oauth.UpdateProviderHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodDelete,
+					Path:    "/oauth/provider",
+					Handler: oauth.DeleteProviderHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/oauth/provider/list",
+					Handler: oauth.GetProviderListHandler(serverCtx),
 				},
 			}...,
 		),

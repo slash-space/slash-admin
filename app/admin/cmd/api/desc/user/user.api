@@ -76,15 +76,6 @@ type (
         Email *string `json:"email" validate:"email,max=100"`
     }
 
-    // role meta info | 角色meta数据
-    RoleMetaInfo {
-        // Role name | 角色名
-        RoleName string `json:"roleName"`
-
-        // Role value | 角色值
-        Value string `json:"value"`
-    }
-
     // register request | 注册参数
     RegisterReq {
         // User Name | 用户名

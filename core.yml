@@ -2,31 +2,6 @@ basePath: /
 consumes:
     - application/json
 definitions:
-    BaseInfo:
-        description: The base response data | 基础信息
-        properties:
-            createdAt:
-                description: Create date | 创建日期
-                format: int64
-                type: integer
-                x-go-name: CreatedAt
-            deletedAt:
-                description: Delete date | 删除日期
-                format: int64
-                type: integer
-                x-go-name: DeletedAt
-            id:
-                description: ID
-                format: uint64
-                type: integer
-                x-go-name: ID
-            updatedAt:
-                description: Update date | 更新日期
-                format: int64
-                type: integer
-                x-go-name: UpdatedAt
-        type: object
-        x-go-package: slash-admin/app/admin/cmd/api/internal/types
     ChangePasswordReq:
         description: change user's password request | 修改密码请求参数
         properties:
@@ -43,6 +18,72 @@ definitions:
         required:
             - oldPassword
             - newPassword
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    CreateProviderReq:
+        description: Create provider information request | 创建提供商信息
+        properties:
+            authStyle:
+                description: |-
+                    Auth Style is specifies how the endpoint wants the client ID & client secret sent. The zero value means to auto-detect. | 鉴权方式, 0 表示自动检测
+                    0 auto detect 1 client ID and client secret 2 username and password
+                example: 0
+                format: uint8
+                type: integer
+                x-go-name: AuthStyle
+            authURL:
+                description: Auth URL | 鉴权URL
+                maxLength: 200
+                type: string
+                x-go-name: AuthURL
+            clientID:
+                description: Client ID | 客户端ID
+                maxLength: 100
+                type: string
+                x-go-name: ClientID
+            clientSecret:
+                description: |-
+                    Client secret | 客户端密码
+                    Require: true
+                maxLength: 100
+                minLength: 1
+                type: string
+                x-go-name: ClientSecret
+            infoURL:
+                description: Get User information URL | 获取用户信息地址
+                maxLength: 200
+                type: string
+                x-go-name: InfoURL
+            name:
+                description: Provider name | 提供商名字
+                maxLength: 50
+                minLength: 1
+                type: string
+                x-go-name: Name
+            redirectURL:
+                description: Redirect URL | 跳转URL
+                maxLength: 200
+                type: string
+                x-go-name: RedirectURL
+            scopes:
+                description: Scopes | 范围
+                maxLength: 200
+                type: string
+                x-go-name: Scopes
+            tokenURL:
+                description: Token URL | 获取 Token 的网址
+                maxLength: 200
+                type: string
+                x-go-name: TokenURL
+        required:
+            - name
+            - clientID
+            - redirectURL
+            - scopes
+            - authURL
+            - tokenURL
+            - authStyle
+            - infoURL
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
     CreateRoleReq:
@@ -312,6 +353,76 @@ definitions:
                 $ref: '#/definitions/UserInfo'
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    OauthLoginReq:
+        description: Oauth log in request | Oauth 登录请求
+        properties:
+            provider:
+                description: Provider name | 提供商名字
+                example: google
+                maxLength: 40
+                type: string
+                x-go-name: Provider
+            state:
+                description: State code to avoid hack | 状态码，请求前后相同避免安全问题
+                maxLength: 30
+                type: string
+                x-go-name: State
+        required:
+            - state
+            - provider
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    OauthProviderInfo:
+        properties:
+            authStyle:
+                description: Auth Style | 鉴权方式, 0 表示自动检测
+                format: uint8
+                type: integer
+                x-go-name: AuthStyle
+            authURL:
+                description: Auth URL | 鉴权URL
+                type: string
+                x-go-name: AuthURL
+            clientID:
+                description: Client ID | 客户端ID
+                type: string
+                x-go-name: ClientID
+            clientSecret:
+                description: Client secret | 客户端密码
+                type: string
+                x-go-name: ClientSecret
+            createdAt:
+                description: Created time | 创建时间
+                format: int64
+                type: integer
+                x-go-name: CreatedAt
+            id:
+                description: ID
+                format: uint64
+                type: integer
+                x-go-name: ID
+            infoURL:
+                description: Get User information URL | 获取用户信息地址
+                type: string
+                x-go-name: InfoURL
+            name:
+                description: Provider name | 提供商名字
+                type: string
+                x-go-name: Name
+            redirectURL:
+                description: Redirect URL | 跳转URL
+                type: string
+                x-go-name: RedirectURL
+            scopes:
+                description: Scopes | 范围
+                type: string
+                x-go-name: Scopes
+            tokenURL:
+                description: Token URL | 获取 Token 的网址
+                type: string
+                x-go-name: TokenURL
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
     PageReq:
         description: The page request parameters | 列表请求参数
         properties:
@@ -331,7 +442,6 @@ definitions:
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
     Pagination:
-        description: Page information return ｜ 分页信息返回
         properties:
             limit:
                 format: int64
@@ -345,6 +455,21 @@ definitions:
                 format: int64
                 type: integer
                 x-go-name: Total
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    ProviderListResp:
+        description: The response data of provider list | 提供商列表数据
+        properties:
+            list:
+                description: |-
+                    The provider list data | 提供商列表数据
+                    in: body
+                items:
+                    $ref: '#/definitions/OauthProviderInfo'
+                type: array
+                x-go-name: List
+            pagination:
+                $ref: '#/definitions/Pagination'
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
     RegisterReq:
@@ -436,7 +561,6 @@ definitions:
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
     RoleMetaInfo:
-        description: role meta info | 角色meta数据
         properties:
             roleName:
                 description: Role name | 角色名
@@ -487,12 +611,12 @@ definitions:
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
     TokenInfo:
-        description: The response data of Token information | Token信息
         properties:
             UUID:
                 description: User's UUID | 用户的UUID
                 type: string
             createdAt:
+                description: Create time | 创建时间
                 format: int64
                 type: integer
                 x-go-name: CreatedAt
@@ -612,6 +736,78 @@ definitions:
                 maxLength: 10
                 type: string
                 x-go-name: Nickname
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    UpdateProviderReq:
+        description: Update provider information request | 更新提供商信息
+        properties:
+            authStyle:
+                description: |-
+                    Auth Style is specifies how the endpoint wants the client ID & client secret sent. The zero value means to auto-detect. | 鉴权方式, 0 表示自动检测
+                    0 auto detect 1 client ID and client secret 2 username and password
+                example: 0
+                format: uint8
+                type: integer
+                x-go-name: AuthStyle
+            authURL:
+                description: Auth URL | 鉴权URL
+                maxLength: 200
+                type: string
+                x-go-name: AuthURL
+            clientID:
+                description: Client ID | 客户端ID
+                maxLength: 100
+                type: string
+                x-go-name: ClientID
+            clientSecret:
+                description: |-
+                    Client secret | 客户端密码
+                    Require: true
+                maxLength: 100
+                minLength: 1
+                type: string
+                x-go-name: ClientSecret
+            id:
+                description: ID
+                format: uint64
+                type: integer
+                x-go-name: ID
+            infoURL:
+                description: Get User information URL | 获取用户信息地址
+                maxLength: 200
+                type: string
+                x-go-name: InfoURL
+            name:
+                description: Provider name | 提供商名字
+                maxLength: 50
+                minLength: 1
+                type: string
+                x-go-name: Name
+            redirectURL:
+                description: Redirect URL | 跳转URL
+                maxLength: 200
+                type: string
+                x-go-name: RedirectURL
+            scopes:
+                description: Scopes | 范围
+                maxLength: 200
+                type: string
+                x-go-name: Scopes
+            tokenURL:
+                description: Token URL | 获取 Token 的网址
+                maxLength: 200
+                type: string
+                x-go-name: TokenURL
+        required:
+            - id
+            - name
+            - clientID
+            - redirectURL
+            - scopes
+            - authURL
+            - tokenURL
+            - authStyle
+            - infoURL
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
     UpdateRoleReq:
@@ -765,7 +961,6 @@ definitions:
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
     UserInfo:
-        description: 用户信息
         properties:
             UUID:
                 description: User's UUID | 用户的UUID
@@ -869,6 +1064,107 @@ paths:
             summary: '"Initialize database | 初始化数据库"'
             tags:
                 - core
+    /oauth/login:
+        post:
+            description: '"Oauth log in | Oauth 登录"'
+            operationId: OauthLogin
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/OauthLoginReq'
+                    type: object
+            responses:
+                "200":
+                    $ref: '#/responses/RedirectResp'
+            summary: '"Oauth log in | Oauth 登录"'
+            tags:
+                - oauth
+    /oauth/login/callback:
+        get:
+            description: '"Oauth 登录回调接口"'
+            operationId: OauthCallback
+            parameters:
+                - in: query
+                  maxLength: 30
+                  name: State
+                  required: true
+                  type: string
+                - in: query
+                  maxLength: 40
+                  name: Code
+                  required: true
+                  type: string
+            responses:
+                "200":
+                    $ref: '#/responses/CallbackResp'
+            summary: '"Oauth log in callback route | Oauth 登录回调接口"'
+            tags:
+                - oauth
+    /oauth/provider:
+        delete:
+            description: '"删除提供商信息"'
+            operationId: DeleteProvider
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/IDReq'
+                    type: object
+            responses:
+                "200":
+                    $ref: '#/responses/SimpleMsgResp'
+            summary: '"Delete provider information | 删除提供商信息"'
+            tags:
+                - oauth
+        post:
+            description: '"创建提供商信息"'
+            operationId: CreateProvider
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/CreateProviderReq'
+                    type: object
+            responses:
+                "200":
+                    $ref: '#/responses/SimpleMsgResp'
+            summary: '"Create provider information | 创建提供商信息"'
+            tags:
+                - oauth
+        put:
+            description: '"更新提供商信息"'
+            operationId: UpdateProvider
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/UpdateProviderReq'
+                    type: object
+            responses:
+                "200":
+                    $ref: '#/responses/SimpleMsgResp'
+            summary: '"Update provider information | 更新提供商信息"'
+            tags:
+                - oauth
+    /oauth/provider/list:
+        post:
+            description: '"获取提供商列表"'
+            operationId: GetProviderList
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/PageReq'
+                    type: object
+            responses:
+                "200":
+                    description: ProviderListResp
+                    schema:
+                        $ref: '#/definitions/ProviderListResp'
+            summary: '"Get provider list | 获取提供商列表"'
+            tags:
+                - oauth
     /role:
         delete:
             description: '"删除角色信息"'
@@ -1229,6 +1525,21 @@ responses:
                 type: string
             msg:
                 type: string
+    CallbackResp:
+        description: The oauth callback response data | Oauth回调数据
+        headers:
+            expiredAt:
+                description: Expire timestamp | 过期时间戳
+                format: uint64
+                type: integer
+            token:
+                description: Token for authorization | 验证身份的token
+                type: string
+            userId:
+                description: User's UUID | 用户的UUID
+                type: string
+        schema:
+            $ref: '#/definitions/RoleMetaInfo'
     CaptchaInfoResp:
         description: The response data of captcha | 验证码返回数据
         headers:
@@ -1250,6 +1561,11 @@ responses:
             user: {}
         schema:
             $ref: '#/definitions/UserInfo'
+    RedirectResp:
+        description: Redirect response | 跳转网址
+        headers:
+            URL:
+                type: string
     SimpleMsgResp:
         description: The SimpleMsgResp | 简单信息Resp
         headers:

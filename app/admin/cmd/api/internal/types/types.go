@@ -36,8 +36,6 @@ type IDReq struct {
 	ID uint64 `json:"id" validate:"number"`
 }
 
-// Page information return ｜ 分页信息返回
-// swagger:model Pagination
 type Pagination struct {
 	Page  int `json:"page"`
 	Limit int `json:"limit"`
@@ -61,8 +59,6 @@ type UUIDReq struct {
 	UUID string `json:"UUID" validate:"len=36"`
 }
 
-// The base response data | 基础信息
-// swagger:model BaseInfo
 type BaseInfo struct {
 	// ID
 	ID uint64 `json:"id"`
@@ -85,7 +81,13 @@ type SetBooleanStatusReq struct {
 	Status uint8 `json:"status" validate:"number"`
 }
 
-// swagger:model RoleInfo
+type RoleMetaInfo struct {
+	// Role name | 角色名
+	RoleName string `json:"roleName"`
+	// Role value | 角色值
+	Value string `json:"value"`
+}
+
 type RoleInfo struct {
 	// Role ID | 角色 ID
 	ID uint64 `json:"id,optional,default=0"`
@@ -250,15 +252,6 @@ type UpdateProfileReq struct {
 	Email *string `json:"email" validate:"email,max=100"`
 }
 
-// role meta info | 角色meta数据
-// swagger:model RoleMetaInfo
-type RoleMetaInfo struct {
-	// Role name | 角色名
-	RoleName string `json:"roleName"`
-	// Role value | 角色值
-	Value string `json:"value"`
-}
-
 // register request | 注册参数
 // swagger:model RegisterReq
 type RegisterReq struct {
@@ -306,9 +299,6 @@ type UserInfoResp struct {
 	User *UserInfo `json:"user"`
 }
 
-//	用户信息
-//
-// swagger:model UserInfo
 type UserInfo struct {
 	// User's id | 用户Id
 	ID uint64 `json:"id"`
@@ -468,8 +458,178 @@ type GetUserListReq struct {
 	RoleId uint64 `json:"roleId,optional" validate:"omitempty,number,max=1000"`
 }
 
-// The response data of Token information | Token信息
-// swagger:model TokenInfo
+type OauthProviderInfo struct {
+	// ID
+	ID uint64 `json:"id"`
+	// Provider name | 提供商名字
+	Name string `json:"name"`
+	// Client ID | 客户端ID
+	ClientID string `json:"clientID"`
+	// Client secret | 客户端密码
+	ClientSecret string `json:"clientSecret"`
+	// Redirect URL | 跳转URL
+	RedirectURL string `json:"redirectURL"`
+	// Scopes | 范围
+	Scopes string `json:"scopes"`
+	// Auth URL | 鉴权URL
+	AuthURL string `json:"authURL"`
+	// Token URL | 获取 Token 的网址
+	TokenURL string `json:"tokenURL"`
+	// Auth Style | 鉴权方式, 0 表示自动检测
+	AuthStyle uint8 `json:"authStyle"`
+	// Get User information URL | 获取用户信息地址
+	InfoURL string `json:"infoURL"`
+	// Created time | 创建时间
+	CreatedAt int64 `json:"createdAt"`
+}
+
+// Create provider information request | 创建提供商信息
+// swagger:model CreateProviderReq
+type CreateProviderReq struct {
+	// Provider name | 提供商名字
+	// Required: true
+	// Min length: 1
+	// Max length: 50
+	Name string `json:"name" validate:"min=1,max=50"`
+	// Client ID | 客户端ID
+	// Required: true
+	// Max length: 100
+	ClientID string `json:"clientID" validate:"max=100"`
+	// Client secret | 客户端密码
+	// Require: true
+	// Min length: 1
+	// Max length: 100
+	ClientSecret string `json:"clientSecret" validate:"min=1,max=100"`
+	// Redirect URL | 跳转URL
+	// Required: true
+	// Max length: 200
+	RedirectURL string `json:"redirectURL" validate:"max=200"`
+	// Scopes | 范围
+	// Required: true
+	// Max length: 200
+	Scopes string `json:"scopes" validate:"max=200"`
+	// Auth URL | 鉴权URL
+	// Required: true
+	// Max length: 200
+	AuthURL string `json:"authURL" validate:"max=200"`
+	// Token URL | 获取 Token 的网址
+	// Required: true
+	// Max length: 200
+	TokenURL string `json:"tokenURL" validate:"max=200"`
+	// Auth Style is specifies how the endpoint wants the client ID & client secret sent. The zero value means to auto-detect. | 鉴权方式, 0 表示自动检测
+	// 0 auto detect 1 client ID and client secret 2 username and password
+	// Required: true
+	// Example: 0
+	AuthStyle uint8 `json:"authStyle" validate:"number,oneof=0 1 2"`
+	// Get User information URL | 获取用户信息地址
+	// Required: true
+	// Max length: 200
+	InfoURL string `json:"infoURL" validate:"max=200"`
+}
+
+// Update provider information request | 更新提供商信息
+// swagger:model UpdateProviderReq
+type UpdateProviderReq struct {
+	// ID
+	// Required: true
+	ID uint64 `json:"id" validate:"number"`
+	// Provider name | 提供商名字
+	// Required: true
+	// Min length: 1
+	// Max length: 50
+	Name *string `json:"name,optional" validate:"omitempty,min=1,max=50"`
+	// Client ID | 客户端ID
+	// Required: true
+	// Max length: 100
+	ClientID *string `json:"clientID,optional" validate:"omitempty,max=100"`
+	// Client secret | 客户端密码
+	// Require: true
+	// Min length: 1
+	// Max length: 100
+	ClientSecret *string `json:"clientSecret,optional" validate:"omitempty,min=1,max=100"`
+	// Redirect URL | 跳转URL
+	// Required: true
+	// Max length: 200
+	RedirectURL *string `json:"redirectURL,optional" validate:"omitempty,max=200"`
+	// Scopes | 范围
+	// Required: true
+	// Max length: 200
+	Scopes *string `json:"scopes,optional" validate:"omitempty,max=200"`
+	// Auth URL | 鉴权URL
+	// Required: true
+	// Max length: 200
+	AuthURL *string `json:"authURL,optional" validate:"omitempty,max=200"`
+	// Token URL | 获取 Token 的网址
+	// Required: true
+	// Max length: 200
+	TokenURL *string `json:"tokenURL,optional" validate:"omitempty,max=200"`
+	// Auth Style is specifies how the endpoint wants the client ID & client secret sent. The zero value means to auto-detect. | 鉴权方式, 0 表示自动检测
+	// 0 auto detect 1 client ID and client secret 2 username and password
+	// Required: true
+	// Example: 0
+	AuthStyle *uint8 `json:"authStyle,optional" validate:"omitempty,number,oneof=0 1 2"`
+	// Get User information URL | 获取用户信息地址
+	// Required: true
+	// Max length: 200
+	InfoURL *string `json:"infoURL,optional" validate:"omitempty,max=200"`
+}
+
+// The response data of provider list | 提供商列表数据
+// swagger:model ProviderListResp
+type ProviderListResp struct {
+	//Page information | 分页信息
+	// in: body
+	Pagination *Pagination `json:"pagination"`
+	// The provider list data | 提供商列表数据
+	// in: body
+	List []*OauthProviderInfo `json:"list"`
+}
+
+// Oauth log in request | Oauth 登录请求
+// swagger:model OauthLoginReq
+type OauthLoginReq struct {
+	// State code to avoid hack | 状态码，请求前后相同避免安全问题
+	// Required: true
+	// Max Length: 30
+	State string `json:"state" validate:"max=30"`
+	// Provider name | 提供商名字
+	// Required: true
+	// Max Length: 40
+	// Example: google
+	Provider string `json:"provider" validate:"max=40"`
+}
+
+// Oauth Callback in Req | Oauth 回调请求
+// swagger:parameters OauthCallbackParamReq OauthCallback
+type OauthCallbackParamReq struct {
+	// Required: true
+	// Max Length: 30
+	State string `form:"state" validate:"max=30"`
+	// Required: true
+	// Max Length: 40
+	Code string `form:"code" validate:"max=100"`
+}
+
+// Redirect response | 跳转网址
+// swagger:response RedirectResp
+type RedirectResp struct {
+	URL string `json:"URL"`
+}
+
+// The oauth callback response data | Oauth回调数据
+// swagger:response CallbackResp
+type CallbackResp struct {
+	// User's UUID | 用户的UUID
+	UserId string `json:"userId"`
+	// User's role information| 用户的角色信息
+	// in: body
+	Role *RoleMetaInfo `json:"role"`
+	// Token for authorization | 验证身份的token
+	Token string `json:"token"`
+	// Expire timestamp | 过期时间戳
+	ExpiredAt uint64 `json:"expiredAt"`
+}
+
 type TokenInfo struct {
 	// ID
 	ID uint64 `json:"id"`
@@ -480,7 +640,8 @@ type TokenInfo struct {
 	// Log in source such as github | Token 来源 （本地为core, 第三方如github等）
 	Source string `json:"source"`
 	// JWT status 0 ban 1 active | JWT状态， 0 禁止 1 正常
-	Status    uint8 `json:"status"`
+	Status uint8 `json:"status"`
+	// Create time | 创建时间
 	CreatedAt int64 `json:"createdAt"`
 	// Expire time | 过期时间
 	ExpiredAt int64 `json:"expiredAt"`

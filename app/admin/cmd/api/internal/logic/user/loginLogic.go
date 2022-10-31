@@ -124,3 +124,18 @@ func GetJwtToken(secretKey, uuid string, iat, seconds int64, roleId int) (string
 	token.Claims = claims
 	return token.SignedString([]byte(secretKey))
 }
+
+func GetSysUserJwtToken(user *ent.SysUser, secretKey string, iat, seconds int64) (string, error) {
+	roleId := globalkey.RoleMemberID
+	if user.Edges.Role != nil {
+		roleId = int(user.Edges.Role.ID)
+	}
+	claims := make(jwt.MapClaims)
+	claims["exp"] = iat + seconds
+	claims["iat"] = iat
+	claims[globalkey.JWTUserId] = user.UUID
+	claims[globalkey.JWTRoleId] = roleId
+	token := jwt.New(jwt.SigningMethodHS256)
+	token.Claims = claims
+	return token.SignedString([]byte(secretKey))
+}
