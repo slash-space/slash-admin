@@ -81,9 +81,9 @@ type BaseInfo {
 type SetBooleanStatusReq {
     // ID
     // Required: true
-    Id uint64 `json:"id" validate:"number"`
+    ID uint64 `json:"id" validate:"number"`
 
     // Status code | 状态码
     // Required: true
-    Status uint32 `json:"status" validate:"number"`
+    Status uint8 `json:"status" validate:"number"`
 }

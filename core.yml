@@ -45,8 +45,88 @@ definitions:
             - newPassword
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
-    CreateOrUpdateUserReq:
-        description: Create or update user information request | 创建或更新用户信息
+    CreateRoleReq:
+        properties:
+            defaultRouter:
+                description: Role's default page | 角色默认管理页面
+                example: '"/dashboard"'
+                maxLength: 20
+                type: string
+                x-go-name: DefaultRouter
+            name:
+                description: Role Name | 角色名
+                example: '"admin"'
+                maxLength: 20
+                type: string
+                x-go-name: Name
+            orderNo:
+                description: Role's sorting number | 角色排序
+                example: 0
+                format: uint32
+                maximum: 1000
+                type: integer
+                x-go-name: OrderNo
+            remark:
+                description: Role remark | 角色备注
+                example: '"admin remark"'
+                maxLength: 200
+                type: string
+                x-go-name: Remark
+            status:
+                description: Role status | 角色状态
+                example: 0
+                format: uint8
+                maximum: 1
+                type: integer
+                x-go-name: Status
+            value:
+                description: Role value | 角色值
+                example: '"admin"'
+                maxLength: 10
+                type: string
+                x-go-name: Value
+        required:
+            - name
+            - value
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    CreateTokenReq:
+        description: Create token information request | 创建token信息
+        properties:
+            UUID:
+                description: User's UUID | 用户的UUID
+                maxLength: 36
+                type: string
+            expireAt:
+                description: Expire time | 过期时间
+                format: int64
+                type: integer
+                x-go-name: ExpireAt
+            source:
+                description: Log in source such as github | Token 来源 （本地为core, 第三方如github等）
+                maxLength: 50
+                type: string
+                x-go-name: Source
+            status:
+                description: JWT status 0 ban 1 active | JWT状态， 0 禁止 1 正常
+                example: 1
+                format: uint8
+                type: integer
+                x-go-name: Status
+            token:
+                description: Token string | Token 字符串
+                type: string
+                x-go-name: Token
+        required:
+            - UUID
+            - token
+            - source
+            - status
+            - expireAt
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    CreateUserReq:
+        description: Create user information request | 创建新用户信息
         properties:
             avatar:
                 description: The user's avatar path | 用户的头像路径
@@ -55,34 +135,35 @@ definitions:
                 x-go-name: Avatar
             email:
                 description: The user's email address | 用户的邮箱
+                example: admin@gmail.com
                 maxLength: 100
                 type: string
                 x-go-name: Email
-            id:
-                description: User's id | 用户Id
-                format: uint64
-                type: integer
-                x-go-name: ID
             mobile:
                 description: User's mobile phone number | 用户的手机号码
+                example: "13888888888"
                 maxLength: 18
                 type: string
                 x-go-name: Mobile
             nickname:
                 description: User's nickname | 用户的昵称
-                maxLength: 10
+                example: admin nickname
+                maxLength: 20
                 type: string
                 x-go-name: Nickname
             password:
                 description: Password | 密码
+                example: "123456"
                 maxLength: 30
                 minLength: 6
                 type: string
                 x-go-name: Password
             roleId:
                 description: User's role id | 用户的角色Id
+                example: 1
                 format: uint64
-                maximum: 1000
+                maximum: 10
+                minimum: 1
                 type: integer
                 x-go-name: RoleID
             status:
@@ -90,14 +171,20 @@ definitions:
                     The user's status | 用户状态
                     0 normal, 1 ban | 0 正常 1 拉黑
                 format: uint8
-                maximum: 2
+                maximum: 0
                 type: integer
                 x-go-name: Status
             username:
                 description: User Name | 用户名
+                example: admin
                 maxLength: 20
                 type: string
                 x-go-name: Username
+        required:
+            - username
+            - nickname
+            - password
+            - email
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
     GetUserInfoResp:
@@ -299,51 +386,38 @@ definitions:
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
     RoleInfo:
-        description: Create or update role information params | 创建或更新角色信息参数
         properties:
             defaultRouter:
                 description: Role's default page | 角色默认管理页面
-                maxLength: 20
                 type: string
                 x-go-name: DefaultRouter
             id:
-                default: 0
                 description: Role ID | 角色 ID
                 format: uint64
                 type: integer
                 x-go-name: ID
             name:
                 description: Role Name | 角色名
-                maxLength: 20
                 type: string
                 x-go-name: Name
             orderNo:
                 description: Role's sorting number | 角色排序
                 format: uint32
-                maximum: 1000
                 type: integer
                 x-go-name: OrderNo
             remark:
                 description: Role remark | 角色备注
-                maxLength: 200
                 type: string
                 x-go-name: Remark
             status:
                 description: Role status | 角色状态
                 format: uint8
-                maximum: 10
                 type: integer
                 x-go-name: Status
             value:
                 description: Role value | 角色值
-                maxLength: 10
                 type: string
                 x-go-name: Value
-        required:
-            - name
-            - value
-            - defaultRouter
-            - orderNo
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
     RoleListResp:
@@ -381,10 +455,10 @@ definitions:
                 description: ID
                 format: uint64
                 type: integer
-                x-go-name: Id
+                x-go-name: ID
             status:
                 description: Status code | 状态码
-                format: uint32
+                format: uint8
                 type: integer
                 x-go-name: Status
         required:
@@ -404,12 +478,104 @@ definitions:
             status:
                 description: Status code | 状态码
                 format: uint8
-                maximum: 10
+                maximum: 1
                 type: integer
                 x-go-name: Status
         required:
             - id
             - status
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    TokenInfo:
+        description: The response data of Token information | Token信息
+        properties:
+            UUID:
+                description: User's UUID | 用户的UUID
+                type: string
+            createdAt:
+                format: int64
+                type: integer
+                x-go-name: CreatedAt
+            expiredAt:
+                description: Expire time | 过期时间
+                format: int64
+                type: integer
+                x-go-name: ExpiredAt
+            id:
+                description: ID
+                format: uint64
+                type: integer
+                x-go-name: ID
+            source:
+                description: Log in source such as github | Token 来源 （本地为core, 第三方如github等）
+                type: string
+                x-go-name: Source
+            status:
+                description: JWT status 0 ban 1 active | JWT状态， 0 禁止 1 正常
+                format: uint8
+                type: integer
+                x-go-name: Status
+            token:
+                description: Token string | Token 字符串
+                type: string
+                x-go-name: Token
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    TokenListReq:
+        description: Get token list request params | token列表请求参数
+        properties:
+            UUID:
+                description: User's UUID | 用户的UUID
+                maxLength: 36
+                type: string
+            email:
+                description: The user's email address | 用户的邮箱
+                maxLength: 100
+                type: string
+                x-go-name: Email
+            nickname:
+                description: user's nickname | 用户的昵称
+                maxLength: 10
+                type: string
+                x-go-name: Nickname
+            pageNo:
+                description: Page number | 第几页
+                format: int64
+                minimum: 1
+                type: integer
+                x-go-name: PageNo
+            pageSize:
+                default: 10
+                description: Page size | 单页数据行数
+                format: int64
+                maximum: 100
+                type: integer
+                x-go-name: PageSize
+            username:
+                description: User Name | 用户名
+                maxLength: 20
+                type: string
+                x-go-name: Username
+        required:
+            - UUID
+            - nickname
+            - username
+            - email
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    TokenListResp:
+        description: The response data of Token list | Token列表数据
+        properties:
+            list:
+                description: |-
+                    The token list data | Token列表数据
+                    in: body
+                items:
+                    $ref: '#/definitions/TokenInfo'
+                type: array
+                x-go-name: List
+            pagination:
+                $ref: '#/definitions/Pagination'
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
     UUIDReq:
@@ -446,6 +612,156 @@ definitions:
                 maxLength: 10
                 type: string
                 x-go-name: Nickname
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    UpdateRoleReq:
+        properties:
+            defaultRouter:
+                description: Role's default page | 角色默认管理页面
+                maxLength: 20
+                type: string
+                x-go-name: DefaultRouter
+            id:
+                default: 1
+                description: Role ID | 角色 ID
+                format: uint64
+                type: integer
+                x-go-name: ID
+            name:
+                description: Role Name | 角色名
+                maxLength: 20
+                type: string
+                x-go-name: Name
+            orderNo:
+                description: Role's sorting number | 角色排序
+                format: uint32
+                maximum: 1000
+                type: integer
+                x-go-name: OrderNo
+            remark:
+                description: Role remark | 角色备注
+                maxLength: 200
+                type: string
+                x-go-name: Remark
+            status:
+                description: Role status | 角色状态
+                format: uint8
+                maximum: 10
+                type: integer
+                x-go-name: Status
+            value:
+                description: Role value | 角色值
+                maxLength: 10
+                type: string
+                x-go-name: Value
+        required:
+            - id
+            - orderNo
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    UpdateTokenReq:
+        description: Update token information request | 创建或更新token信息
+        properties:
+            UUID:
+                description: User's UUID | 用户的UUID
+                maxLength: 36
+                type: string
+            createdAt:
+                description: Create date | 创建日期
+                format: int64
+                type: integer
+                x-go-name: CreatedAt
+            expiredAt:
+                description: Expire time | 过期时间
+                format: int64
+                type: integer
+                x-go-name: ExpiredAt
+            id:
+                description: ID
+                format: uint64
+                type: integer
+                x-go-name: ID
+            source:
+                description: Log in source such as github | Token 来源 （本地为core, 第三方如github等）
+                maxLength: 50
+                type: string
+                x-go-name: Source
+            status:
+                description: JWT status 0 ban 1 active | JWT状态， 0 禁止 1 正常
+                format: uint8
+                type: integer
+                x-go-name: Status
+            token:
+                description: Token string | Token 字符串
+                type: string
+                x-go-name: Token
+        required:
+            - id
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    UpdateUserReq:
+        description: Update user information request | 更新用户信息
+        properties:
+            avatar:
+                description: The user's avatar path | 用户的头像路径
+                example: https://localhost/static/1.png
+                type: string
+                x-go-name: Avatar
+            email:
+                description: The user's email address | 用户的邮箱
+                example: admin@gmail.com
+                maxLength: 100
+                type: string
+                x-go-name: Email
+            id:
+                description: User's id | 用户Id
+                example: 1
+                format: uint64
+                minimum: 1
+                type: integer
+                x-go-name: ID
+            mobile:
+                description: User's mobile phone number | 用户的手机号码
+                example: "13888888888"
+                maxLength: 18
+                type: string
+                x-go-name: Mobile
+            nickname:
+                description: User's nickname | 用户的昵称
+                example: admin nickname
+                maxLength: 10
+                type: string
+                x-go-name: Nickname
+            password:
+                description: Password | 密码
+                example: "123456"
+                maxLength: 30
+                minLength: 6
+                type: string
+                x-go-name: Password
+            roleId:
+                description: User's role id | 用户的角色Id
+                example: 1
+                format: uint64
+                maximum: 1000
+                type: integer
+                x-go-name: RoleID
+            status:
+                description: |-
+                    The user's status | 用户状态
+                    0 normal, 1 ban | 0 正常 1 拉黑
+                format: uint8
+                maximum: 2
+                type: integer
+                x-go-name: Status
+            username:
+                description: User Name | 用户名
+                example: admin
+                maxLength: 20
+                type: string
+                x-go-name: Username
+        required:
+            - id
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
     UserInfo:
@@ -571,17 +887,32 @@ paths:
                 - role
         post:
             description: '"创建或更新角色"'
-            operationId: CreateOrUpdateRole
+            operationId: CreateRole
             parameters:
                 - in: body
                   name: body
                   schema:
-                    $ref: '#/definitions/RoleInfo'
+                    $ref: '#/definitions/CreateRoleReq'
                     type: object
             responses:
                 "200":
                     $ref: '#/responses/SimpleMsgResp'
-            summary: '"Create or update role information | 创建或更新角色"'
+            summary: '"Create role information | 创建角色"'
+            tags:
+                - role
+        put:
+            description: '"更新角色"'
+            operationId: UpdateRole
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/UpdateRoleReq'
+                    type: object
+            responses:
+                "200":
+                    $ref: '#/responses/SimpleMsgResp'
+            summary: '"Update role information | 更新角色"'
             tags:
                 - role
     /role/list:
@@ -618,6 +949,102 @@ paths:
             summary: '"Set role status | 设置角色状态"'
             tags:
                 - role
+    /token:
+        delete:
+            description: '"Delete token information"'
+            operationId: DeleteToken
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/IDReq'
+                    type: object
+            responses:
+                "200":
+                    $ref: '#/responses/SimpleMsgResp'
+            summary: '"Delete token information | 删除token信息"'
+            tags:
+                - token
+        post:
+            description: '"Create Token information"'
+            operationId: CreateToken
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/CreateTokenReq'
+                    type: object
+            responses:
+                "200":
+                    $ref: '#/responses/SimpleMsgResp'
+            summary: '"Create Token information | 创建Token"'
+            tags:
+                - token
+        put:
+            description: '"Update Token information"'
+            operationId: UpdateToken
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/UpdateTokenReq'
+                    type: object
+            responses:
+                "200":
+                    $ref: '#/responses/SimpleMsgResp'
+            summary: '"Update Token information | 更新Token"'
+            tags:
+                - token
+    /token/list:
+        post:
+            description: '"Get Token list"'
+            operationId: GetTokenList
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/TokenListReq'
+                    type: object
+            responses:
+                "200":
+                    description: TokenListResp
+                    schema:
+                        $ref: '#/definitions/TokenListResp'
+            summary: '"Get Token list | 获取token列表"'
+            tags:
+                - token
+    /token/logout:
+        post:
+            description: '"Force logging out by user UUID"'
+            operationId: Logout
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/UUIDReq'
+                    type: object
+            responses:
+                "200":
+                    $ref: '#/responses/SimpleMsgResp'
+            summary: '"Force logging out by user UUID | 根据UUID强制用户退出"'
+            tags:
+                - token
+    /token/status:
+        post:
+            description: '"Set token status"'
+            operationId: SetTokenStatus
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/SetBooleanStatusReq'
+                    type: object
+            responses:
+                "200":
+                    $ref: '#/responses/SimpleMsgResp'
+            summary: '"Set token status | 设置token状态"'
+            tags:
+                - token
     /user:
         delete:
             description: '"删除用户信息"'
@@ -635,18 +1062,33 @@ paths:
             tags:
                 - user
         post:
-            description: '"新增或更新用户"'
-            operationId: CreateOrUpdateUser
+            description: '"新增用户"'
+            operationId: CreateUser
             parameters:
                 - in: body
                   name: body
                   schema:
-                    $ref: '#/definitions/CreateOrUpdateUserReq'
+                    $ref: '#/definitions/CreateUserReq'
                     type: object
             responses:
                 "200":
                     $ref: '#/responses/SimpleMsgResp'
-            summary: '"Create or update user''s information | 新增或更新用户"'
+            summary: '"Create user''s information | 新增用户"'
+            tags:
+                - user
+        put:
+            description: '"更新用户"'
+            operationId: UpdateUser
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/UpdateUserReq'
+                    type: object
+            responses:
+                "200":
+                    $ref: '#/responses/SimpleMsgResp'
+            summary: '"Update user''s information | 更新用户"'
             tags:
                 - user
     /user/change-password:

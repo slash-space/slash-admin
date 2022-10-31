@@ -7,6 +7,7 @@ import (
 	captcha "slash-admin/app/admin/cmd/api/internal/handler/captcha"
 	core "slash-admin/app/admin/cmd/api/internal/handler/core"
 	role "slash-admin/app/admin/cmd/api/internal/handler/role"
+	token "slash-admin/app/admin/cmd/api/internal/handler/token"
 	user "slash-admin/app/admin/cmd/api/internal/handler/user"
 	"slash-admin/app/admin/cmd/api/internal/svc"
 
@@ -36,7 +37,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				{
 					Method:  http.MethodPost,
 					Path:    "/role",
-					Handler: role.CreateOrUpdateRoleHandler(serverCtx),
+					Handler: role.CreateRoleHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPut,
+					Path:    "/role",
+					Handler: role.UpdateRoleHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodDelete,
@@ -55,6 +61,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				},
 			}...,
 		),
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
 	)
 
 	server.AddRoutes(
@@ -99,7 +106,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				{
 					Method:  http.MethodPost,
 					Path:    "/user",
-					Handler: user.CreateOrUpdateUserHandler(serverCtx),
+					Handler: user.CreateUserHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPut,
+					Path:    "/user",
+					Handler: user.UpdateUserHandler(serverCtx),
 				},
 				{
 					Method:  http.MethodPost,
@@ -130,6 +142,45 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Method:  http.MethodGet,
 					Path:    "/user/logout",
 					Handler: user.LogoutHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Authority},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/token",
+					Handler: token.CreateTokenHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPut,
+					Path:    "/token",
+					Handler: token.UpdateTokenHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodDelete,
+					Path:    "/token",
+					Handler: token.DeleteTokenHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/token/list",
+					Handler: token.GetTokenListHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/token/status",
+					Handler: token.SetTokenStatusHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/token/logout",
+					Handler: token.LogoutHandler(serverCtx),
 				},
 			}...,
 		),

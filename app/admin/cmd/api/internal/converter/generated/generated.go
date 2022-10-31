@@ -6,7 +6,6 @@ import (
 	converter "slash-admin/app/admin/cmd/api/internal/converter"
 	types "slash-admin/app/admin/cmd/api/internal/types"
 	ent "slash-admin/app/admin/ent"
-	types1 "slash-admin/pkg/types"
 )
 
 type ConverterImpl struct{}
@@ -18,22 +17,6 @@ func (c *ConverterImpl) ConvertPagination(source *ent.PageDetails) *types.Pagina
 		pTypesPagination = &typesPagination
 	}
 	return pTypesPagination
-}
-func (c *ConverterImpl) ConvertRoleInfoToCreateSysRoleInput(source *types.RoleInfo) *ent.CreateSysRoleInput {
-	var pEntCreateSysRoleInput *ent.CreateSysRoleInput
-	if source != nil {
-		entCreateSysRoleInput := c.typesRoleInfoToEntCreateSysRoleInput(*source)
-		pEntCreateSysRoleInput = &entCreateSysRoleInput
-	}
-	return pEntCreateSysRoleInput
-}
-func (c *ConverterImpl) ConvertRoleInfoToUpdateSysRoleInput(source *types.RoleInfo) *ent.UpdateSysRoleInput {
-	var pEntUpdateSysRoleInput *ent.UpdateSysRoleInput
-	if source != nil {
-		entUpdateSysRoleInput := c.typesRoleInfoToEntUpdateSysRoleInput(*source)
-		pEntUpdateSysRoleInput = &entUpdateSysRoleInput
-	}
-	return pEntUpdateSysRoleInput
 }
 func (c *ConverterImpl) ConvertSysRoleToRoleInfo(source *ent.SysRole) *types.RoleInfo {
 	var pTypesRoleInfo *types.RoleInfo
@@ -49,6 +32,21 @@ func (c *ConverterImpl) ConvertSysRoleToRoleInfoList(source []*ent.SysRole) []*t
 		pTypesRoleInfoList[i] = c.ConvertSysRoleToRoleInfo(source[i])
 	}
 	return pTypesRoleInfoList
+}
+func (c *ConverterImpl) ConvertSysToken(source *ent.SysToken) *types.TokenInfo {
+	var pTypesTokenInfo *types.TokenInfo
+	if source != nil {
+		typesTokenInfo := c.entSysTokenToTypesTokenInfo(*source)
+		pTypesTokenInfo = &typesTokenInfo
+	}
+	return pTypesTokenInfo
+}
+func (c *ConverterImpl) ConvertSysTokenList(source []*ent.SysToken) []*types.TokenInfo {
+	pTypesTokenInfoList := make([]*types.TokenInfo, len(source))
+	for i := 0; i < len(source); i++ {
+		pTypesTokenInfoList[i] = c.ConvertSysToken(source[i])
+	}
+	return pTypesTokenInfoList
 }
 func (c *ConverterImpl) ConvertSysUser(source *ent.SysUser) *types.UserInfo {
 	var pTypesUserInfo *types.UserInfo
@@ -83,6 +81,17 @@ func (c *ConverterImpl) entSysRoleToTypesRoleInfo(source ent.SysRole) types.Role
 	typesRoleInfo.OrderNo = source.OrderNo
 	return typesRoleInfo
 }
+func (c *ConverterImpl) entSysTokenToTypesTokenInfo(source ent.SysToken) types.TokenInfo {
+	var typesTokenInfo types.TokenInfo
+	typesTokenInfo.ID = source.ID
+	typesTokenInfo.UUID = source.UUID
+	typesTokenInfo.Token = source.Token
+	typesTokenInfo.Source = source.Source
+	typesTokenInfo.Status = converter.StatusToUint8(source.Status)
+	typesTokenInfo.CreatedAt = converter.TimeToUnixMilli(source.CreatedAt)
+	typesTokenInfo.ExpiredAt = converter.TimeToUnixMilli(source.ExpiredAt)
+	return typesTokenInfo
+}
 func (c *ConverterImpl) entSysUserToTypesUserInfo(source ent.SysUser) types.UserInfo {
 	var typesUserInfo types.UserInfo
 	typesUserInfo.ID = source.ID
@@ -98,40 +107,4 @@ func (c *ConverterImpl) entSysUserToTypesUserInfo(source ent.SysUser) types.User
 	typesUserInfo.CreatedAt = converter.TimeToUnixMilli(source.CreatedAt)
 	typesUserInfo.UpdatedAt = converter.TimeToUnixMilli(source.UpdatedAt)
 	return typesUserInfo
-}
-func (c *ConverterImpl) typesRoleInfoToEntCreateSysRoleInput(source types.RoleInfo) ent.CreateSysRoleInput {
-	var entCreateSysRoleInput ent.CreateSysRoleInput
-	pUint64 := source.ID
-	entCreateSysRoleInput.ID = &pUint64
-	pString := source.Name
-	entCreateSysRoleInput.Name = &pString
-	pString2 := source.Value
-	entCreateSysRoleInput.Value = &pString2
-	pString3 := source.DefaultRouter
-	entCreateSysRoleInput.DefaultRouter = &pString3
-	pTypesStatus := types1.Status(source.Status)
-	entCreateSysRoleInput.Status = &pTypesStatus
-	pString4 := source.Remark
-	entCreateSysRoleInput.Remark = &pString4
-	pUint32 := source.OrderNo
-	entCreateSysRoleInput.OrderNo = &pUint32
-	return entCreateSysRoleInput
-}
-func (c *ConverterImpl) typesRoleInfoToEntUpdateSysRoleInput(source types.RoleInfo) ent.UpdateSysRoleInput {
-	var entUpdateSysRoleInput ent.UpdateSysRoleInput
-	pUint64 := source.ID
-	entUpdateSysRoleInput.ID = &pUint64
-	pString := source.Name
-	entUpdateSysRoleInput.Name = &pString
-	pString2 := source.Value
-	entUpdateSysRoleInput.Value = &pString2
-	pString3 := source.DefaultRouter
-	entUpdateSysRoleInput.DefaultRouter = &pString3
-	pTypesStatus := types1.Status(source.Status)
-	entUpdateSysRoleInput.Status = &pTypesStatus
-	pString4 := source.Remark
-	entUpdateSysRoleInput.Remark = &pString4
-	pUint32 := source.OrderNo
-	entUpdateSysRoleInput.OrderNo = &pUint32
-	return entUpdateSysRoleInput
 }

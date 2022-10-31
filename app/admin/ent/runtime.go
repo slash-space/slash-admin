@@ -162,6 +162,10 @@ func init() {
 	sysroleDescStatus := sysroleFields[4].Descriptor()
 	// sysrole.DefaultStatus holds the default value on creation for the status field.
 	sysrole.DefaultStatus = types.Status(sysroleDescStatus.Default.(uint8))
+	// sysroleDescRemark is the schema descriptor for remark field.
+	sysroleDescRemark := sysroleFields[5].Descriptor()
+	// sysrole.DefaultRemark holds the default value on creation for the remark field.
+	sysrole.DefaultRemark = sysroleDescRemark.Default.(string)
 	// sysroleDescOrderNo is the schema descriptor for order_no field.
 	sysroleDescOrderNo := sysroleFields[6].Descriptor()
 	// sysrole.DefaultOrderNo holds the default value on creation for the order_no field.

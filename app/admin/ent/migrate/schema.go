@@ -191,7 +191,7 @@ var (
 		{Name: "value", Type: field.TypeString, Unique: true},
 		{Name: "default_router", Type: field.TypeString, Default: "dashboard"},
 		{Name: "status", Type: field.TypeUint8, Nullable: true, Default: 0, SchemaType: map[string]string{"mysql": "tinyint unsigned"}},
-		{Name: "remark", Type: field.TypeString},
+		{Name: "remark", Type: field.TypeString, Default: ""},
 		{Name: "order_no", Type: field.TypeUint32, Default: 0},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},

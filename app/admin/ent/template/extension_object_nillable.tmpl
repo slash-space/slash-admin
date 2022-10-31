@@ -1,0 +1,30 @@
+{{ define "extension_object_nillable" }}
+    {{- /*gotype: entgo.io/ent/entc/gen.Graph*/ -}}
+
+    {{ template "header" $ }}
+    {{ $pkg := base $.Config.Package }}
+    {{ template "import" $ }}
+
+    {{/* Loop over all updaters and implement the "SetOrClear" method for all optional fields */}}
+    {{ range $n := $.Nodes }}
+        {{- if ne $n.Name "CasbinRule" }}
+            {{ $updater := $n.UpdateOneName }}
+            {{ $receiverName := $n.Receiver}}
+            {{ range $f := $n.Fields }}
+                {{ if not $f.Optional }}
+                    {{ if not $f.Default}}
+                        {{ if not $f.Nillable}}
+                            {{ $set := print "Set" $f.StructField }}
+                                func ({{ $receiverName }} *{{ $updater }}) SetNillable{{ $f.StructField }}(value *{{ $f.Type }}) *{{ $updater }} {
+                                    if value != nil {
+                                        {{$receiverName}}.{{ $set }}(*value)
+                                    }
+                                    return {{$receiverName}}
+                                }
+                            {{ end }}
+                    {{ end }}
+                {{ end }}
+            {{ end }}
+        {{ end }}
+    {{ end }}
+{{ end }}

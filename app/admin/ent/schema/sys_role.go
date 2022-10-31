@@ -30,7 +30,7 @@ func (SysRole) Fields() []ent.Field {
 			Default(0).
 			Comment("0=开启 1=禁用"),
 
-		field.String("remark").Comment("备注"),
+		field.String("remark").Default("").Comment("备注"),
 		field.Uint32("order_no").Default(0).Comment("排序编号"),
 		field.Time("created_at").Default(time.Now),
 		field.Time("updated_at").Default(time.Now).UpdateDefault(time.Now),
