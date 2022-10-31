@@ -21,6 +21,9 @@ type Converter interface {
 
 	ConvertSysToken(input *ent.SysToken) (output *types.TokenInfo)
 	ConvertSysTokenList(input []*ent.SysToken) (output []*types.TokenInfo)
+
+	ConvertSysOauthProvider(input *ent.SysOauthProvider) (output *types.OauthProviderInfo)
+	ConvertSysOauthProviderList(input []*ent.SysOauthProvider) (output []*types.OauthProviderInfo)
 }
 
 func StatusToUint8(v pType.Status) uint8 {

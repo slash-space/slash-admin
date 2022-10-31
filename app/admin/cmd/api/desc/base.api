@@ -87,3 +87,15 @@ type SetBooleanStatusReq {
     // Required: true
     Status uint8 `json:"status" validate:"number"`
 }
+
+// share model | 分享模型
+type (
+    // role meta info | 角色meta数据
+    RoleMetaInfo {
+        // Role name | 角色名
+        RoleName string `json:"roleName"`
+
+        // Role value | 角色值
+        Value string `json:"value"`
+    }
+)

@@ -28,6 +28,7 @@ type (
         // JWT status 0 ban 1 active | JWT状态， 0 禁止 1 正常
         Status uint8 `json:"status"`
 
+        // Create time | 创建时间
         CreatedAt int64 `json:"createdAt"`
 
         // Expire time | 过期时间

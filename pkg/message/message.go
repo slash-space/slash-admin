@@ -96,4 +96,24 @@ const (
 	// En: Please register an account with this email or bind the email to an account
 	// ZH_CH: 请创建一个该邮箱的账号或绑定该邮箱到一个账号
 	CreateAccountFirst string = "sys.oauth.createAccount"
+
+	// ProviderNotExists
+	// En: Provider does not exist
+	// ZH_CH: 第三方登录不存在
+	ProviderNotExists string = "sys.oauth.providerNotExists"
+
+	// OAuthUserUnmarshalError
+	// En: OAuth user unmarshal error
+	// ZH_CH: 第三方用户解析错误
+	OAuthUserUnmarshalError string = "sys.oauth.userUnmarshalError"
+
+	// OAuthUserEmailBindError
+	// En: OAuth user email bind error
+	// ZH_CH: 第三方用户邮箱绑定错误
+	OAuthUserEmailBindError string = "sys.oauth.userEmailBindError"
+
+	// OAuthUserBindError
+	// En: OAuth user bind error
+	// ZH_CH: 第三方用户绑定错误
+	OAuthUserBindError string = "sys.oauth.userBindError"
 )

@@ -23,6 +23,7 @@ require (
 	github.com/vmihailenco/msgpack/v5 v5.0.0-beta.9
 	github.com/zeromicro/go-zero v1.4.1
 	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa
+	golang.org/x/oauth2 v0.0.0-20220223155221-ee480838109b
 	golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4
 	google.golang.org/grpc v1.50.1
 
@@ -86,10 +87,11 @@ require (
 	golang.org/x/sys v0.0.0-20220919091848-fb04ddd9f9c8 // indirect
 	golang.org/x/text v0.4.0 // indirect
 	golang.org/x/tools v0.1.13-0.20220819182638-587a15310bdd // indirect
+	google.golang.org/appengine v1.6.6 // indirect
 	google.golang.org/genproto v0.0.0-20220602131408-e326c6e8e9c8 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
-replace github.com/zeromicro/go-zero v1.4.1 => github.com/go-slash/go-zero-enhanced v1.0.2
+replace github.com/zeromicro/go-zero v1.4.1 => github.com/go-slash/go-zero-enhanced v1.0.3

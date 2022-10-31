@@ -18,6 +18,21 @@ func (c *ConverterImpl) ConvertPagination(source *ent.PageDetails) *types.Pagina
 	}
 	return pTypesPagination
 }
+func (c *ConverterImpl) ConvertSysOauthProvider(source *ent.SysOauthProvider) *types.OauthProviderInfo {
+	var pTypesOauthProviderInfo *types.OauthProviderInfo
+	if source != nil {
+		typesOauthProviderInfo := c.entSysOauthProviderToTypesOauthProviderInfo(*source)
+		pTypesOauthProviderInfo = &typesOauthProviderInfo
+	}
+	return pTypesOauthProviderInfo
+}
+func (c *ConverterImpl) ConvertSysOauthProviderList(source []*ent.SysOauthProvider) []*types.OauthProviderInfo {
+	pTypesOauthProviderInfoList := make([]*types.OauthProviderInfo, len(source))
+	for i := 0; i < len(source); i++ {
+		pTypesOauthProviderInfoList[i] = c.ConvertSysOauthProvider(source[i])
+	}
+	return pTypesOauthProviderInfoList
+}
 func (c *ConverterImpl) ConvertSysRoleToRoleInfo(source *ent.SysRole) *types.RoleInfo {
 	var pTypesRoleInfo *types.RoleInfo
 	if source != nil {
@@ -69,6 +84,21 @@ func (c *ConverterImpl) entPageDetailsToTypesPagination(source ent.PageDetails) 
 	typesPagination.Limit = source.Limit
 	typesPagination.Total = source.Total
 	return typesPagination
+}
+func (c *ConverterImpl) entSysOauthProviderToTypesOauthProviderInfo(source ent.SysOauthProvider) types.OauthProviderInfo {
+	var typesOauthProviderInfo types.OauthProviderInfo
+	typesOauthProviderInfo.ID = source.ID
+	typesOauthProviderInfo.Name = source.Name
+	typesOauthProviderInfo.ClientID = source.ClientID
+	typesOauthProviderInfo.ClientSecret = source.ClientSecret
+	typesOauthProviderInfo.RedirectURL = source.RedirectURL
+	typesOauthProviderInfo.Scopes = source.Scopes
+	typesOauthProviderInfo.AuthURL = source.AuthURL
+	typesOauthProviderInfo.TokenURL = source.TokenURL
+	typesOauthProviderInfo.AuthStyle = source.AuthStyle
+	typesOauthProviderInfo.InfoURL = source.InfoURL
+	typesOauthProviderInfo.CreatedAt = converter.TimeToUnixMilli(source.CreatedAt)
+	return typesOauthProviderInfo
 }
 func (c *ConverterImpl) entSysRoleToTypesRoleInfo(source ent.SysRole) types.RoleInfo {
 	var typesRoleInfo types.RoleInfo
