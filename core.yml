@@ -897,7 +897,7 @@ definitions:
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
     UpdateProfileReq:
-        description: The profile update request data | 个人信息udpate请求参数
+        description: The profile update request data | 个人信息update请求参数
         properties:
             avatar:
                 description: The user's avatar path | 用户的头像路径

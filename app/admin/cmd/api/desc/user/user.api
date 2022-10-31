@@ -57,7 +57,7 @@ type (
         User *UserInfo `json:"user"`
     }
 
-    // The profile update request data | 个人信息udpate请求参数
+    // The profile update request data | 个人信息update请求参数
     UpdateProfileReq {
         // user's nickname | 用户的昵称
         // Max length: 10

@@ -242,7 +242,7 @@ type ProfileResp struct {
 	User *UserInfo `json:"user"`
 }
 
-// The profile update request data | 个人信息udpate请求参数
+// The profile update request data | 个人信息update请求参数
 // swagger:model UpdateProfileReq
 type UpdateProfileReq struct {
 	// user's nickname | 用户的昵称
