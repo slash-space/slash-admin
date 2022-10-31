@@ -90,6 +90,41 @@ definitions:
             - value
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    CreateTokenReq:
+        description: Create token information request | 创建token信息
+        properties:
+            UUID:
+                description: User's UUID | 用户的UUID
+                maxLength: 36
+                type: string
+            expireAt:
+                description: Expire time | 过期时间
+                format: int64
+                type: integer
+                x-go-name: ExpireAt
+            source:
+                description: Log in source such as github | Token 来源 （本地为core, 第三方如github等）
+                maxLength: 50
+                type: string
+                x-go-name: Source
+            status:
+                description: JWT status 0 ban 1 active | JWT状态， 0 禁止 1 正常
+                example: 1
+                format: uint8
+                type: integer
+                x-go-name: Status
+            token:
+                description: Token string | Token 字符串
+                type: string
+                x-go-name: Token
+        required:
+            - UUID
+            - token
+            - source
+            - status
+            - expireAt
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
     CreateUserReq:
         description: Create user information request | 创建新用户信息
         properties:
@@ -420,10 +455,10 @@ definitions:
                 description: ID
                 format: uint64
                 type: integer
-                x-go-name: Id
+                x-go-name: ID
             status:
                 description: Status code | 状态码
-                format: uint32
+                format: uint8
                 type: integer
                 x-go-name: Status
         required:
@@ -449,6 +484,98 @@ definitions:
         required:
             - id
             - status
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    TokenInfo:
+        description: The response data of Token information | Token信息
+        properties:
+            UUID:
+                description: User's UUID | 用户的UUID
+                type: string
+            createdAt:
+                format: int64
+                type: integer
+                x-go-name: CreatedAt
+            expiredAt:
+                description: Expire time | 过期时间
+                format: int64
+                type: integer
+                x-go-name: ExpiredAt
+            id:
+                description: ID
+                format: uint64
+                type: integer
+                x-go-name: ID
+            source:
+                description: Log in source such as github | Token 来源 （本地为core, 第三方如github等）
+                type: string
+                x-go-name: Source
+            status:
+                description: JWT status 0 ban 1 active | JWT状态， 0 禁止 1 正常
+                format: uint8
+                type: integer
+                x-go-name: Status
+            token:
+                description: Token string | Token 字符串
+                type: string
+                x-go-name: Token
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    TokenListReq:
+        description: Get token list request params | token列表请求参数
+        properties:
+            UUID:
+                description: User's UUID | 用户的UUID
+                maxLength: 36
+                type: string
+            email:
+                description: The user's email address | 用户的邮箱
+                maxLength: 100
+                type: string
+                x-go-name: Email
+            nickname:
+                description: user's nickname | 用户的昵称
+                maxLength: 10
+                type: string
+                x-go-name: Nickname
+            pageNo:
+                description: Page number | 第几页
+                format: int64
+                minimum: 1
+                type: integer
+                x-go-name: PageNo
+            pageSize:
+                default: 10
+                description: Page size | 单页数据行数
+                format: int64
+                maximum: 100
+                type: integer
+                x-go-name: PageSize
+            username:
+                description: User Name | 用户名
+                maxLength: 20
+                type: string
+                x-go-name: Username
+        required:
+            - UUID
+            - nickname
+            - username
+            - email
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    TokenListResp:
+        description: The response data of Token list | Token列表数据
+        properties:
+            list:
+                description: |-
+                    The token list data | Token列表数据
+                    in: body
+                items:
+                    $ref: '#/definitions/TokenInfo'
+                type: array
+                x-go-name: List
+            pagination:
+                $ref: '#/definitions/Pagination'
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
     UUIDReq:
@@ -530,6 +657,46 @@ definitions:
         required:
             - id
             - orderNo
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    UpdateTokenReq:
+        description: Update token information request | 创建或更新token信息
+        properties:
+            UUID:
+                description: User's UUID | 用户的UUID
+                maxLength: 36
+                type: string
+            createdAt:
+                description: Create date | 创建日期
+                format: int64
+                type: integer
+                x-go-name: CreatedAt
+            expiredAt:
+                description: Expire time | 过期时间
+                format: int64
+                type: integer
+                x-go-name: ExpiredAt
+            id:
+                description: ID
+                format: uint64
+                type: integer
+                x-go-name: ID
+            source:
+                description: Log in source such as github | Token 来源 （本地为core, 第三方如github等）
+                maxLength: 50
+                type: string
+                x-go-name: Source
+            status:
+                description: JWT status 0 ban 1 active | JWT状态， 0 禁止 1 正常
+                format: uint8
+                type: integer
+                x-go-name: Status
+            token:
+                description: Token string | Token 字符串
+                type: string
+                x-go-name: Token
+        required:
+            - id
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
     UpdateUserReq:
@@ -782,6 +949,102 @@ paths:
             summary: '"Set role status | 设置角色状态"'
             tags:
                 - role
+    /token:
+        delete:
+            description: '"Delete token information"'
+            operationId: DeleteToken
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/IDReq'
+                    type: object
+            responses:
+                "200":
+                    $ref: '#/responses/SimpleMsgResp'
+            summary: '"Delete token information | 删除token信息"'
+            tags:
+                - token
+        post:
+            description: '"Create Token information"'
+            operationId: CreateToken
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/CreateTokenReq'
+                    type: object
+            responses:
+                "200":
+                    $ref: '#/responses/SimpleMsgResp'
+            summary: '"Create Token information | 创建Token"'
+            tags:
+                - token
+        put:
+            description: '"Update Token information"'
+            operationId: UpdateToken
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/UpdateTokenReq'
+                    type: object
+            responses:
+                "200":
+                    $ref: '#/responses/SimpleMsgResp'
+            summary: '"Update Token information | 更新Token"'
+            tags:
+                - token
+    /token/list:
+        post:
+            description: '"Get Token list"'
+            operationId: GetTokenList
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/TokenListReq'
+                    type: object
+            responses:
+                "200":
+                    description: TokenListResp
+                    schema:
+                        $ref: '#/definitions/TokenListResp'
+            summary: '"Get Token list | 获取token列表"'
+            tags:
+                - token
+    /token/logout:
+        post:
+            description: '"Force logging out by user UUID"'
+            operationId: Logout
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/UUIDReq'
+                    type: object
+            responses:
+                "200":
+                    $ref: '#/responses/SimpleMsgResp'
+            summary: '"Force logging out by user UUID | 根据UUID强制用户退出"'
+            tags:
+                - token
+    /token/status:
+        post:
+            description: '"Set token status"'
+            operationId: SetTokenStatus
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/SetBooleanStatusReq'
+                    type: object
+            responses:
+                "200":
+                    $ref: '#/responses/SimpleMsgResp'
+            summary: '"Set token status | 设置token状态"'
+            tags:
+                - token
     /user:
         delete:
             description: '"删除用户信息"'

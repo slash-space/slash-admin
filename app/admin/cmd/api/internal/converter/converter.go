@@ -17,8 +17,10 @@ type Converter interface {
 	ConvertSysUserList(input []*ent.SysUser) (output []*types.UserInfo)
 
 	ConvertSysRoleToRoleInfo(input *ent.SysRole) (output *types.RoleInfo)
-
 	ConvertSysRoleToRoleInfoList(input []*ent.SysRole) (output []*types.RoleInfo)
+
+	ConvertSysToken(input *ent.SysToken) (output *types.TokenInfo)
+	ConvertSysTokenList(input []*ent.SysToken) (output []*types.TokenInfo)
 }
 
 func StatusToUint8(v pType.Status) uint8 {

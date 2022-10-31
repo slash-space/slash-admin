@@ -33,6 +33,21 @@ func (c *ConverterImpl) ConvertSysRoleToRoleInfoList(source []*ent.SysRole) []*t
 	}
 	return pTypesRoleInfoList
 }
+func (c *ConverterImpl) ConvertSysToken(source *ent.SysToken) *types.TokenInfo {
+	var pTypesTokenInfo *types.TokenInfo
+	if source != nil {
+		typesTokenInfo := c.entSysTokenToTypesTokenInfo(*source)
+		pTypesTokenInfo = &typesTokenInfo
+	}
+	return pTypesTokenInfo
+}
+func (c *ConverterImpl) ConvertSysTokenList(source []*ent.SysToken) []*types.TokenInfo {
+	pTypesTokenInfoList := make([]*types.TokenInfo, len(source))
+	for i := 0; i < len(source); i++ {
+		pTypesTokenInfoList[i] = c.ConvertSysToken(source[i])
+	}
+	return pTypesTokenInfoList
+}
 func (c *ConverterImpl) ConvertSysUser(source *ent.SysUser) *types.UserInfo {
 	var pTypesUserInfo *types.UserInfo
 	if source != nil {
@@ -65,6 +80,17 @@ func (c *ConverterImpl) entSysRoleToTypesRoleInfo(source ent.SysRole) types.Role
 	typesRoleInfo.Remark = source.Remark
 	typesRoleInfo.OrderNo = source.OrderNo
 	return typesRoleInfo
+}
+func (c *ConverterImpl) entSysTokenToTypesTokenInfo(source ent.SysToken) types.TokenInfo {
+	var typesTokenInfo types.TokenInfo
+	typesTokenInfo.ID = source.ID
+	typesTokenInfo.UUID = source.UUID
+	typesTokenInfo.Token = source.Token
+	typesTokenInfo.Source = source.Source
+	typesTokenInfo.Status = converter.StatusToUint8(source.Status)
+	typesTokenInfo.CreatedAt = converter.TimeToUnixMilli(source.CreatedAt)
+	typesTokenInfo.ExpiredAt = converter.TimeToUnixMilli(source.ExpiredAt)
+	return typesTokenInfo
 }
 func (c *ConverterImpl) entSysUserToTypesUserInfo(source ent.SysUser) types.UserInfo {
 	var typesUserInfo types.UserInfo
