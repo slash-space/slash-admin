@@ -24,6 +24,10 @@ type Converter interface {
 
 	ConvertSysOauthProvider(input *ent.SysOauthProvider) (output *types.OauthProviderInfo)
 	ConvertSysOauthProviderList(input []*ent.SysOauthProvider) (output []*types.OauthProviderInfo)
+
+	// goverter:map APIGroup Group
+	ConvertSysApi(input *ent.SysApi) (output *types.ApiInfo)
+	ConvertSysApiList(input []*ent.SysApi) (output []*types.ApiInfo)
 }
 
 func StatusToUint8(v pType.Status) uint8 {

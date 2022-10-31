@@ -2,6 +2,115 @@ basePath: /
 consumes:
     - application/json
 definitions:
+    ApiInfo:
+        description: The response data of API information | API信息
+        properties:
+            createdAt:
+                description: created time | 创建时间
+                format: int64
+                type: integer
+                x-go-name: CreatedAt
+            description:
+                description: API Description | API 描述
+                type: string
+                x-go-name: Description
+            group:
+                description: API group | API分组
+                type: string
+                x-go-name: Group
+            id:
+                description: ID
+                format: uint64
+                type: integer
+                x-go-name: ID
+            method:
+                description: API request method e.g. POST | API请求类型 如POST
+                type: string
+                x-go-name: Method
+            path:
+                description: API path | API路径
+                type: string
+                x-go-name: Path
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    ApiListReq:
+        description: Get API list request params | API列表请求参数
+        properties:
+            description:
+                description: API Description | API 描述
+                maxLength: 50
+                type: string
+                x-go-name: Description
+            group:
+                description: API group | API分组
+                maxLength: 10
+                type: string
+                x-go-name: Group
+            method:
+                description: API request method e.g. POST | API请求类型 如POST
+                maxLength: 4
+                type: string
+                x-go-name: Method
+            pageNo:
+                description: Page number | 第几页
+                format: int64
+                minimum: 1
+                type: integer
+                x-go-name: PageNo
+            pageSize:
+                default: 10
+                description: Page size | 单页数据行数
+                format: int64
+                maximum: 100
+                type: integer
+                x-go-name: PageSize
+            path:
+                description: API path | API路径
+                maxLength: 100
+                type: string
+                x-go-name: Path
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    ApiListResp:
+        description: The response data of API list | API列表数据
+        properties:
+            data:
+                description: |-
+                    The API list data | API列表数据
+                    in: body
+                items:
+                    $ref: '#/definitions/ApiInfo'
+                type: array
+                x-go-name: List
+            pagination:
+                $ref: '#/definitions/Pagination'
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    BaseInfo:
+        description: The base response data | 基础信息
+        properties:
+            createdAt:
+                description: Create date | 创建日期
+                format: int64
+                type: integer
+                x-go-name: CreatedAt
+            deletedAt:
+                description: Delete date | 删除日期
+                format: int64
+                type: integer
+                x-go-name: DeletedAt
+            id:
+                description: ID
+                format: uint64
+                type: integer
+                x-go-name: ID
+            updatedAt:
+                description: Update date | 更新日期
+                format: int64
+                type: integer
+                x-go-name: UpdatedAt
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
     ChangePasswordReq:
         description: change user's password request | 修改密码请求参数
         properties:
@@ -18,6 +127,41 @@ definitions:
         required:
             - oldPassword
             - newPassword
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    CreateApiReq:
+        description: Create API information request | 创建或更新API信息
+        properties:
+            description:
+                description: API Description | API 描述
+                maxLength: 50
+                type: string
+                x-go-name: Description
+            group:
+                description: |-
+                    API group | API分组
+                    Require: true
+                maxLength: 10
+                minLength: 1
+                type: string
+                x-go-name: Group
+            method:
+                description: API request method e.g. POST | API请求类型 如POST
+                example: POST
+                maxLength: 4
+                minLength: 3
+                type: string
+                x-go-name: Method
+            path:
+                description: API path | API路径
+                maxLength: 50
+                minLength: 1
+                type: string
+                x-go-name: Path
+        required:
+            - path
+            - description
+            - method
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
     CreateProviderReq:
@@ -373,6 +517,7 @@ definitions:
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
     OauthProviderInfo:
+        description: The response data of oauth provider information | 提供者信息
         properties:
             authStyle:
                 description: Auth Style | 鉴权方式, 0 表示自动检测
@@ -442,6 +587,7 @@ definitions:
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
     Pagination:
+        description: Page information return ｜ 分页信息返回
         properties:
             limit:
                 format: int64
@@ -561,6 +707,7 @@ definitions:
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
     RoleMetaInfo:
+        description: role meta info | 角色meta数据
         properties:
             roleName:
                 description: Role name | 角色名
@@ -611,6 +758,7 @@ definitions:
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
     TokenInfo:
+        description: The response data of Token information | Token信息
         properties:
             UUID:
                 description: User's UUID | 用户的UUID
@@ -711,6 +859,41 @@ definitions:
                 type: string
         required:
             - UUID
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    UpdateApiReq:
+        description: Update API information request | 创建或更新API信息
+        properties:
+            description:
+                description: API Description | API 描述
+                maxLength: 50
+                type: string
+                x-go-name: Description
+            group:
+                description: API group | API分组
+                maxLength: 10
+                minLength: 1
+                type: string
+                x-go-name: Group
+            id:
+                description: ID
+                format: uint64
+                type: integer
+                x-go-name: ID
+            method:
+                description: API request method e.g. POST | API请求类型 如POST
+                maxLength: 4
+                minLength: 3
+                type: string
+                x-go-name: Method
+            path:
+                description: API path | API路径
+                maxLength: 50
+                minLength: 1
+                type: string
+                x-go-name: Path
+        required:
+            - id
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
     UpdateProfileReq:
@@ -961,6 +1144,7 @@ definitions:
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
     UserInfo:
+        description: 用户信息
         properties:
             UUID:
                 description: User's UUID | 用户的UUID
@@ -1037,6 +1221,70 @@ info:
     title: System Name
     version: 0.0.1
 paths:
+    /api:
+        delete:
+            description: '"Delete API information | 删除API信息"'
+            operationId: DeleteApi
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/IDReq'
+                    type: object
+            responses:
+                "200":
+                    $ref: '#/responses/SimpleMsgResp'
+            summary: '"删除API信息"'
+            tags:
+                - api
+        post:
+            description: '"Create API information | 创建或更新API"'
+            operationId: CreateApi
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/CreateApiReq'
+                    type: object
+            responses:
+                "200":
+                    $ref: '#/responses/SimpleMsgResp'
+            summary: '"创建API"'
+            tags:
+                - api
+        put:
+            description: '"Update API information | 创建或更新API"'
+            operationId: UpdateApi
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/UpdateApiReq'
+                    type: object
+            responses:
+                "200":
+                    $ref: '#/responses/SimpleMsgResp'
+            summary: '"更新API"'
+            tags:
+                - api
+    /api/list:
+        post:
+            description: '"Get API list | 获取API列表"'
+            operationId: GetApiList
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/ApiListReq'
+                    type: object
+            responses:
+                "200":
+                    description: ApiListResp
+                    schema:
+                        $ref: '#/definitions/ApiListResp'
+            summary: '"获取API列表"'
+            tags:
+                - api
     /captcha:
         get:
             description: '"获取验证码"'

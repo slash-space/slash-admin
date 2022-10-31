@@ -4,6 +4,7 @@ package handler
 import (
 	"net/http"
 
+	api "slash-admin/app/admin/cmd/api/internal/handler/api"
 	captcha "slash-admin/app/admin/cmd/api/internal/handler/captcha"
 	core "slash-admin/app/admin/cmd/api/internal/handler/core"
 	oauth "slash-admin/app/admin/cmd/api/internal/handler/oauth"
@@ -143,6 +144,35 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Method:  http.MethodGet,
 					Path:    "/user/logout",
 					Handler: user.LogoutHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Authority},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/api",
+					Handler: api.CreateApiHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPut,
+					Path:    "/api",
+					Handler: api.UpdateApiHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodDelete,
+					Path:    "/api",
+					Handler: api.DeleteApiHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/api/list",
+					Handler: api.GetApiListHandler(serverCtx),
 				},
 			}...,
 		),
