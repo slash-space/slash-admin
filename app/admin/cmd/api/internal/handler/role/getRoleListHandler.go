@@ -11,9 +11,9 @@ import (
 
 // swagger:route post /role/list role GetRoleList
 //
-// "Get role list | 获取角色列表"
+//  Get role list | 获取角色列表
 //
-// "获取角色列表"
+//  Get role list | 获取角色列表
 //
 // Parameters:
 //  + name: body

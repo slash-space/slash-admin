@@ -21,4 +21,7 @@ type Config struct {
 
 	// captcha config
 	Captcha slconfig.CaptchaConf
+
+	// casbin config
+	Casbin slconfig.CasbinConf
 }

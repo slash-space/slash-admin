@@ -5,6 +5,7 @@ import (
 	"github.com/zeromicro/go-zero/core/errorx"
 	"slash-admin/app/admin/cmd/api/internal/svc"
 	"slash-admin/app/admin/cmd/api/internal/types"
+	"slash-admin/pkg/message"
 	pType "slash-admin/pkg/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -39,7 +40,7 @@ func (l *UpdateUserLogic) UpdateUser(req *types.UpdateUserReq) (resp *types.Simp
 
 	if err != nil {
 		l.Errorw("update user error", logx.Field("err", err))
-		return nil, errorx.NewApiBadRequestError(errorx.DatabaseError)
+		return nil, errorx.NewApiBadRequestError(message.DatabaseError)
 	}
 
 	logx.Infow("update user successfully", logx.Field("detail", req))

@@ -21,10 +21,7 @@ type CaptchaInfoResp {
 )
 
 service core {
-    @doc(
-        summary: "Get captcha | 获取验证码"
-        description: "获取验证码"
-    )
+    @doc("Get captcha | 获取验证码")
     @handler getCaptcha
     get /captcha returns (CaptchaInfoResp)
 }

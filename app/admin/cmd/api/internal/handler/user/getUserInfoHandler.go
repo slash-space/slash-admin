@@ -10,9 +10,9 @@ import (
 
 // swagger:route get /user/info user GetUserInfo
 //
-// "Get user basic information | 获取用户基本信息"
+//  Get user basic information | 获取用户基本信息
 //
-// "获取用户基本信息"
+//  Get user basic information | 获取用户基本信息
 //
 // Responses:
 //  200: GetUserInfoResp

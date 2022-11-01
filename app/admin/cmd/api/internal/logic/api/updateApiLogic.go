@@ -30,7 +30,7 @@ func (l *UpdateApiLogic) UpdateApi(req *types.UpdateApiReq) (resp *types.SimpleM
 
 	if err != nil {
 		l.Errorw("update api error", logx.Field("detail", err.Error()))
-		return nil, errorx.NewApiInternalServerError(errorx.DatabaseError)
+		return nil, errorx.NewApiInternalServerError(message.DatabaseError)
 	}
 
 	if !exist {
@@ -47,7 +47,7 @@ func (l *UpdateApiLogic) UpdateApi(req *types.UpdateApiReq) (resp *types.SimpleM
 
 	if err != nil {
 		l.Errorw("update api error", logx.Field("detail", err.Error()))
-		return nil, errorx.NewApiBadRequestError(errorx.DatabaseError)
+		return nil, errorx.NewApiBadRequestError(message.DatabaseError)
 	}
 
 	return &types.SimpleMsgResp{

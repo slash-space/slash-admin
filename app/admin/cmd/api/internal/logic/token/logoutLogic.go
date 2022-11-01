@@ -5,6 +5,7 @@ import (
 	"github.com/zeromicro/go-zero/core/errorx"
 	"slash-admin/app/admin/cmd/api/internal/globalkey"
 	"slash-admin/app/admin/ent/systoken"
+	"slash-admin/pkg/message"
 	"time"
 
 	"slash-admin/app/admin/cmd/api/internal/svc"
@@ -34,7 +35,7 @@ func (l *LogoutLogic) Logout(req *types.UUIDReq) (resp *types.SimpleMsgResp, err
 
 	if err != nil {
 		logx.Errorw("logout: set token status to disabled", logx.Field("detail", err.Error()))
-		return nil, errorx.NewApiBadRequestError(errorx.DatabaseError)
+		return nil, errorx.NewApiBadRequestError(message.DatabaseError)
 	}
 
 	allTokens, err := l.svcCtx.EntClient.SysToken.Query().
@@ -45,14 +46,14 @@ func (l *LogoutLogic) Logout(req *types.UUIDReq) (resp *types.SimpleMsgResp, err
 
 	if err != nil {
 		logx.Errorw("logout: get all not expired tokens", logx.Field("detail", err.Error()))
-		return nil, errorx.NewApiBadRequestError(errorx.DatabaseError)
+		return nil, errorx.NewApiBadRequestError(message.DatabaseError)
 	}
 
 	for _, v := range allTokens {
 		err := l.svcCtx.Redis.Set(globalkey.GetBlackListToken(v.Token), "1")
 		if err != nil {
 			logx.Errorw("logout: set token to redis", logx.Field("detail", err.Error()))
-			return nil, errorx.NewApiBadRequestError(errorx.RedisError)
+			return nil, errorx.NewApiBadRequestError(message.RedisError)
 		}
 	}
 

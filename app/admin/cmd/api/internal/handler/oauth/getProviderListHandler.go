@@ -11,9 +11,9 @@ import (
 
 // swagger:route post /oauth/provider/list oauth GetProviderList
 //
-// "Get provider list | 获取提供商列表"
+//  Get provider list | 获取提供商列表
 //
-// "获取提供商列表"
+//  Get provider list | 获取提供商列表
 //
 // Parameters:
 //  + name: body

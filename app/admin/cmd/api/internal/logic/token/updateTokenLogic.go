@@ -6,6 +6,7 @@ import (
 	"slash-admin/app/admin/cmd/api/internal/svc"
 	"slash-admin/app/admin/cmd/api/internal/types"
 	"slash-admin/app/admin/ent/systoken"
+	"slash-admin/pkg/message"
 	pType "slash-admin/pkg/types"
 	"time"
 
@@ -30,8 +31,8 @@ func (l *UpdateTokenLogic) UpdateToken(req *types.UpdateTokenReq) (resp *types.S
 	exist, err := l.svcCtx.EntClient.SysToken.Query().Where(systoken.IDEQ(req.ID)).Exist(l.ctx)
 
 	if err != nil {
-		logx.Errorw(errorx.DatabaseError, logx.Field("detail", err.Error()))
-		return nil, errorx.NewApiInternalServerError(errorx.DatabaseError)
+		logx.Errorw(message.DatabaseError, logx.Field("detail", err.Error()))
+		return nil, errorx.NewApiInternalServerError(message.DatabaseError)
 	}
 
 	if !exist {
@@ -55,7 +56,7 @@ func (l *UpdateTokenLogic) UpdateToken(req *types.UpdateTokenReq) (resp *types.S
 		Save(l.ctx)
 
 	if err != nil {
-		logx.Errorw(errorx.DatabaseError, logx.Field("detail", err.Error()))
+		logx.Errorw(message.DatabaseError, logx.Field("detail", err.Error()))
 		return nil, errorx.NewApiInternalServerError(err.Error())
 	}
 

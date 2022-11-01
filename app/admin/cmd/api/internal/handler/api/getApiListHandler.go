@@ -11,9 +11,9 @@ import (
 
 // swagger:route post /api/list api GetApiList
 //
-// "获取API列表"
+//  Get API list | 获取API列表
 //
-// "Get API list | 获取API列表"
+//  Get API list | 获取API列表
 //
 // Parameters:
 //  + name: body

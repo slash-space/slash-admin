@@ -11,9 +11,9 @@ import (
 
 // swagger:route post /oauth/provider oauth CreateProvider
 //
-// "Create provider information | 创建提供商信息"
+//  Create provider information | 创建提供商信息
 //
-// "创建提供商信息"
+//  Create provider information | 创建提供商信息
 //
 // Parameters:
 //  + name: body

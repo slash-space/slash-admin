@@ -3,6 +3,7 @@ package oauth
 import (
 	"context"
 	"github.com/zeromicro/go-zero/core/errorx"
+	"slash-admin/pkg/message"
 
 	"slash-admin/app/admin/cmd/api/internal/svc"
 	"slash-admin/app/admin/cmd/api/internal/types"
@@ -29,7 +30,7 @@ func (l *GetProviderListLogic) GetProviderList(req *types.PageReq) (resp *types.
 
 	if err != nil {
 		l.Error("query oauth provider list error: %v", err)
-		return nil, errorx.NewApiInternalServerError(errorx.DatabaseError)
+		return nil, errorx.NewApiInternalServerError(message.DatabaseError)
 	}
 
 	return &types.ProviderListResp{

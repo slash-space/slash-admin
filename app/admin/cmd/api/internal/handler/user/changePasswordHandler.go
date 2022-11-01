@@ -11,9 +11,9 @@ import (
 
 // swagger:route post /user/change-password user ChangePassword
 //
-// "Change Password | 修改密码"
+//  Change Password | 修改密码
 //
-// "修改用户密码"
+//  Change Password | 修改密码
 //
 // Parameters:
 //  + name: body

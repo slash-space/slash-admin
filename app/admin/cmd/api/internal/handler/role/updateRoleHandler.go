@@ -11,9 +11,9 @@ import (
 
 // swagger:route put /role role UpdateRole
 //
-// "Update role information | 更新角色"
+//  Update role information | 更新角色
 //
-// "更新角色"
+//  Update role information | 更新角色
 //
 // Parameters:
 //  + name: body

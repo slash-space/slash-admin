@@ -11,9 +11,9 @@ import (
 
 // swagger:route post /oauth/login oauth OauthLogin
 //
-// "Oauth log in | Oauth 登录"
+//  Oauth log in | Oauth 登录
 //
-// "Oauth log in | Oauth 登录"
+//  Oauth log in | Oauth 登录
 //
 // Parameters:
 //  + name: body

@@ -11,9 +11,9 @@ import (
 
 // swagger:route delete /user user DeleteUser
 //
-// "Delete user information | 删除用户信息"
+//  "Delete user information | 删除用户信息
 //
-// "删除用户信息"
+//  "Delete user information | 删除用户信息
 //
 // Parameters:
 //  + name: body

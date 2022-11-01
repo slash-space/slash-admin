@@ -35,7 +35,7 @@ func (l *UpdateProviderLogic) UpdateProvider(req *types.UpdateProviderReq) (resp
 
 	if err != nil {
 		l.Errorf("check provider exist error: %v", err)
-		return nil, errorx.NewApiInternalServerError(errorx.DatabaseError)
+		return nil, errorx.NewApiInternalServerError(message.DatabaseError)
 	}
 
 	if !exist {
@@ -57,7 +57,7 @@ func (l *UpdateProviderLogic) UpdateProvider(req *types.UpdateProviderReq) (resp
 
 	if err != nil {
 		l.Errorf("update provider error: %v", err)
-		return nil, errorx.NewApiInternalServerError(errorx.DatabaseError)
+		return nil, errorx.NewApiInternalServerError(message.DatabaseError)
 	}
 
 	l.Infow("update provider success", logx.Field("detail", req))

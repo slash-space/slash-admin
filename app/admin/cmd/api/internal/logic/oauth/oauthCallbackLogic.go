@@ -59,7 +59,7 @@ func (l *OauthCallbackLogic) OauthCallback(req *types.OauthCallbackParamReq) (re
 				return nil, errorx.NewApiBadRequestError(errorx.TargetNotExist)
 			}
 			l.Errorw("query provider error", logx.Field("detail", err.Error()))
-			return nil, errorx.NewApiInternalServerError(errorx.DatabaseError)
+			return nil, errorx.NewApiInternalServerError(message.DatabaseError)
 		}
 
 		providerConfig[provider] = oauth2.Config{
@@ -102,7 +102,7 @@ func (l *OauthCallbackLogic) OauthCallback(req *types.OauthCallbackParamReq) (re
 				return nil, errorx.NewApiBadRequestError(message.OAuthUserBindError)
 			}
 			l.Errorf("query user error: %s", err.Error())
-			return nil, errorx.NewApiInternalServerError(errorx.DatabaseError)
+			return nil, errorx.NewApiInternalServerError(message.DatabaseError)
 		}
 
 		token, err := user.GetSysUserJwtToken(
@@ -129,7 +129,7 @@ func (l *OauthCallbackLogic) OauthCallback(req *types.OauthCallbackParamReq) (re
 			Save(l.ctx)
 
 		if err != nil {
-			logx.Errorw(errorx.DatabaseError, logx.Field("detail", err.Error()))
+			logx.Errorw(message.DatabaseError, logx.Field("detail", err.Error()))
 			return nil, errorx.NewApiInternalServerError(err.Error())
 		}
 

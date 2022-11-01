@@ -10,9 +10,9 @@ import (
 
 // swagger:route get /user/perm user GetUserPermCode
 //
-// "Get user's permission code | 获取用户权限码"
+//  Get user's permission code | 获取用户权限码
 //
-// "获取用户权限码"
+//  Get user's permission code | 获取用户权限码
 //
 // Responses:
 //  200: PermCodeResp

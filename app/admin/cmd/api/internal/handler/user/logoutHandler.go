@@ -10,9 +10,9 @@ import (
 
 // swagger:route get /user/logout user Logout
 //
-// "Log out | 退出登陆"
+//  Log out | 退出登陆
 //
-// "退出登陆"
+//  Log out | 退出登陆
 //
 // Responses:
 //  200: SimpleMsgResp

@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	api "slash-admin/app/admin/cmd/api/internal/handler/api"
+	authority "slash-admin/app/admin/cmd/api/internal/handler/authority"
 	captcha "slash-admin/app/admin/cmd/api/internal/handler/captcha"
 	core "slash-admin/app/admin/cmd/api/internal/handler/core"
 	oauth "slash-admin/app/admin/cmd/api/internal/handler/oauth"
@@ -173,6 +174,45 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Method:  http.MethodPost,
 					Path:    "/api/list",
 					Handler: api.GetApiListHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Authority},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/authority/api",
+					Handler: authority.CreateApiAuthorityHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPut,
+					Path:    "/authority/api",
+					Handler: authority.UpdateApiAuthorityHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/authority/api/role",
+					Handler: authority.GetApiAuthorityHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/authority/menu",
+					Handler: authority.CreateMenuAuthorityHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPut,
+					Path:    "/authority/menu",
+					Handler: authority.UpdateMenuAuthorityHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/authority/menu/role",
+					Handler: authority.GetMenuAuthorityHandler(serverCtx),
 				},
 			}...,
 		),

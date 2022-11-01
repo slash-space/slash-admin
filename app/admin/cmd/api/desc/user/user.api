@@ -57,7 +57,7 @@ type (
         User *UserInfo `json:"user"`
     }
 
-    // The profile update request data | 个人信息udpate请求参数
+    // The profile update request data | 个人信息update请求参数
     UpdateProfileReq {
         // user's nickname | 用户的昵称
         // Max length: 10
@@ -237,7 +237,7 @@ type (
         // The user's status | 用户状态
         // 0 normal, 1 ban | 0 正常 1 拉黑
         // Maximum: 0
-        Status *uint8 `json:"status,optional" validate:"omitempty,number,max=2"`
+        Status *uint8 `json:"status,optional" validate:"omitempty,number,oneof=0 1"`
     }
 
     // Update user information request | 更新用户信息
@@ -286,7 +286,7 @@ type (
         // The user's status | 用户状态
         // 0 normal, 1 ban | 0 正常 1 拉黑
         // Maximum: 2
-        Status *uint8 `json:"status,optional" validate:"omitempty,number,max=2"`
+        Status *uint8 `json:"status,optional" validate:"omitempty,number,oneof=0 1"`
     }
 
     // Get user list request | 获取用户列表请求参数
@@ -320,18 +320,11 @@ type (
     group: user
 )
 service core {
-
-    @doc(
-        summary: "Log in | 登录"
-        description: "登录"
-    )
+    @doc("Login | 登录")
     @handler login
     post /user/login (LoginReq) returns (LoginResp)
 
-    @doc(
-        summary: "Register | 注册"
-        description: "注册"
-    )
+    @doc("Register | 注册")
     @handler register
     post /user/register (RegisterReq) returns (SimpleMsgResp)
 }
@@ -342,73 +335,44 @@ service core {
     middleware: Authority
 )
 service core {
-    @doc(
-        summary: "Change Password | 修改密码"
-        description: "修改用户密码"
-    )
+
+    @doc("Change Password | 修改密码")
     @handler changePassword
     post /user/change-password (ChangePasswordReq) returns (SimpleMsgResp)
 
-    @doc(
-        summary: "Get user basic information | 获取用户基本信息"
-        description: "获取用户基本信息"
-    )
+    @doc("Get user basic information | 获取用户基本信息")
     @handler getUserInfo
     get /user/info returns (GetUserInfoResp)
 
-    @doc(
-        summary: "Create user's information | 新增用户"
-        description: "新增用户"
-    )
+    @doc("Create user's information | 新增用户")
     @handler createUser
     post /user (CreateUserReq) returns (SimpleMsgResp)
 
-    @doc(
-        summary: "Update user's information | 更新用户"
-        description: "更新用户"
-    )
+    @doc("Update user's information | 更新用户")
     @handler updateUser
     put /user (UpdateUserReq) returns (SimpleMsgResp)
 
-    @doc (
-        summary: "Get user list | 获取用户列表"
-        description: "获取用户列表"
-    )
+    @doc("Get user list | 获取用户列表")
     @handler getUserList
     post /user/list (GetUserListReq) returns (UserListResp)
 
-    @doc(
-        summary: "Delete user information | 删除用户信息"
-        description: "删除用户信息"
-    )
+    @doc("Delete user information | 删除用户信息")
     @handler deleteUser
     delete /user (IDReq) returns (SimpleMsgResp)
 
-    @doc (
-        summary: "Get user's permission code | 获取用户权限码"
-        description: "获取用户权限码"
-    )
+    @doc("Get user's permission code | 获取用户权限码")
     @handler getUserPermCode
     get /user/perm returns (PermCodeResp)
 
-    @doc(
-        summary: "Get user's profile | 获取用户个人信息"
-        description: "获取用户个人信息"
-    )
+    @doc("Get user's profile | 获取用户个人信息")
     @handler getUserProfile
     get /user/profile returns (ProfileResp)
 
-    @doc(
-        summary: "Update user's profile | 更新用户个人信息"
-        description: "更新用户个人信息"
-    )
+    @doc("Update user's profile | 更新用户个人信息")
     @handler updateUserProfile
     post /user/profile (UpdateProfileReq) returns (SimpleMsgResp)
 
-    @doc(
-        summary: "Log out | 退出登陆"
-        description: "退出登陆"
-    )
+    @doc("Log out | 退出登陆")
     @handler logout
     get /user/logout returns (SimpleMsgResp)
 }

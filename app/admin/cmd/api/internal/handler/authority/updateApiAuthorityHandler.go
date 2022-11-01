@@ -1,25 +1,25 @@
-package role
+package authority
 
 import (
 	"net/http"
 
 	"github.com/zeromicro/go-zero/rest/httpx"
-	"slash-admin/app/admin/cmd/api/internal/logic/role"
+	"slash-admin/app/admin/cmd/api/internal/logic/authority"
 	"slash-admin/app/admin/cmd/api/internal/svc"
 	"slash-admin/app/admin/cmd/api/internal/types"
 )
 
-// swagger:route post /role role CreateOrUpdateRole
+// swagger:route put /authority/api authority UpdateApiAuthority
 //
-// "Create or update role information | 创建或更新角色"
+//  Get API authorization information | 获取API权限
 //
-// "创建或更新角色"
+//  Get API authorization information | 获取API权限
 //
 // Parameters:
 //  + name: body
 //    require: true
 //    in: body
-//    type: RoleInfo
+//    type: UpdateApiAuthorityReq
 //
 //
 // Responses:
@@ -27,16 +27,16 @@ import (
 //
 //
 
-func CreateOrUpdateRoleHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+func UpdateApiAuthorityHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.RoleInfo
+		var req types.UpdateApiAuthorityReq
 		if err := httpx.Parse(r, &req); err != nil {
 			httpx.Error(w, err)
 			return
 		}
 
-		l := role.NewCreateOrUpdateRoleLogic(r.Context(), svcCtx)
-		resp, err := l.CreateOrUpdateRole(&req)
+		l := authority.NewUpdateApiAuthorityLogic(r.Context(), svcCtx)
+		resp, err := l.UpdateApiAuthority(&req)
 		if err != nil {
 			httpx.Error(w, err)
 		} else {

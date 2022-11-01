@@ -11,9 +11,9 @@ import (
 
 // swagger:route put /api api UpdateApi
 //
-// "更新API"
+//  Update API information | 创建或更新API
 //
-// "Update API information | 创建或更新API"
+//  Update API information | 创建或更新API
 //
 // Parameters:
 //  + name: body

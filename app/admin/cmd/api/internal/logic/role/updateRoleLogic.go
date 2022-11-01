@@ -5,6 +5,7 @@ import (
 	"github.com/zeromicro/go-zero/core/errorx"
 	"net/http"
 	"slash-admin/app/admin/ent/sysrole"
+	"slash-admin/pkg/message"
 	pType "slash-admin/pkg/types"
 
 	"slash-admin/app/admin/cmd/api/internal/svc"
@@ -32,8 +33,8 @@ func (l *UpdateRoleLogic) UpdateRole(req *types.UpdateRoleReq) (resp *types.Simp
 	exist, err := l.svcCtx.EntClient.SysRole.Query().Where(sysrole.ID(req.ID)).Exist(l.ctx)
 
 	if err != nil {
-		logx.Errorw(errorx.DatabaseError, logx.Field("detail", err.Error()))
-		return nil, errorx.NewApiError(http.StatusInternalServerError, errorx.DatabaseError)
+		logx.Errorw(message.DatabaseError, logx.Field("detail", err.Error()))
+		return nil, errorx.NewApiInternalServerError(message.DatabaseError)
 	}
 
 	if !exist {
@@ -50,8 +51,8 @@ func (l *UpdateRoleLogic) UpdateRole(req *types.UpdateRoleReq) (resp *types.Simp
 		Save(l.ctx)
 
 	if err != nil {
-		logx.Errorw(errorx.DatabaseError, logx.Field("detail", err.Error()))
-		return nil, errorx.NewApiError(http.StatusInternalServerError, errorx.UpdateFailed)
+		logx.Errorw(message.DatabaseError, logx.Field("detail", err.Error()))
+		return nil, errorx.NewApiInternalServerError(message.DatabaseError)
 	}
 
 	err = UpdateRoleInfoInRedis(l.ctx, l.svcCtx.Redis, l.svcCtx.EntClient)

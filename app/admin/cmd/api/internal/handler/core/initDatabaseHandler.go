@@ -12,7 +12,7 @@ import (
 //
 // "Initialize database | 初始化数据库"
 //
-// "初始化数据库"
+// "Initialize database | 初始化数据库"
 //
 // Responses:
 //  200: SimpleMsgResp

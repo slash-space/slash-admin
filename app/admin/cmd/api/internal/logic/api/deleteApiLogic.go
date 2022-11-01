@@ -35,7 +35,7 @@ func (l *DeleteApiLogic) DeleteApi(req *types.IDReq) (resp *types.SimpleMsgResp,
 			return nil, errorx.NewApiBadRequestError(message.ApiNotExists)
 		}
 		l.Errorw("delete api error", logx.Field("detail", err.Error()))
-		return nil, errorx.NewApiInternalServerError(errorx.DatabaseError)
+		return nil, errorx.NewApiInternalServerError(message.DatabaseError)
 	}
 
 	return &types.SimpleMsgResp{Msg: errorx.Success}, nil

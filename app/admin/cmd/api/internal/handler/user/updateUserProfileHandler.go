@@ -11,9 +11,9 @@ import (
 
 // swagger:route post /user/profile user UpdateUserProfile
 //
-// "Update user's profile | 更新用户个人信息"
+//  Update user's profile | 更新用户个人信息
 //
-// "更新用户个人信息"
+//  Update user's profile | 更新用户个人信息
 //
 // Parameters:
 //  + name: body

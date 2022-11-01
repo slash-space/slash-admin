@@ -3,6 +3,7 @@ package oauth
 import (
 	"context"
 	"github.com/zeromicro/go-zero/core/errorx"
+	"slash-admin/pkg/message"
 
 	"slash-admin/app/admin/cmd/api/internal/svc"
 	"slash-admin/app/admin/cmd/api/internal/types"
@@ -39,7 +40,7 @@ func (l *CreateProviderLogic) CreateProvider(req *types.CreateProviderReq) (resp
 
 	if err != nil {
 		l.Errorf("create provider error: %v", err)
-		return nil, errorx.NewApiInternalServerError(errorx.DatabaseError)
+		return nil, errorx.NewApiInternalServerError(message.DatabaseError)
 	}
 
 	return &types.SimpleMsgResp{Msg: errorx.CreateSuccess}, nil

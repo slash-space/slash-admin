@@ -44,7 +44,7 @@ func (l *GetUserInfoLogic) GetUserInfo() (resp *types.GetUserInfoResp, err error
 			l.Errorf("GetUserInfoLogic.GetUserInfo: %s", message.UserNotExists)
 			return nil, errorx.NewApiBadRequestError(message.UserNotExists)
 		}
-		return nil, errorx.NewApiBadRequestError(errorx.DatabaseError)
+		return nil, errorx.NewApiBadRequestError(message.DatabaseError)
 	}
 
 	var roleMeta = &types.RoleMetaInfo{}

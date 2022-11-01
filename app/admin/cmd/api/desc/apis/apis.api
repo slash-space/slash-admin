@@ -124,31 +124,19 @@ type (
 )
 service core {
 
-    @doc(
-        description: "Create API information | 创建或更新API"
-        summary: "创建API"
-    )
+    // Create API information | 创建或更新API
     @handler createApi
     post /api (CreateApiReq) returns (SimpleMsgResp)
 
-    @doc(
-        description: "Update API information | 创建或更新API"
-        summary: "更新API"
-    )
+    // Update API information | 创建或更新API
     @handler updateApi
     put /api (UpdateApiReq) returns (SimpleMsgResp)
 
-    @doc(
-        description: "Delete API information | 删除API信息"
-        summary: "删除API信息"
-    )
+    // Delete API information | 删除API信息
     @handler deleteApi
     delete /api (IDReq) returns (SimpleMsgResp)
 
-    @doc(
-        description: "Get API list | 获取API列表"
-        summary: "获取API列表"
-    )
+    // Get API list | 获取API列表
     @handler getApiList
     post /api/list (ApiListReq) returns (ApiListResp)
 }

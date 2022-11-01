@@ -3,23 +3,18 @@ package core
 import (
 	"context"
 	"fmt"
-	"github.com/casbin/casbin/v2"
-	cabinModel "github.com/casbin/casbin/v2/model"
 	"github.com/google/uuid"
 	"github.com/zeromicro/go-zero/core/errorx"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/stores/redis"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
-	"log"
 	"net/http"
 	"slash-admin/app/admin/cmd/api/internal/globalkey"
 	"slash-admin/app/admin/cmd/api/internal/svc"
 	"slash-admin/app/admin/cmd/api/internal/types"
 	"slash-admin/app/admin/ent"
-	entcasbin "slash-admin/app/admin/ent/casbin"
 	"slash-admin/app/admin/ent/migrate"
 	"slash-admin/app/admin/ent/sysrole"
+	"slash-admin/pkg/message"
 	pType "slash-admin/pkg/types"
 	"slash-admin/pkg/utils"
 	"strconv"
@@ -50,8 +45,8 @@ func (l *InitDatabaseLogic) InitDatabase() (resp *types.SimpleMsgResp, err error
 			logx.Error("last initialization is running")
 			return nil, errorx.NewApiError(http.StatusInternalServerError, errorx.InitRunning)
 		} else {
-			logx.Errorw(errorx.RedisError, logx.Field("detail", err.Error()))
-			return nil, errorx.NewApiError(http.StatusInternalServerError, errorx.RedisError)
+			logx.Errorw(message.RedisError, logx.Field("detail", err.Error()))
+			return nil, errorx.NewApiError(http.StatusInternalServerError, message.RedisError)
 		}
 	}
 
@@ -69,8 +64,8 @@ func (l *InitDatabaseLogic) InitDatabase() (resp *types.SimpleMsgResp, err error
 	}
 
 	if err := l.svcCtx.Redis.Set(globalkey.InitDatabaseState, "1"); err != nil {
-		logx.Errorw(errorx.RedisError, logx.Field("detail", err.Error()))
-		return nil, errorx.NewApiError(http.StatusInternalServerError, errorx.RedisError)
+		logx.Errorw(message.RedisError, logx.Field("detail", err.Error()))
+		return nil, errorx.NewApiError(http.StatusInternalServerError, message.RedisError)
 	}
 
 	// set default state value
@@ -78,60 +73,60 @@ func (l *InitDatabaseLogic) InitDatabase() (resp *types.SimpleMsgResp, err error
 	l.svcCtx.Redis.Set(globalkey.InitDatabaseState, "0")
 
 	if err := l.svcCtx.EntClient.Schema.Create(l.ctx, migrate.WithForeignKeys(false)); err != nil {
-		logx.Errorw(errorx.DatabaseError, logx.Field("detail", err.Error()))
+		logx.Errorw(message.DatabaseError, logx.Field("detail", err.Error()))
 		l.svcCtx.Redis.Setex(globalkey.InitDatabaseErrorMsg, err.Error(), 300)
-		return nil, errorx.NewApiError(http.StatusInternalServerError, errorx.DatabaseError)
+		return nil, errorx.NewApiInternalServerError(message.DatabaseError)
 	}
 
 	err = l.insertUserData()
 
 	if err != nil {
-		logx.Errorw(errorx.DatabaseError, logx.Field("detail", err.Error()))
+		logx.Errorw(message.DatabaseError, logx.Field("detail", err.Error()))
 		l.svcCtx.Redis.Setex(globalkey.InitDatabaseErrorMsg, err.Error(), 300)
-		return nil, errorx.NewApiError(http.StatusInternalServerError, errorx.DatabaseError)
+		return nil, errorx.NewApiInternalServerError(message.DatabaseError)
 	}
 
 	err = l.insertRoleData()
 	if err != nil {
-		logx.Errorw(errorx.DatabaseError, logx.Field("detail", err.Error()))
+		logx.Errorw(message.DatabaseError, logx.Field("detail", err.Error()))
 		l.svcCtx.Redis.Setex(globalkey.InitDatabaseErrorMsg, err.Error(), 300)
-		return nil, errorx.NewApiError(http.StatusInternalServerError, errorx.DatabaseError)
+		return nil, errorx.NewApiInternalServerError(message.DatabaseError)
 	}
 
 	err = l.insertMenuData()
 	if err != nil {
-		logx.Errorw(errorx.DatabaseError, logx.Field("detail", err.Error()))
+		logx.Errorw(message.DatabaseError, logx.Field("detail", err.Error()))
 		l.svcCtx.Redis.Setex(globalkey.InitDatabaseErrorMsg, err.Error(), 300)
-		return nil, errorx.NewApiError(http.StatusInternalServerError, errorx.DatabaseError)
+		return nil, errorx.NewApiInternalServerError(message.DatabaseError)
 	}
 
 	err = l.insertProviderData()
 	if err != nil {
-		logx.Errorw(errorx.DatabaseError, logx.Field("detail", err.Error()))
+		logx.Errorw(message.DatabaseError, logx.Field("detail", err.Error()))
 		l.svcCtx.Redis.Setex(globalkey.InitDatabaseErrorMsg, err.Error(), 300)
-		return nil, errorx.NewApiError(http.StatusInternalServerError, errorx.DatabaseError)
+		return nil, errorx.NewApiInternalServerError(message.DatabaseError)
 	}
 
 	err = l.insertRoleMenuAuthorityData()
 	if err != nil {
-		logx.Errorw(errorx.DatabaseError, logx.Field("detail", err.Error()))
+		logx.Errorw(message.DatabaseError, logx.Field("detail", err.Error()))
 
 		l.svcCtx.Redis.Setex(globalkey.InitDatabaseErrorMsg, err.Error(), 300)
-		return nil, errorx.NewApiError(http.StatusInternalServerError, errorx.DatabaseError)
+		return nil, errorx.NewApiInternalServerError(message.DatabaseError)
 	}
 
 	err = l.insertApiData()
 	if err != nil {
-		logx.Errorw(errorx.DatabaseError, logx.Field("detail", err.Error()))
+		logx.Errorw(message.DatabaseError, logx.Field("detail", err.Error()))
 		l.svcCtx.Redis.Setex(globalkey.InitDatabaseErrorMsg, err.Error(), 300)
-		return nil, errorx.NewApiError(http.StatusInternalServerError, errorx.DatabaseError)
+		return nil, errorx.NewApiInternalServerError(message.DatabaseError)
 	}
 
 	err = l.insertCasbinPoliciesData()
 	if err != nil {
-		logx.Errorw(errorx.DatabaseError, logx.Field("detail", err.Error()))
+		logx.Errorw(message.DatabaseError, logx.Field("detail", err.Error()))
 		l.svcCtx.Redis.Setex(globalkey.InitDatabaseErrorMsg, err.Error(), 300)
-		return nil, errorx.NewApiError(http.StatusInternalServerError, errorx.DatabaseError)
+		return nil, errorx.NewApiInternalServerError(message.DatabaseError)
 	}
 
 	return &types.SimpleMsgResp{Msg: errorx.Success}, nil
@@ -875,7 +870,7 @@ func (l *InitDatabaseLogic) insertRoleMenuAuthorityData() error {
 func (l *InitDatabaseLogic) insertCasbinPoliciesData() error {
 	apis, err := l.svcCtx.EntClient.SysApi.Query().All(l.ctx)
 	if err != nil {
-		logx.Errorw(errorx.DatabaseError, logx.Field("detail", err.Error()))
+		logx.Errorw(message.DatabaseError, logx.Field("detail", err.Error()))
 		return err
 	}
 
@@ -885,53 +880,14 @@ func (l *InitDatabaseLogic) insertCasbinPoliciesData() error {
 		policies = append(policies, []string{strconv.Itoa(globalkey.RoleAdminID), v.Path, v.Method})
 	}
 
-	csb := getCasbin(l.svcCtx.EntClient)
-	addResult, err := csb.AddPolicies(policies)
+	addResult, err := l.svcCtx.Casbin.AddPolicies(policies)
 
 	if err != nil {
-		return status.Error(codes.Internal, err.Error())
+		return errorx.NewApiInternalServerError("add policies error")
 	}
 	if addResult {
 		return nil
 	} else {
-		return status.Error(codes.Internal, err.Error())
+		return errorx.NewApiInternalServerError("add policies failed")
 	}
-}
-
-func getCasbin(client *ent.Client) *casbin.SyncedEnforcer {
-	var syncedEnforcer *casbin.SyncedEnforcer
-	a, _ := entcasbin.NewAdapterWithClient(client)
-
-	text := `
-		[request_definition]
-		r = sub, obj, act
-		
-		[policy_definition]
-		p = sub, obj, act
-		
-		[role_definition]
-		g = _, _
-		
-		[policy_effect]
-		e = some(where (p.eft == allow))
-		
-		[matchers]
-		m = r.sub == p.sub && keyMatch2(r.obj,p.obj) && r.act == p.act
-		`
-	m, err := cabinModel.NewModelFromString(text)
-	if err != nil {
-		log.Fatal("InitCasbin: import model fail!", err)
-		return nil
-	}
-	syncedEnforcer, err = casbin.NewSyncedEnforcer(m, a)
-	if err != nil {
-		log.Fatal("InitCasbin: NewSyncedEnforcer fail!", err)
-		return nil
-	}
-	err = syncedEnforcer.LoadPolicy()
-	if err != nil {
-		log.Fatal("InitCasbin: LoadPolicy fail!", err)
-		return nil
-	}
-	return syncedEnforcer
 }

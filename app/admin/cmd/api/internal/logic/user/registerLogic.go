@@ -46,7 +46,7 @@ func (l *RegisterLogic) Register(req *types.RegisterReq) (resp *types.SimpleMsgR
 
 	if err != nil {
 		l.Errorf("register logic: create user err: %s", err.Error())
-		return nil, errorx.NewApiInternalServerError(errorx.DatabaseError)
+		return nil, errorx.NewApiInternalServerError(message.DatabaseError)
 	}
 
 	l.Infow("register logic: create user success", logx.Field("user", save))

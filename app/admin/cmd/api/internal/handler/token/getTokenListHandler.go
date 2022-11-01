@@ -11,9 +11,9 @@ import (
 
 // swagger:route post /token/list token GetTokenList
 //
-// "Get Token list | 获取token列表"
+//  Get Token list | 获取token列表
 //
-// "Get Token list"
+//  Get Token list | 获取token列表
 //
 // Parameters:
 //  + name: body

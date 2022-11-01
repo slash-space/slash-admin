@@ -11,9 +11,9 @@ import (
 
 // swagger:route post /user/list user GetUserList
 //
-// "Get user list | 获取用户列表"
+//  Get user list | 获取用户列表
 //
-// "获取用户列表"
+//  Get user list | 获取用户列表
 //
 // Parameters:
 //  + name: body

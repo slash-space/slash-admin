@@ -42,7 +42,7 @@ func (l *ChangePasswordLogic) ChangePassword(req *types.ChangePasswordReq) (resp
 			return nil, errorx.NewApiBadRequestError(message.UserNotExists)
 		}
 		l.Errorw("query user error", logx.Field("uuid", uuid), logx.Field("error", err))
-		return nil, errorx.NewApiBadRequestError(errorx.DatabaseError)
+		return nil, errorx.NewApiBadRequestError(message.DatabaseError)
 	}
 
 	if ok := utils.BcryptCheck(req.OldPassword, target.Password); !ok {
@@ -56,7 +56,7 @@ func (l *ChangePasswordLogic) ChangePassword(req *types.ChangePasswordReq) (resp
 
 	if err != nil {
 		l.Errorw("update user error", logx.Field("uuid", uuid), logx.Field("error", err))
-		return nil, errorx.NewApiBadRequestError(errorx.DatabaseError)
+		return nil, errorx.NewApiBadRequestError(message.DatabaseError)
 	}
 
 	logx.Infow("change password successful", logx.Field("UUID", target.UUID))

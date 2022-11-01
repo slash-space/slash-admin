@@ -11,9 +11,9 @@ import (
 
 // swagger:route post /token/logout token Logout
 //
-// "Force logging out by user UUID | 根据UUID强制用户退出"
+//  Force logging out by user UUID | 根据UUID强制用户退出
 //
-// "Force logging out by user UUID"
+//  Force logging out by user UUID | 根据UUID强制用户退出
 //
 // Parameters:
 //  + name: body

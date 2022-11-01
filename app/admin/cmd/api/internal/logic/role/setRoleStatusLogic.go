@@ -3,7 +3,7 @@ package role
 import (
 	"context"
 	"github.com/zeromicro/go-zero/core/errorx"
-	"net/http"
+	"slash-admin/pkg/message"
 	pType "slash-admin/pkg/types"
 
 	"slash-admin/app/admin/cmd/api/internal/svc"
@@ -34,8 +34,8 @@ func (l *SetRoleStatusLogic) SetRoleStatus(req *types.SetStatusReq) (resp *types
 
 	if err != nil {
 		logx.Errorw("update role status failed, please check the role id", logx.Field("roleId", req.ID))
-		return nil, errorx.NewApiError(http.StatusBadRequest, errorx.UpdateFailed)
+		return nil, errorx.NewApiInternalServerError(message.DatabaseError)
 	}
 	logx.Infow("update role status successfully", logx.Field("roleID", req.ID), logx.Field("status", req.Status))
-	return &types.SimpleMsgResp{Msg: errorx.UpdateSuccess}, nil
+	return &types.SimpleMsgResp{Msg: message.UpdateSuccess}, nil
 }

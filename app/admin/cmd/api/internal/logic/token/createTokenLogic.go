@@ -5,6 +5,7 @@ import (
 	"github.com/zeromicro/go-zero/core/errorx"
 	"slash-admin/app/admin/cmd/api/internal/svc"
 	"slash-admin/app/admin/cmd/api/internal/types"
+	"slash-admin/pkg/message"
 	pType "slash-admin/pkg/types"
 	"time"
 
@@ -36,7 +37,7 @@ func (l *CreateTokenLogic) CreateToken(req *types.CreateTokenReq) (resp *types.S
 		Save(l.ctx)
 
 	if err != nil {
-		logx.Errorw(errorx.DatabaseError, logx.Field("detail", err.Error()))
+		logx.Errorw(message.DatabaseError, logx.Field("detail", err.Error()))
 		return nil, errorx.NewApiInternalServerError(err.Error())
 	}
 	return &types.SimpleMsgResp{Msg: errorx.CreateSuccess}, nil

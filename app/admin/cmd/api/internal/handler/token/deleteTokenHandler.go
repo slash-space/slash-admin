@@ -11,9 +11,9 @@ import (
 
 // swagger:route delete /token token DeleteToken
 //
-// "Delete token information | 删除token信息"
+//  Delete token information | 删除token信息
 //
-// "Delete token information"
+//  Delete token information | 删除token信息
 //
 // Parameters:
 //  + name: body
