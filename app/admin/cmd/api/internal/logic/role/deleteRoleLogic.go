@@ -33,7 +33,7 @@ func (l *DeleteRoleLogic) DeleteRole(req *types.IDReq) (resp *types.SimpleMsgRes
 
 	if err != nil {
 		l.Errorf("check role exist error: %v", err)
-		return nil, errorx.NewApiError(http.StatusInternalServerError, errorx.DatabaseError)
+		return nil, errorx.NewApiInternalServerError(message.DatabaseError)
 	}
 
 	if exist {
@@ -46,10 +46,10 @@ func (l *DeleteRoleLogic) DeleteRole(req *types.IDReq) (resp *types.SimpleMsgRes
 
 	if err != nil {
 		l.Errorf("SysRole delete error: %v", err)
-		return nil, errorx.NewApiError(http.StatusInternalServerError, errorx.DatabaseError)
+		return nil, errorx.NewApiInternalServerError(message.DatabaseError)
 	}
 
-	logx.Infow("delete role successfully", logx.Field("roleId", req.ID))
+	l.Infow("delete role successfully", logx.Field("roleId", req.ID))
 
 	return &types.SimpleMsgResp{
 		Msg: errorx.DeleteSuccess,

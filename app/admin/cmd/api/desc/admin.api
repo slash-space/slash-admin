@@ -17,7 +17,7 @@ import "user/user.api"
 //import "menu.api"
 
 import "apis/apis.api"
-//import "authority.api"
+import "authority/authority.api"
 //import "dictionary.api"
 import "oauth/oauth.api"
 import "token/token.api"

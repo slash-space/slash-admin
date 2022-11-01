@@ -32,8 +32,8 @@ func (l *GetTokenListLogic) GetTokenList(req *types.TokenListReq) (resp *types.T
 		pageResult, err := l.svcCtx.EntClient.SysToken.Query().Page(l.ctx, req.PageNo, req.PageSize)
 
 		if err != nil {
-			logx.Errorw(errorx.DatabaseError, logx.Field("detail", err.Error()))
-			return nil, errorx.NewApiInternalServerError(errorx.DatabaseError)
+			logx.Errorw(message.DatabaseError, logx.Field("detail", err.Error()))
+			return nil, errorx.NewApiInternalServerError(message.DatabaseError)
 		}
 
 		return &types.TokenListResp{
@@ -65,7 +65,7 @@ func (l *GetTokenListLogic) GetTokenList(req *types.TokenListReq) (resp *types.T
 			return nil, errorx.NewApiBadRequestError(message.UserNotExists)
 		}
 		l.Errorf("query user error, %v", err)
-		return nil, errorx.NewApiBadRequestError(errorx.DatabaseError)
+		return nil, errorx.NewApiBadRequestError(message.DatabaseError)
 	}
 
 	pageResult, err := l.svcCtx.EntClient.SysToken.Query().
@@ -73,8 +73,8 @@ func (l *GetTokenListLogic) GetTokenList(req *types.TokenListReq) (resp *types.T
 		Page(l.ctx, req.PageNo, req.PageSize)
 
 	if err != nil {
-		logx.Errorw(errorx.DatabaseError, logx.Field("detail", err.Error()))
-		return nil, errorx.NewApiInternalServerError(errorx.DatabaseError)
+		logx.Errorw(message.DatabaseError, logx.Field("detail", err.Error()))
+		return nil, errorx.NewApiInternalServerError(message.DatabaseError)
 	}
 
 	return &types.TokenListResp{

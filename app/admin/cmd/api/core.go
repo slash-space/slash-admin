@@ -1,4 +1,4 @@
-//	System Name
+//	Admin service
 //
 //	Description: core service
 //

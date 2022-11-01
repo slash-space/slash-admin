@@ -15,11 +15,12 @@ import "base.api"
 )
 
 service core {
-    // Check the system status | 检查系统状态
+
+    @doc("Check the system status | 检查系统状态")
     @handler healthCheck
     get /core/health
 
-    // Initialize database | 初始化数据库
+    @doc("Initialize database | 初始化数据库")
     @handler initDatabase
     get /core/init/database returns (SimpleMsgResp)
 }

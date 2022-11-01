@@ -3,9 +3,9 @@ package user
 import (
 	"context"
 	"github.com/zeromicro/go-zero/core/errorx"
-	"net/http"
 	"slash-admin/app/admin/ent/predicate"
 	"slash-admin/app/admin/ent/sysuser"
+	"slash-admin/pkg/message"
 
 	"slash-admin/app/admin/cmd/api/internal/svc"
 	"slash-admin/app/admin/cmd/api/internal/types"
@@ -48,8 +48,8 @@ func (l *GetUserListLogic) GetUserList(req *types.GetUserListReq) (resp *types.U
 	pageResult, err := l.svcCtx.EntClient.SysUser.Query().Where(predicates...).Page(l.ctx, req.PageNo, req.PageSize)
 
 	if err != nil {
-		logx.Errorw(errorx.DatabaseError, logx.Field("detail", err.Error()))
-		return nil, errorx.NewApiError(http.StatusInternalServerError, errorx.DatabaseError)
+		logx.Errorw(message.DatabaseError, logx.Field("detail", err.Error()))
+		return nil, errorx.NewApiInternalServerError(message.DatabaseError)
 	}
 
 	return &types.UserListResp{

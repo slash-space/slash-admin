@@ -132,29 +132,27 @@ type (
 )
 service core {
 
-    // Create Token information | 创建Token
+    @doc("Create Token information | 创建Token")
     @handler createToken
     post /token (CreateTokenReq) returns (SimpleMsgResp)
 
-
-    // Update Token information | 更新Token
+    @doc("Update Token information | 更新Token")
     @handler updateToken
     put /token (UpdateTokenReq) returns (SimpleMsgResp)
 
-
-    // Delete token information | 删除token信息
+    @doc("Delete token information | 删除token信息")
     @handler deleteToken
     delete /token (IDReq) returns (SimpleMsgResp)
 
-    // Get Token list | 获取token列表
+    @doc("Get Token list | 获取token列表")
     @handler getTokenList
     post /token/list (TokenListReq) returns (TokenListResp)
 
-    // Set token status | 设置token状态
+    @doc("Set token status | 设置token状态")
     @handler setTokenStatus
     post /token/status (SetBooleanStatusReq) returns (SimpleMsgResp)
 
-    // Force logging out by user UUID | 根据UUID强制用户退出
+    @doc("Force logging out by user UUID | 根据UUID强制用户退出")
     @handler logout
     post /token/logout (UUIDReq) returns (SimpleMsgResp)
 }

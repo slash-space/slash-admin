@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"github.com/zeromicro/go-zero/core/errorx"
+	"slash-admin/pkg/message"
 
 	"slash-admin/app/admin/cmd/api/internal/svc"
 	"slash-admin/app/admin/cmd/api/internal/types"
@@ -35,7 +36,7 @@ func (l *CreateApiLogic) CreateApi(req *types.CreateApiReq) (resp *types.SimpleM
 
 	if err != nil {
 		l.Errorw("create api error", logx.Field("detail", err.Error()))
-		return nil, errorx.NewApiInternalServerError(errorx.DatabaseError)
+		return nil, errorx.NewApiInternalServerError(message.DatabaseError)
 	}
 
 	l.Infow("create api success",

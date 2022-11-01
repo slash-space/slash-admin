@@ -38,7 +38,7 @@ func (l *CreateUserLogic) CreateUser(req *types.CreateUserReq) (resp *types.Simp
 
 	if err != nil {
 		l.Errorw("query user error", logx.Field("err", err))
-		return nil, errorx.NewApiBadRequestError(errorx.DatabaseError)
+		return nil, errorx.NewApiBadRequestError(message.DatabaseError)
 	}
 
 	if exist {
@@ -64,7 +64,7 @@ func (l *CreateUserLogic) CreateUser(req *types.CreateUserReq) (resp *types.Simp
 
 	if err != nil {
 		l.Errorw("create user error", logx.Field("err", err))
-		return nil, errorx.NewApiBadRequestError(errorx.DatabaseError)
+		return nil, errorx.NewApiBadRequestError(message.DatabaseError)
 	}
 
 	return &types.SimpleMsgResp{Msg: errorx.Success}, nil

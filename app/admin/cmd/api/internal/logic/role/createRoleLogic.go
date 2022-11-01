@@ -4,9 +4,9 @@ import (
 	"context"
 	"github.com/zeromicro/go-zero/core/errorx"
 	"github.com/zeromicro/go-zero/core/stores/redis"
-	"net/http"
 	"slash-admin/app/admin/cmd/api/internal/globalkey"
 	"slash-admin/app/admin/ent"
+	"slash-admin/pkg/message"
 	pType "slash-admin/pkg/types"
 	"strconv"
 
@@ -41,8 +41,8 @@ func (l *CreateRoleLogic) CreateRole(req *types.CreateRoleReq) (resp *types.Simp
 		Save(l.ctx)
 
 	if err != nil {
-		logx.Errorw(errorx.DatabaseError, logx.Field("detail", err.Error()))
-		return nil, errorx.NewApiError(http.StatusInternalServerError, errorx.DatabaseError)
+		logx.Errorw(message.DatabaseError, logx.Field("detail", err.Error()))
+		return nil, errorx.NewApiInternalServerError(message.DatabaseError)
 	}
 
 	err = UpdateRoleInfoInRedis(l.ctx, l.svcCtx.Redis, l.svcCtx.EntClient)
@@ -60,8 +60,8 @@ func UpdateRoleInfoInRedis(ctx context.Context, redis *redis.Redis, entClient *e
 	roleData, err := entClient.SysRole.Query().All(ctx)
 
 	if err != nil {
-		logx.Errorw(errorx.DatabaseError, logx.Field("detail", err.Error()))
-		return errorx.NewApiError(http.StatusInternalServerError, errorx.DatabaseError)
+		logx.Errorw(message.DatabaseError, logx.Field("detail", err.Error()))
+		return errorx.NewApiInternalServerError(message.DatabaseError)
 	}
 
 	for _, v := range roleData {
@@ -69,7 +69,7 @@ func UpdateRoleInfoInRedis(ctx context.Context, redis *redis.Redis, entClient *e
 		err = redis.Hset(globalkey.RoleList, globalkey.GetRoleListValue(v.ID), v.Value)
 		err = redis.Hset(globalkey.RoleList, globalkey.GetRoleListStatus(v.ID), strconv.Itoa(int(v.Status)))
 		if err != nil {
-			return errorx.NewApiError(http.StatusInternalServerError, errorx.RedisError)
+			return errorx.NewApiInternalServerError(message.RedisError)
 		}
 	}
 

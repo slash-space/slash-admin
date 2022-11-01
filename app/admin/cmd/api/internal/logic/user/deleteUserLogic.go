@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/zeromicro/go-zero/core/errorx"
 	"slash-admin/app/admin/ent"
+	"slash-admin/pkg/message"
 
 	"slash-admin/app/admin/cmd/api/internal/svc"
 	"slash-admin/app/admin/cmd/api/internal/types"
@@ -33,8 +34,8 @@ func (l *DeleteUserLogic) DeleteUser(req *types.IDReq) (resp *types.SimpleMsgRes
 			logx.Errorw("delete user failed, please check the user id", logx.Field("userId", req.ID))
 			return &types.SimpleMsgResp{Msg: errorx.DeleteFailed}, nil
 		}
-		logx.Errorw(errorx.DatabaseError, logx.Field("detail", err.Error()))
-		return nil, errorx.NewApiBadRequestError(errorx.DatabaseError)
+		logx.Errorw(message.DatabaseError, logx.Field("detail", err.Error()))
+		return nil, errorx.NewApiBadRequestError(message.DatabaseError)
 	}
 
 	logx.Infow("delete user successfully", logx.Field("userId", req.ID))

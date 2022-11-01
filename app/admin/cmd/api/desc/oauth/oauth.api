@@ -11,6 +11,7 @@ info(
 import "base.api"
 
 type (
+
     // The response data of oauth provider information | 提供者信息
     OauthProviderInfo {
         // ID
@@ -231,19 +232,19 @@ service core {
     middleware: Authority
 )
 service core {
-    // Create provider information | 创建提供商信息
+    @doc("Create provider information | 创建提供商信息")
     @handler createProvider
     post /oauth/provider (CreateProviderReq) returns (SimpleMsgResp)
 
-    // Update provider information | 更新提供商信息
+    @doc("Update provider information | 更新提供商信息")
     @handler updateProvider
     put /oauth/provider (UpdateProviderReq) returns (SimpleMsgResp)
 
-    // Delete provider information | 删除提供商信息
+    @doc("Delete provider information | 删除提供商信息")
     @handler deleteProvider
     delete /oauth/provider (IDReq) returns (SimpleMsgResp)
 
-    // Get provider list | 获取提供商列表
+    @doc("Get provider list | 获取提供商列表")
     @handler getProviderList
     post /oauth/provider/list (PageReq) returns (ProviderListResp)
 }

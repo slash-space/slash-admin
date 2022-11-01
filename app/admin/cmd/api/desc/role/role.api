@@ -135,23 +135,23 @@ type (
 )
 service core {
 
-    // Create role information | 创建角色
+    @doc("Create role information | 创建角色")
     @handler createRole
     post /role (CreateRoleReq) returns (SimpleMsgResp)
 
-    // Update role information | 更新角色
+    @doc("Update role information | 更新角色")
     @handler updateRole
     put /role (UpdateRoleReq) returns (SimpleMsgResp)
 
-    // Delete role information | 删除角色信息
+    @doc("Delete role information | 删除角色信息")
     @handler deleteRole
     delete /role (IDReq) returns (SimpleMsgResp)
 
-    // Get role list | 获取角色列表
+    @doc("Get role list | 获取角色列表")
     @handler getRoleList
     post /role/list (PageReq) returns (RoleListResp)
 
-    // Set role status | 设置角色状态
+    @doc("Set role status | 设置角色状态")
     @handler setRoleStatus
     post /role/status (SetStatusReq) returns (SimpleMsgResp)
 }

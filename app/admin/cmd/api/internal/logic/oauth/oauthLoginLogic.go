@@ -47,7 +47,7 @@ func (l *OauthLoginLogic) OauthLogin(req *types.OauthLoginReq) (resp *types.Redi
 			return nil, errorx.NewApiBadRequestError(message.ProviderNotExists)
 		}
 		l.Error("query oauth provider error: %v", err)
-		return nil, errorx.NewApiInternalServerError(errorx.DatabaseError)
+		return nil, errorx.NewApiInternalServerError(message.DatabaseError)
 	}
 
 	var config oauth2.Config

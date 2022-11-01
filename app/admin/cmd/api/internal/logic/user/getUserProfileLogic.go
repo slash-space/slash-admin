@@ -38,7 +38,7 @@ func (l *GetUserProfileLogic) GetUserProfile() (resp *types.ProfileResp, err err
 		if ent.IsNotFound(err) {
 			return nil, errorx.NewApiBadRequestError(message.UserNotExists)
 		}
-		return nil, errorx.NewApiBadRequestError(errorx.DatabaseError)
+		return nil, errorx.NewApiBadRequestError(message.DatabaseError)
 	}
 
 	resp.User = l.svcCtx.Converter.ConvertSysUser(user)

@@ -3,11 +3,11 @@ package api
 import (
 	"context"
 	"github.com/zeromicro/go-zero/core/errorx"
-	"net/http"
 	"slash-admin/app/admin/cmd/api/internal/svc"
 	"slash-admin/app/admin/cmd/api/internal/types"
 	"slash-admin/app/admin/ent/predicate"
 	"slash-admin/app/admin/ent/sysapi"
+	"slash-admin/pkg/message"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -50,8 +50,8 @@ func (l *GetApiListLogic) GetApiList(req *types.ApiListReq) (resp *types.ApiList
 		Page(l.ctx, req.PageNo, req.PageSize)
 
 	if err != nil {
-		logx.Errorw(errorx.DatabaseError, logx.Field("detail", err.Error()))
-		return nil, errorx.NewApiError(http.StatusInternalServerError, errorx.DatabaseError)
+		logx.Errorw(message.DatabaseError, logx.Field("detail", err.Error()))
+		return nil, errorx.NewApiInternalServerError(message.DatabaseError)
 	}
 
 	return &types.ApiListResp{

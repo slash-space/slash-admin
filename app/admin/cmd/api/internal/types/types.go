@@ -36,6 +36,14 @@ type IDReq struct {
 	ID uint64 `json:"id" validate:"number"`
 }
 
+// Basic Get id request | 基础id参数请求
+// swagger:parameters IDParamReq ID
+type IDParamReq struct {
+	// ID
+	// Required: true
+	ID uint64 `form:"id" validate:"number"`
+}
+
 // Page information return ｜ 分页信息返回
 // swagger:model Pagination
 type Pagination struct {
@@ -85,7 +93,7 @@ type SetBooleanStatusReq struct {
 	Status uint8 `json:"status" validate:"number"`
 }
 
-// role meta info | 角色meta数据
+// Role meta info | 角色meta数据
 // swagger:model RoleMetaInfo
 type RoleMetaInfo struct {
 	// Role name | 角色名
@@ -402,7 +410,7 @@ type CreateUserReq struct {
 	// The user's status | 用户状态
 	// 0 normal, 1 ban | 0 正常 1 拉黑
 	// Maximum: 0
-	Status *uint8 `json:"status,optional" validate:"omitempty,number,max=2"`
+	Status *uint8 `json:"status,optional" validate:"omitempty,number,oneof=0 1"`
 }
 
 // Update user information request | 更新用户信息
@@ -444,7 +452,7 @@ type UpdateUserReq struct {
 	// The user's status | 用户状态
 	// 0 normal, 1 ban | 0 正常 1 拉黑
 	// Maximum: 2
-	Status *uint8 `json:"status,optional" validate:"omitempty,number,max=2"`
+	Status *uint8 `json:"status,optional" validate:"omitempty,number,oneof=0 1"`
 }
 
 // Get user list request | 获取用户列表请求参数
@@ -560,6 +568,83 @@ type ApiListReq struct {
 	// API request method e.g. POST | API请求类型 如POST
 	// Max length: 4
 	Method *string `json:"method,optional" validate:"omitempty,uppercase,max=4"`
+}
+
+// The response data of api authorization | API授权数据
+// swagger:model ApiAuthorityInfo
+type ApiAuthorityInfo struct {
+	// API path | API 路径
+	Path string `json:"path"`
+	// API method | API请求方法
+	Method string `json:"method"`
+}
+
+// Create api authorization information request | 创建API授权信息
+// swagger:model CreateApiAuthorityReq
+type CreateApiAuthorityReq struct {
+	// Role ID | 角色ID
+	// Required: true
+	// Maximum: 1000
+	RoleId uint64 `json:"roleId" validate:"number,max=1000"`
+	// API authorization list | API授权列表数据
+	// Required: true
+	Data []*ApiAuthorityInfo `json:"data"`
+}
+
+// Update api authorization information request | 更新API授权信息
+// swagger:model UpdateApiAuthorityReq
+type UpdateApiAuthorityReq struct {
+	// Role ID | 角色ID
+	// Required: true
+	// Maximum: 1000
+	RoleId uint64 `json:"roleId" validate:"number,max=1000"`
+	// API authorization list | API授权列表数据
+	// Required: true
+	Data []*ApiAuthorityInfo `json:"data"`
+}
+
+// The response data of api authorization list | API授权列表数据
+// swagger:model ApiAuthorityListResp
+type ApiAuthorityListResp struct {
+	// Pageinfo | 分页信息
+	// in: body
+	Pagination *Pagination `json:"pagination"`
+	// The api authorization list data | API授权列表数据
+	// in: body
+	List []*ApiAuthorityInfo `json:"list"`
+}
+
+// Create menu authorization information request params | 创建或更新菜单授权信息参数
+// swagger:model CreateMenuAuthorityReq
+type CreateMenuAuthorityReq struct {
+	// role ID | 角色ID
+	// Required: true
+	// Maximum: 1000
+	RoleId uint64 `json:"roleId" validate:"number,max=1000"`
+	// menu ID array | 菜单ID数组
+	// Required: true
+	MenuIds []uint64 `json:"menuIds"`
+}
+
+// Update menu authorization information request params | 创建或更新菜单授权信息参数
+// swagger:model UpdateMenuAuthorityReq
+type UpdateMenuAuthorityReq struct {
+	// role ID | 角色ID
+	// Required: true
+	// Maximum: 1000
+	RoleId uint64 `json:"roleId" validate:"number,max=1000"`
+	// menu ID array | 菜单ID数组
+	// Required: true
+	MenuIds []uint64 `json:"menuIds"`
+}
+
+// Menu authorization information request params | 菜单授权信息参数
+// swagger:response MenuAuthorityInfoResp
+type MenuAuthorityInfoResp struct {
+	// role ID | 角色ID
+	RoleId uint64 `json:"roleId"`
+	// menu ID array | 菜单ID数组
+	MenuIds []uint64 `json:"menuIds"`
 }
 
 // The response data of oauth provider information | 提供者信息

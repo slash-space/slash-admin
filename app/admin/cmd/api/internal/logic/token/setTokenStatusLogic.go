@@ -6,6 +6,7 @@ import (
 	"slash-admin/app/admin/cmd/api/internal/globalkey"
 	"slash-admin/app/admin/ent"
 	"slash-admin/app/admin/ent/systoken"
+	"slash-admin/pkg/message"
 	pType "slash-admin/pkg/types"
 	"time"
 
@@ -40,14 +41,14 @@ func (l *SetTokenStatusLogic) SetTokenStatus(req *types.SetBooleanStatusReq) (re
 			return nil, errorx.NewApiBadRequestError(errorx.UpdateFailed)
 		}
 		l.Errorw("Update token status failed", logx.Field("TokenId", req.ID), logx.Field("err", err))
-		return nil, errorx.NewApiInternalServerError(errorx.DatabaseError)
+		return nil, errorx.NewApiInternalServerError(message.DatabaseError)
 	}
 
 	err = l.UpdateTokenInRedis(req.ID, pType.Status(req.Status))
 
 	if err != nil {
 		l.Errorf("Update token status failed, update token in redis failed", logx.Field("TokenId", req.ID), logx.Field("err", err))
-		return nil, errorx.NewApiInternalServerError(errorx.RedisError)
+		return nil, errorx.NewApiInternalServerError(message.RedisError)
 	}
 
 	return &types.SimpleMsgResp{Msg: errorx.UpdateSuccess}, nil

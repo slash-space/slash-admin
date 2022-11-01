@@ -5,6 +5,7 @@ import (
 	"github.com/zeromicro/go-zero/core/errorx"
 	"slash-admin/app/admin/cmd/api/internal/globalkey"
 	"slash-admin/app/admin/ent/sysuser"
+	"slash-admin/pkg/message"
 
 	"slash-admin/app/admin/cmd/api/internal/svc"
 	"slash-admin/app/admin/cmd/api/internal/types"
@@ -43,7 +44,7 @@ func (l *UpdateUserProfileLogic) UpdateUserProfile(req *types.UpdateProfileReq) 
 
 	if err != nil {
 		l.Errorf("UpdateUserProfile error: %v", err)
-		return nil, errorx.NewApiBadRequestError(errorx.DatabaseError)
+		return nil, errorx.NewApiBadRequestError(message.DatabaseError)
 	}
 
 	if affect == 0 {

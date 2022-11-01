@@ -53,7 +53,7 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err erro
 			return nil, errorx.NewApiBadRequestError(message.UserNotExists)
 		}
 		l.Errorf("login logic: query user err: %s", err.Error())
-		return nil, errorx.NewApiInternalServerError(errorx.DatabaseError)
+		return nil, errorx.NewApiInternalServerError(message.DatabaseError)
 	}
 
 	if ok := utils.BcryptCheck(req.Password, user.Password); !ok {
