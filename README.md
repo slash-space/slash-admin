@@ -1,4 +1,4 @@
-# slash-admin-enhance
+# slash-admin
 
 ---
 [![Go-Zero](https://img.shields.io/badge/Go--Zero-v1.4.2-brightgreen.svg)](https://go-zero.dev/)
