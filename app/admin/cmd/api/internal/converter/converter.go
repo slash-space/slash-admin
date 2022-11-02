@@ -25,6 +25,13 @@ type Converter interface {
 	ConvertSysOauthProvider(input *ent.SysOauthProvider) (output *types.OauthProviderInfo)
 	ConvertSysOauthProviderList(input []*ent.SysOauthProvider) (output []*types.OauthProviderInfo)
 
+	// goverter:map Desc Description
+	ConvertSysDictionary(input *ent.SysDictionary) (output *types.DictionaryInfo)
+	ConvertSysDictionaryList(input []*ent.SysDictionary) (output []*types.DictionaryInfo)
+
+	ConvertSysDictionaryDetail(input *ent.SysDictionaryDetail) (output *types.DictionaryDetailInfo)
+	ConvertSysDictionaryDetailList(input []*ent.SysDictionaryDetail) (output []*types.DictionaryDetailInfo)
+
 	// goverter:map APIGroup Group
 	ConvertSysApi(input *ent.SysApi) (output *types.ApiInfo)
 	ConvertSysApiList(input []*ent.SysApi) (output []*types.ApiInfo)

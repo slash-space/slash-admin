@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 // ID filters vertices based on their ID field.
@@ -106,6 +107,13 @@ func Value(v string) predicate.SysDictionaryDetail {
 func Status(v types.Status) predicate.SysDictionaryDetail {
 	return predicate.SysDictionaryDetail(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldStatus), v))
+	})
+}
+
+// DictionaryID applies equality check predicate on the "dictionary_id" field. It's identical to DictionaryIDEQ.
+func DictionaryID(v uint64) predicate.SysDictionaryDetail {
+	return predicate.SysDictionaryDetail(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldDictionaryID), v))
 	})
 }
 
@@ -519,6 +527,56 @@ func StatusNotNil() predicate.SysDictionaryDetail {
 	})
 }
 
+// DictionaryIDEQ applies the EQ predicate on the "dictionary_id" field.
+func DictionaryIDEQ(v uint64) predicate.SysDictionaryDetail {
+	return predicate.SysDictionaryDetail(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldDictionaryID), v))
+	})
+}
+
+// DictionaryIDNEQ applies the NEQ predicate on the "dictionary_id" field.
+func DictionaryIDNEQ(v uint64) predicate.SysDictionaryDetail {
+	return predicate.SysDictionaryDetail(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldDictionaryID), v))
+	})
+}
+
+// DictionaryIDIn applies the In predicate on the "dictionary_id" field.
+func DictionaryIDIn(vs ...uint64) predicate.SysDictionaryDetail {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.SysDictionaryDetail(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldDictionaryID), v...))
+	})
+}
+
+// DictionaryIDNotIn applies the NotIn predicate on the "dictionary_id" field.
+func DictionaryIDNotIn(vs ...uint64) predicate.SysDictionaryDetail {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.SysDictionaryDetail(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldDictionaryID), v...))
+	})
+}
+
+// DictionaryIDIsNil applies the IsNil predicate on the "dictionary_id" field.
+func DictionaryIDIsNil() predicate.SysDictionaryDetail {
+	return predicate.SysDictionaryDetail(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldDictionaryID)))
+	})
+}
+
+// DictionaryIDNotNil applies the NotNil predicate on the "dictionary_id" field.
+func DictionaryIDNotNil() predicate.SysDictionaryDetail {
+	return predicate.SysDictionaryDetail(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldDictionaryID)))
+	})
+}
+
 // RemarkEQ applies the EQ predicate on the "remark" field.
 func RemarkEQ(v string) predicate.SysDictionaryDetail {
 	return predicate.SysDictionaryDetail(func(s *sql.Selector) {
@@ -885,6 +943,34 @@ func DeletedAtIsNil() predicate.SysDictionaryDetail {
 func DeletedAtNotNil() predicate.SysDictionaryDetail {
 	return predicate.SysDictionaryDetail(func(s *sql.Selector) {
 		s.Where(sql.NotNull(s.C(FieldDeletedAt)))
+	})
+}
+
+// HasParent applies the HasEdge predicate on the "parent" edge.
+func HasParent() predicate.SysDictionaryDetail {
+	return predicate.SysDictionaryDetail(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(ParentTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, ParentTable, ParentColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasParentWith applies the HasEdge predicate on the "parent" edge with a given conditions (other predicates).
+func HasParentWith(preds ...predicate.SysDictionary) predicate.SysDictionaryDetail {
+	return predicate.SysDictionaryDetail(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(ParentInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, ParentTable, ParentColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
 	})
 }
 

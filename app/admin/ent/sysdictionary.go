@@ -31,6 +31,31 @@ type SysDictionary struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// DeletedAt holds the value of the "deleted_at" field.
 	DeletedAt *time.Time `json:"deleted_at,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the SysDictionaryQuery when eager-loading is set.
+	Edges SysDictionaryEdges `json:"edges"`
+}
+
+// SysDictionaryEdges holds the relations/edges for other nodes in the graph.
+type SysDictionaryEdges struct {
+	// Details holds the value of the details edge.
+	Details []*SysDictionaryDetail `json:"details,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [1]bool
+	// totalCount holds the count of the edges above.
+	totalCount [1]map[string]int
+
+	namedDetails map[string][]*SysDictionaryDetail
+}
+
+// DetailsOrErr returns the Details value or an error if the edge
+// was not loaded in eager-loading.
+func (e SysDictionaryEdges) DetailsOrErr() ([]*SysDictionaryDetail, error) {
+	if e.loadedTypes[0] {
+		return e.Details, nil
+	}
+	return nil, &NotLoadedError{edge: "details"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -115,6 +140,11 @@ func (sd *SysDictionary) assignValues(columns []string, values []any) error {
 	return nil
 }
 
+// QueryDetails queries the "details" edge of the SysDictionary entity.
+func (sd *SysDictionary) QueryDetails() *SysDictionaryDetailQuery {
+	return (&SysDictionaryClient{config: sd.config}).QueryDetails(sd)
+}
+
 // Update returns a builder for updating this SysDictionary.
 // Note that you need to call SysDictionary.Unwrap() before calling this method if this SysDictionary
 // was returned from a transaction, and the transaction was committed or rolled back.
@@ -162,6 +192,30 @@ func (sd *SysDictionary) String() string {
 	}
 	builder.WriteByte(')')
 	return builder.String()
+}
+
+// NamedDetails returns the Details named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (sd *SysDictionary) NamedDetails(name string) ([]*SysDictionaryDetail, error) {
+	if sd.Edges.namedDetails == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := sd.Edges.namedDetails[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (sd *SysDictionary) appendNamedDetails(name string, edges ...*SysDictionaryDetail) {
+	if sd.Edges.namedDetails == nil {
+		sd.Edges.namedDetails = make(map[string][]*SysDictionaryDetail)
+	}
+	if len(edges) == 0 {
+		sd.Edges.namedDetails[name] = []*SysDictionaryDetail{}
+	} else {
+		sd.Edges.namedDetails[name] = append(sd.Edges.namedDetails[name], edges...)
+	}
 }
 
 // SysDictionaries is a parsable slice of SysDictionary.

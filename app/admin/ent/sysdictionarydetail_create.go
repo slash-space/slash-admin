@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"slash-admin/app/admin/ent/sysdictionary"
 	"slash-admin/app/admin/ent/sysdictionarydetail"
 	"slash-admin/pkg/types"
 	"time"
@@ -51,6 +52,20 @@ func (sddc *SysDictionaryDetailCreate) SetStatus(t types.Status) *SysDictionaryD
 func (sddc *SysDictionaryDetailCreate) SetNillableStatus(t *types.Status) *SysDictionaryDetailCreate {
 	if t != nil {
 		sddc.SetStatus(*t)
+	}
+	return sddc
+}
+
+// SetDictionaryID sets the "dictionary_id" field.
+func (sddc *SysDictionaryDetailCreate) SetDictionaryID(u uint64) *SysDictionaryDetailCreate {
+	sddc.mutation.SetDictionaryID(u)
+	return sddc
+}
+
+// SetNillableDictionaryID sets the "dictionary_id" field if the given value is not nil.
+func (sddc *SysDictionaryDetailCreate) SetNillableDictionaryID(u *uint64) *SysDictionaryDetailCreate {
+	if u != nil {
+		sddc.SetDictionaryID(*u)
 	}
 	return sddc
 }
@@ -121,6 +136,25 @@ func (sddc *SysDictionaryDetailCreate) SetNillableDeletedAt(t *time.Time) *SysDi
 func (sddc *SysDictionaryDetailCreate) SetID(u uint64) *SysDictionaryDetailCreate {
 	sddc.mutation.SetID(u)
 	return sddc
+}
+
+// SetParentID sets the "parent" edge to the SysDictionary entity by ID.
+func (sddc *SysDictionaryDetailCreate) SetParentID(id uint64) *SysDictionaryDetailCreate {
+	sddc.mutation.SetParentID(id)
+	return sddc
+}
+
+// SetNillableParentID sets the "parent" edge to the SysDictionary entity by ID if the given value is not nil.
+func (sddc *SysDictionaryDetailCreate) SetNillableParentID(id *uint64) *SysDictionaryDetailCreate {
+	if id != nil {
+		sddc = sddc.SetParentID(*id)
+	}
+	return sddc
+}
+
+// SetParent sets the "parent" edge to the SysDictionary entity.
+func (sddc *SysDictionaryDetailCreate) SetParent(s *SysDictionary) *SysDictionaryDetailCreate {
+	return sddc.SetParentID(s.ID)
 }
 
 // Mutation returns the SysDictionaryDetailMutation object of the builder.
@@ -347,6 +381,26 @@ func (sddc *SysDictionaryDetailCreate) createSpec() (*SysDictionaryDetail, *sqlg
 		})
 		_node.DeletedAt = &value
 	}
+	if nodes := sddc.mutation.ParentIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   sysdictionarydetail.ParentTable,
+			Columns: []string{sysdictionarydetail.ParentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: sysdictionary.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.DictionaryID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
 	return _node, _spec
 }
 
@@ -456,6 +510,24 @@ func (u *SysDictionaryDetailUpsert) AddStatus(v types.Status) *SysDictionaryDeta
 // ClearStatus clears the value of the "status" field.
 func (u *SysDictionaryDetailUpsert) ClearStatus() *SysDictionaryDetailUpsert {
 	u.SetNull(sysdictionarydetail.FieldStatus)
+	return u
+}
+
+// SetDictionaryID sets the "dictionary_id" field.
+func (u *SysDictionaryDetailUpsert) SetDictionaryID(v uint64) *SysDictionaryDetailUpsert {
+	u.Set(sysdictionarydetail.FieldDictionaryID, v)
+	return u
+}
+
+// UpdateDictionaryID sets the "dictionary_id" field to the value that was provided on create.
+func (u *SysDictionaryDetailUpsert) UpdateDictionaryID() *SysDictionaryDetailUpsert {
+	u.SetExcluded(sysdictionarydetail.FieldDictionaryID)
+	return u
+}
+
+// ClearDictionaryID clears the value of the "dictionary_id" field.
+func (u *SysDictionaryDetailUpsert) ClearDictionaryID() *SysDictionaryDetailUpsert {
+	u.SetNull(sysdictionarydetail.FieldDictionaryID)
 	return u
 }
 
@@ -646,6 +718,27 @@ func (u *SysDictionaryDetailUpsertOne) UpdateStatus() *SysDictionaryDetailUpsert
 func (u *SysDictionaryDetailUpsertOne) ClearStatus() *SysDictionaryDetailUpsertOne {
 	return u.Update(func(s *SysDictionaryDetailUpsert) {
 		s.ClearStatus()
+	})
+}
+
+// SetDictionaryID sets the "dictionary_id" field.
+func (u *SysDictionaryDetailUpsertOne) SetDictionaryID(v uint64) *SysDictionaryDetailUpsertOne {
+	return u.Update(func(s *SysDictionaryDetailUpsert) {
+		s.SetDictionaryID(v)
+	})
+}
+
+// UpdateDictionaryID sets the "dictionary_id" field to the value that was provided on create.
+func (u *SysDictionaryDetailUpsertOne) UpdateDictionaryID() *SysDictionaryDetailUpsertOne {
+	return u.Update(func(s *SysDictionaryDetailUpsert) {
+		s.UpdateDictionaryID()
+	})
+}
+
+// ClearDictionaryID clears the value of the "dictionary_id" field.
+func (u *SysDictionaryDetailUpsertOne) ClearDictionaryID() *SysDictionaryDetailUpsertOne {
+	return u.Update(func(s *SysDictionaryDetailUpsert) {
+		s.ClearDictionaryID()
 	})
 }
 
@@ -1010,6 +1103,27 @@ func (u *SysDictionaryDetailUpsertBulk) UpdateStatus() *SysDictionaryDetailUpser
 func (u *SysDictionaryDetailUpsertBulk) ClearStatus() *SysDictionaryDetailUpsertBulk {
 	return u.Update(func(s *SysDictionaryDetailUpsert) {
 		s.ClearStatus()
+	})
+}
+
+// SetDictionaryID sets the "dictionary_id" field.
+func (u *SysDictionaryDetailUpsertBulk) SetDictionaryID(v uint64) *SysDictionaryDetailUpsertBulk {
+	return u.Update(func(s *SysDictionaryDetailUpsert) {
+		s.SetDictionaryID(v)
+	})
+}
+
+// UpdateDictionaryID sets the "dictionary_id" field to the value that was provided on create.
+func (u *SysDictionaryDetailUpsertBulk) UpdateDictionaryID() *SysDictionaryDetailUpsertBulk {
+	return u.Update(func(s *SysDictionaryDetailUpsert) {
+		s.UpdateDictionaryID()
+	})
+}
+
+// ClearDictionaryID clears the value of the "dictionary_id" field.
+func (u *SysDictionaryDetailUpsertBulk) ClearDictionaryID() *SysDictionaryDetailUpsertBulk {
+	return u.Update(func(s *SysDictionaryDetailUpsert) {
+		s.ClearDictionaryID()
 	})
 }
 

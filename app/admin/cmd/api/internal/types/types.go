@@ -657,7 +657,7 @@ type DictionaryInfo struct {
 	// Dictionary name | 字典名称
 	Name string `json:"name"`
 	// Dictionary status | 字典状态
-	Status bool `json:"status"`
+	Status uint8 `json:"status"`
 	// Dictionary description | 字典描述
 	Description string `json:"description"`
 	// Create time | 创建时间
@@ -693,7 +693,7 @@ type CreateDictionaryReq struct {
 type UpdateDictionaryReq struct {
 	// ID
 	// Required: true
-	Id uint64 `json:"id" validate:"number"`
+	ID uint64 `json:"id" validate:"number"`
 	// Dictionary title | 字典显示名称
 	// Min length: 1
 	// Max length: 50
@@ -735,7 +735,6 @@ type DictionaryListReq struct {
 
 // The response data of dictionary information | 字典信息
 // swagger:model DictionaryDetailInfo
-// swagger:model DictionaryDetailInfo
 type DictionaryDetailInfo struct {
 	// ID
 	ID uint64 `json:"id"`
@@ -749,6 +748,10 @@ type DictionaryDetailInfo struct {
 	Status uint8 `json:"status"`
 	// Create time | 创建时间
 	CreatedAt int64 `json:"createdAt"`
+	// Update time | 更新时间
+	UpdatedAt int64 `json:"updatedAt"`
+	// Dictionary ID | 字典ID
+	DictionaryID uint64 `json:"dictionaryId"`
 }
 
 // The response data of dictionary KV list | 字典值的列表数据
@@ -781,9 +784,9 @@ type CreateDictionaryDetailReq struct {
 	// Status | 状态
 	// Required: true
 	Status uint8 `json:"status" validate:"number,oneof=0 1"`
-	// Parent ID | 所属字典ID
+	// DictionaryID | 所属字典ID
 	// Required: true
-	ParentID uint64 `json:"parentId" validate:"number"`
+	DictionaryID uint64 `json:"dictionaryId" validate:"number"`
 }
 
 // Update dictionary KV information request | 创建或更新字典键值信息请求
@@ -804,8 +807,6 @@ type UpdateDictionaryDetailReq struct {
 	Value *string `json:"value,optional"`
 	// Status | 状态
 	Status *uint8 `json:"status,optional" validate:"omitempty,number,oneof=0 1"`
-	// Parent ID | 所属字典ID
-	ParentID *uint64 `json:"parentId,optional" validate:"omitempty,number"`
 }
 
 // Get dictionary detail list by dictionary name request | 根据字典名称获取对应键值请求

@@ -4,10 +4,12 @@ package ent
 
 import (
 	"context"
+	"database/sql/driver"
 	"fmt"
 	"math"
 	"slash-admin/app/admin/ent/predicate"
 	"slash-admin/app/admin/ent/sysdictionary"
+	"slash-admin/app/admin/ent/sysdictionarydetail"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -17,14 +19,16 @@ import (
 // SysDictionaryQuery is the builder for querying SysDictionary entities.
 type SysDictionaryQuery struct {
 	config
-	limit      *int
-	offset     *int
-	unique     *bool
-	order      []OrderFunc
-	fields     []string
-	predicates []predicate.SysDictionary
-	loadTotal  []func(context.Context, []*SysDictionary) error
-	modifiers  []func(*sql.Selector)
+	limit            *int
+	offset           *int
+	unique           *bool
+	order            []OrderFunc
+	fields           []string
+	predicates       []predicate.SysDictionary
+	withDetails      *SysDictionaryDetailQuery
+	loadTotal        []func(context.Context, []*SysDictionary) error
+	modifiers        []func(*sql.Selector)
+	withNamedDetails map[string]*SysDictionaryDetailQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -59,6 +63,28 @@ func (sdq *SysDictionaryQuery) Unique(unique bool) *SysDictionaryQuery {
 func (sdq *SysDictionaryQuery) Order(o ...OrderFunc) *SysDictionaryQuery {
 	sdq.order = append(sdq.order, o...)
 	return sdq
+}
+
+// QueryDetails chains the current query on the "details" edge.
+func (sdq *SysDictionaryQuery) QueryDetails() *SysDictionaryDetailQuery {
+	query := &SysDictionaryDetailQuery{config: sdq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := sdq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := sdq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(sysdictionary.Table, sysdictionary.FieldID, selector),
+			sqlgraph.To(sysdictionarydetail.Table, sysdictionarydetail.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, sysdictionary.DetailsTable, sysdictionary.DetailsColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(sdq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // First returns the first SysDictionary entity from the query.
@@ -237,16 +263,28 @@ func (sdq *SysDictionaryQuery) Clone() *SysDictionaryQuery {
 		return nil
 	}
 	return &SysDictionaryQuery{
-		config:     sdq.config,
-		limit:      sdq.limit,
-		offset:     sdq.offset,
-		order:      append([]OrderFunc{}, sdq.order...),
-		predicates: append([]predicate.SysDictionary{}, sdq.predicates...),
+		config:      sdq.config,
+		limit:       sdq.limit,
+		offset:      sdq.offset,
+		order:       append([]OrderFunc{}, sdq.order...),
+		predicates:  append([]predicate.SysDictionary{}, sdq.predicates...),
+		withDetails: sdq.withDetails.Clone(),
 		// clone intermediate query.
 		sql:    sdq.sql.Clone(),
 		path:   sdq.path,
 		unique: sdq.unique,
 	}
+}
+
+// WithDetails tells the query-builder to eager-load the nodes that are connected to
+// the "details" edge. The optional arguments are used to configure the query builder of the edge.
+func (sdq *SysDictionaryQuery) WithDetails(opts ...func(*SysDictionaryDetailQuery)) *SysDictionaryQuery {
+	query := &SysDictionaryDetailQuery{config: sdq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	sdq.withDetails = query
+	return sdq
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -315,8 +353,11 @@ func (sdq *SysDictionaryQuery) prepareQuery(ctx context.Context) error {
 
 func (sdq *SysDictionaryQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*SysDictionary, error) {
 	var (
-		nodes = []*SysDictionary{}
-		_spec = sdq.querySpec()
+		nodes       = []*SysDictionary{}
+		_spec       = sdq.querySpec()
+		loadedTypes = [1]bool{
+			sdq.withDetails != nil,
+		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*SysDictionary).scanValues(nil, columns)
@@ -324,6 +365,7 @@ func (sdq *SysDictionaryQuery) sqlAll(ctx context.Context, hooks ...queryHook) (
 	_spec.Assign = func(columns []string, values []any) error {
 		node := &SysDictionary{config: sdq.config}
 		nodes = append(nodes, node)
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
 	if len(sdq.modifiers) > 0 {
@@ -338,12 +380,54 @@ func (sdq *SysDictionaryQuery) sqlAll(ctx context.Context, hooks ...queryHook) (
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+	if query := sdq.withDetails; query != nil {
+		if err := sdq.loadDetails(ctx, query, nodes,
+			func(n *SysDictionary) { n.Edges.Details = []*SysDictionaryDetail{} },
+			func(n *SysDictionary, e *SysDictionaryDetail) { n.Edges.Details = append(n.Edges.Details, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range sdq.withNamedDetails {
+		if err := sdq.loadDetails(ctx, query, nodes,
+			func(n *SysDictionary) { n.appendNamedDetails(name) },
+			func(n *SysDictionary, e *SysDictionaryDetail) { n.appendNamedDetails(name, e) }); err != nil {
+			return nil, err
+		}
+	}
 	for i := range sdq.loadTotal {
 		if err := sdq.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
+}
+
+func (sdq *SysDictionaryQuery) loadDetails(ctx context.Context, query *SysDictionaryDetailQuery, nodes []*SysDictionary, init func(*SysDictionary), assign func(*SysDictionary, *SysDictionaryDetail)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[uint64]*SysDictionary)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.Where(predicate.SysDictionaryDetail(func(s *sql.Selector) {
+		s.Where(sql.InValues(sysdictionary.DetailsColumn, fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.DictionaryID
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "dictionary_id" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
 }
 
 func (sdq *SysDictionaryQuery) sqlCount(ctx context.Context) (int, error) {
@@ -456,6 +540,20 @@ func (sdq *SysDictionaryQuery) sqlQuery(ctx context.Context) *sql.Selector {
 func (sdq *SysDictionaryQuery) Modify(modifiers ...func(s *sql.Selector)) *SysDictionarySelect {
 	sdq.modifiers = append(sdq.modifiers, modifiers...)
 	return sdq.Select()
+}
+
+// WithNamedDetails tells the query-builder to eager-load the nodes that are connected to the "details"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (sdq *SysDictionaryQuery) WithNamedDetails(name string, opts ...func(*SysDictionaryDetailQuery)) *SysDictionaryQuery {
+	query := &SysDictionaryDetailQuery{config: sdq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	if sdq.withNamedDetails == nil {
+		sdq.withNamedDetails = make(map[string]*SysDictionaryDetailQuery)
+	}
+	sdq.withNamedDetails[name] = query
+	return sdq
 }
 
 // SysDictionaryGroupBy is the group-by builder for SysDictionary entities.

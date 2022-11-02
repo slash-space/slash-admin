@@ -4,6 +4,7 @@ package ent
 
 import (
 	"fmt"
+	"slash-admin/app/admin/ent/sysdictionary"
 	"slash-admin/app/admin/ent/sysdictionarydetail"
 	"slash-admin/pkg/types"
 	"strings"
@@ -25,6 +26,8 @@ type SysDictionaryDetail struct {
 	Value string `json:"value,omitempty"`
 	// 0=开启 1=禁用
 	Status types.Status `json:"status,omitempty"`
+	// dictionary id
+	DictionaryID uint64 `json:"dictionary_id,omitempty"`
 	// 备注
 	Remark string `json:"remark,omitempty"`
 	// 排序编号
@@ -35,6 +38,33 @@ type SysDictionaryDetail struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// DeletedAt holds the value of the "deleted_at" field.
 	DeletedAt *time.Time `json:"deleted_at,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the SysDictionaryDetailQuery when eager-loading is set.
+	Edges SysDictionaryDetailEdges `json:"edges"`
+}
+
+// SysDictionaryDetailEdges holds the relations/edges for other nodes in the graph.
+type SysDictionaryDetailEdges struct {
+	// Parent holds the value of the parent edge.
+	Parent *SysDictionary `json:"parent,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [1]bool
+	// totalCount holds the count of the edges above.
+	totalCount [1]map[string]int
+}
+
+// ParentOrErr returns the Parent value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e SysDictionaryDetailEdges) ParentOrErr() (*SysDictionary, error) {
+	if e.loadedTypes[0] {
+		if e.Parent == nil {
+			// Edge was loaded but was not found.
+			return nil, &NotFoundError{label: sysdictionary.Label}
+		}
+		return e.Parent, nil
+	}
+	return nil, &NotLoadedError{edge: "parent"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -42,7 +72,7 @@ func (*SysDictionaryDetail) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case sysdictionarydetail.FieldID, sysdictionarydetail.FieldOrderNo:
+		case sysdictionarydetail.FieldID, sysdictionarydetail.FieldDictionaryID, sysdictionarydetail.FieldOrderNo:
 			values[i] = new(sql.NullInt64)
 		case sysdictionarydetail.FieldTitle, sysdictionarydetail.FieldKey, sysdictionarydetail.FieldValue, sysdictionarydetail.FieldRemark:
 			values[i] = new(sql.NullString)
@@ -95,6 +125,12 @@ func (sdd *SysDictionaryDetail) assignValues(columns []string, values []any) err
 			} else if value != nil {
 				sdd.Status = *value
 			}
+		case sysdictionarydetail.FieldDictionaryID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field dictionary_id", values[i])
+			} else if value.Valid {
+				sdd.DictionaryID = uint64(value.Int64)
+			}
 		case sysdictionarydetail.FieldRemark:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field remark", values[i])
@@ -131,6 +167,11 @@ func (sdd *SysDictionaryDetail) assignValues(columns []string, values []any) err
 	return nil
 }
 
+// QueryParent queries the "parent" edge of the SysDictionaryDetail entity.
+func (sdd *SysDictionaryDetail) QueryParent() *SysDictionaryQuery {
+	return (&SysDictionaryDetailClient{config: sdd.config}).QueryParent(sdd)
+}
+
 // Update returns a builder for updating this SysDictionaryDetail.
 // Note that you need to call SysDictionaryDetail.Unwrap() before calling this method if this SysDictionaryDetail
 // was returned from a transaction, and the transaction was committed or rolled back.
@@ -165,6 +206,9 @@ func (sdd *SysDictionaryDetail) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("status=")
 	builder.WriteString(fmt.Sprintf("%v", sdd.Status))
+	builder.WriteString(", ")
+	builder.WriteString("dictionary_id=")
+	builder.WriteString(fmt.Sprintf("%v", sdd.DictionaryID))
 	builder.WriteString(", ")
 	builder.WriteString("remark=")
 	builder.WriteString(sdd.Remark)

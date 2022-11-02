@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math"
 	"slash-admin/app/admin/ent/predicate"
+	"slash-admin/app/admin/ent/sysdictionary"
 	"slash-admin/app/admin/ent/sysdictionarydetail"
 
 	"entgo.io/ent/dialect/sql"
@@ -23,6 +24,7 @@ type SysDictionaryDetailQuery struct {
 	order      []OrderFunc
 	fields     []string
 	predicates []predicate.SysDictionaryDetail
+	withParent *SysDictionaryQuery
 	loadTotal  []func(context.Context, []*SysDictionaryDetail) error
 	modifiers  []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
@@ -59,6 +61,28 @@ func (sddq *SysDictionaryDetailQuery) Unique(unique bool) *SysDictionaryDetailQu
 func (sddq *SysDictionaryDetailQuery) Order(o ...OrderFunc) *SysDictionaryDetailQuery {
 	sddq.order = append(sddq.order, o...)
 	return sddq
+}
+
+// QueryParent chains the current query on the "parent" edge.
+func (sddq *SysDictionaryDetailQuery) QueryParent() *SysDictionaryQuery {
+	query := &SysDictionaryQuery{config: sddq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := sddq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := sddq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(sysdictionarydetail.Table, sysdictionarydetail.FieldID, selector),
+			sqlgraph.To(sysdictionary.Table, sysdictionary.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, sysdictionarydetail.ParentTable, sysdictionarydetail.ParentColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(sddq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // First returns the first SysDictionaryDetail entity from the query.
@@ -242,11 +266,23 @@ func (sddq *SysDictionaryDetailQuery) Clone() *SysDictionaryDetailQuery {
 		offset:     sddq.offset,
 		order:      append([]OrderFunc{}, sddq.order...),
 		predicates: append([]predicate.SysDictionaryDetail{}, sddq.predicates...),
+		withParent: sddq.withParent.Clone(),
 		// clone intermediate query.
 		sql:    sddq.sql.Clone(),
 		path:   sddq.path,
 		unique: sddq.unique,
 	}
+}
+
+// WithParent tells the query-builder to eager-load the nodes that are connected to
+// the "parent" edge. The optional arguments are used to configure the query builder of the edge.
+func (sddq *SysDictionaryDetailQuery) WithParent(opts ...func(*SysDictionaryQuery)) *SysDictionaryDetailQuery {
+	query := &SysDictionaryQuery{config: sddq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	sddq.withParent = query
+	return sddq
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -315,8 +351,11 @@ func (sddq *SysDictionaryDetailQuery) prepareQuery(ctx context.Context) error {
 
 func (sddq *SysDictionaryDetailQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*SysDictionaryDetail, error) {
 	var (
-		nodes = []*SysDictionaryDetail{}
-		_spec = sddq.querySpec()
+		nodes       = []*SysDictionaryDetail{}
+		_spec       = sddq.querySpec()
+		loadedTypes = [1]bool{
+			sddq.withParent != nil,
+		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*SysDictionaryDetail).scanValues(nil, columns)
@@ -324,6 +363,7 @@ func (sddq *SysDictionaryDetailQuery) sqlAll(ctx context.Context, hooks ...query
 	_spec.Assign = func(columns []string, values []any) error {
 		node := &SysDictionaryDetail{config: sddq.config}
 		nodes = append(nodes, node)
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
 	if len(sddq.modifiers) > 0 {
@@ -338,12 +378,45 @@ func (sddq *SysDictionaryDetailQuery) sqlAll(ctx context.Context, hooks ...query
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+	if query := sddq.withParent; query != nil {
+		if err := sddq.loadParent(ctx, query, nodes, nil,
+			func(n *SysDictionaryDetail, e *SysDictionary) { n.Edges.Parent = e }); err != nil {
+			return nil, err
+		}
+	}
 	for i := range sddq.loadTotal {
 		if err := sddq.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
+}
+
+func (sddq *SysDictionaryDetailQuery) loadParent(ctx context.Context, query *SysDictionaryQuery, nodes []*SysDictionaryDetail, init func(*SysDictionaryDetail), assign func(*SysDictionaryDetail, *SysDictionary)) error {
+	ids := make([]uint64, 0, len(nodes))
+	nodeids := make(map[uint64][]*SysDictionaryDetail)
+	for i := range nodes {
+		fk := nodes[i].DictionaryID
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	query.Where(sysdictionary.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "dictionary_id" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
 }
 
 func (sddq *SysDictionaryDetailQuery) sqlCount(ctx context.Context) (int, error) {

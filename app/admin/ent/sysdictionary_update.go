@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"slash-admin/app/admin/ent/predicate"
 	"slash-admin/app/admin/ent/sysdictionary"
+	"slash-admin/app/admin/ent/sysdictionarydetail"
 	"slash-admin/pkg/types"
 	"time"
 
@@ -115,9 +116,45 @@ func (sdu *SysDictionaryUpdate) ClearDeletedAt() *SysDictionaryUpdate {
 	return sdu
 }
 
+// AddDetailIDs adds the "details" edge to the SysDictionaryDetail entity by IDs.
+func (sdu *SysDictionaryUpdate) AddDetailIDs(ids ...uint64) *SysDictionaryUpdate {
+	sdu.mutation.AddDetailIDs(ids...)
+	return sdu
+}
+
+// AddDetails adds the "details" edges to the SysDictionaryDetail entity.
+func (sdu *SysDictionaryUpdate) AddDetails(s ...*SysDictionaryDetail) *SysDictionaryUpdate {
+	ids := make([]uint64, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return sdu.AddDetailIDs(ids...)
+}
+
 // Mutation returns the SysDictionaryMutation object of the builder.
 func (sdu *SysDictionaryUpdate) Mutation() *SysDictionaryMutation {
 	return sdu.mutation
+}
+
+// ClearDetails clears all "details" edges to the SysDictionaryDetail entity.
+func (sdu *SysDictionaryUpdate) ClearDetails() *SysDictionaryUpdate {
+	sdu.mutation.ClearDetails()
+	return sdu
+}
+
+// RemoveDetailIDs removes the "details" edge to SysDictionaryDetail entities by IDs.
+func (sdu *SysDictionaryUpdate) RemoveDetailIDs(ids ...uint64) *SysDictionaryUpdate {
+	sdu.mutation.RemoveDetailIDs(ids...)
+	return sdu
+}
+
+// RemoveDetails removes "details" edges to SysDictionaryDetail entities.
+func (sdu *SysDictionaryUpdate) RemoveDetails(s ...*SysDictionaryDetail) *SysDictionaryUpdate {
+	ids := make([]uint64, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return sdu.RemoveDetailIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -275,6 +312,60 @@ func (sdu *SysDictionaryUpdate) sqlSave(ctx context.Context) (n int, err error) 
 			Column: sysdictionary.FieldDeletedAt,
 		})
 	}
+	if sdu.mutation.DetailsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   sysdictionary.DetailsTable,
+			Columns: []string{sysdictionary.DetailsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: sysdictionarydetail.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := sdu.mutation.RemovedDetailsIDs(); len(nodes) > 0 && !sdu.mutation.DetailsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   sysdictionary.DetailsTable,
+			Columns: []string{sysdictionary.DetailsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: sysdictionarydetail.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := sdu.mutation.DetailsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   sysdictionary.DetailsTable,
+			Columns: []string{sysdictionary.DetailsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: sysdictionarydetail.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	_spec.AddModifiers(sdu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, sdu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -381,9 +472,45 @@ func (sduo *SysDictionaryUpdateOne) ClearDeletedAt() *SysDictionaryUpdateOne {
 	return sduo
 }
 
+// AddDetailIDs adds the "details" edge to the SysDictionaryDetail entity by IDs.
+func (sduo *SysDictionaryUpdateOne) AddDetailIDs(ids ...uint64) *SysDictionaryUpdateOne {
+	sduo.mutation.AddDetailIDs(ids...)
+	return sduo
+}
+
+// AddDetails adds the "details" edges to the SysDictionaryDetail entity.
+func (sduo *SysDictionaryUpdateOne) AddDetails(s ...*SysDictionaryDetail) *SysDictionaryUpdateOne {
+	ids := make([]uint64, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return sduo.AddDetailIDs(ids...)
+}
+
 // Mutation returns the SysDictionaryMutation object of the builder.
 func (sduo *SysDictionaryUpdateOne) Mutation() *SysDictionaryMutation {
 	return sduo.mutation
+}
+
+// ClearDetails clears all "details" edges to the SysDictionaryDetail entity.
+func (sduo *SysDictionaryUpdateOne) ClearDetails() *SysDictionaryUpdateOne {
+	sduo.mutation.ClearDetails()
+	return sduo
+}
+
+// RemoveDetailIDs removes the "details" edge to SysDictionaryDetail entities by IDs.
+func (sduo *SysDictionaryUpdateOne) RemoveDetailIDs(ids ...uint64) *SysDictionaryUpdateOne {
+	sduo.mutation.RemoveDetailIDs(ids...)
+	return sduo
+}
+
+// RemoveDetails removes "details" edges to SysDictionaryDetail entities.
+func (sduo *SysDictionaryUpdateOne) RemoveDetails(s ...*SysDictionaryDetail) *SysDictionaryUpdateOne {
+	ids := make([]uint64, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return sduo.RemoveDetailIDs(ids...)
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
@@ -570,6 +697,60 @@ func (sduo *SysDictionaryUpdateOne) sqlSave(ctx context.Context) (_node *SysDict
 			Type:   field.TypeTime,
 			Column: sysdictionary.FieldDeletedAt,
 		})
+	}
+	if sduo.mutation.DetailsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   sysdictionary.DetailsTable,
+			Columns: []string{sysdictionary.DetailsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: sysdictionarydetail.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := sduo.mutation.RemovedDetailsIDs(); len(nodes) > 0 && !sduo.mutation.DetailsCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   sysdictionary.DetailsTable,
+			Columns: []string{sysdictionary.DetailsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: sysdictionarydetail.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := sduo.mutation.DetailsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   sysdictionary.DetailsTable,
+			Columns: []string{sysdictionary.DetailsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: sysdictionarydetail.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_spec.AddModifiers(sduo.modifiers...)
 	_node = &SysDictionary{config: sduo.config}

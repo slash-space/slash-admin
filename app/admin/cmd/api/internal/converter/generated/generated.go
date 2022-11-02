@@ -33,6 +33,36 @@ func (c *ConverterImpl) ConvertSysApiList(source []*ent.SysApi) []*types.ApiInfo
 	}
 	return pTypesApiInfoList
 }
+func (c *ConverterImpl) ConvertSysDictionary(source *ent.SysDictionary) *types.DictionaryInfo {
+	var pTypesDictionaryInfo *types.DictionaryInfo
+	if source != nil {
+		typesDictionaryInfo := c.entSysDictionaryToTypesDictionaryInfo(*source)
+		pTypesDictionaryInfo = &typesDictionaryInfo
+	}
+	return pTypesDictionaryInfo
+}
+func (c *ConverterImpl) ConvertSysDictionaryDetail(source *ent.SysDictionaryDetail) *types.DictionaryDetailInfo {
+	var pTypesDictionaryDetailInfo *types.DictionaryDetailInfo
+	if source != nil {
+		typesDictionaryDetailInfo := c.entSysDictionaryDetailToTypesDictionaryDetailInfo(*source)
+		pTypesDictionaryDetailInfo = &typesDictionaryDetailInfo
+	}
+	return pTypesDictionaryDetailInfo
+}
+func (c *ConverterImpl) ConvertSysDictionaryDetailList(source []*ent.SysDictionaryDetail) []*types.DictionaryDetailInfo {
+	pTypesDictionaryDetailInfoList := make([]*types.DictionaryDetailInfo, len(source))
+	for i := 0; i < len(source); i++ {
+		pTypesDictionaryDetailInfoList[i] = c.ConvertSysDictionaryDetail(source[i])
+	}
+	return pTypesDictionaryDetailInfoList
+}
+func (c *ConverterImpl) ConvertSysDictionaryList(source []*ent.SysDictionary) []*types.DictionaryInfo {
+	pTypesDictionaryInfoList := make([]*types.DictionaryInfo, len(source))
+	for i := 0; i < len(source); i++ {
+		pTypesDictionaryInfoList[i] = c.ConvertSysDictionary(source[i])
+	}
+	return pTypesDictionaryInfoList
+}
 func (c *ConverterImpl) ConvertSysOauthProvider(source *ent.SysOauthProvider) *types.OauthProviderInfo {
 	var pTypesOauthProviderInfo *types.OauthProviderInfo
 	if source != nil {
@@ -109,6 +139,28 @@ func (c *ConverterImpl) entSysApiToTypesApiInfo(source ent.SysApi) types.ApiInfo
 	typesApiInfo.Method = source.Method
 	typesApiInfo.CreatedAt = converter.TimeToUnixMilli(source.CreatedAt)
 	return typesApiInfo
+}
+func (c *ConverterImpl) entSysDictionaryDetailToTypesDictionaryDetailInfo(source ent.SysDictionaryDetail) types.DictionaryDetailInfo {
+	var typesDictionaryDetailInfo types.DictionaryDetailInfo
+	typesDictionaryDetailInfo.ID = source.ID
+	typesDictionaryDetailInfo.Title = source.Title
+	typesDictionaryDetailInfo.Key = source.Key
+	typesDictionaryDetailInfo.Value = source.Value
+	typesDictionaryDetailInfo.Status = converter.StatusToUint8(source.Status)
+	typesDictionaryDetailInfo.CreatedAt = converter.TimeToUnixMilli(source.CreatedAt)
+	typesDictionaryDetailInfo.UpdatedAt = converter.TimeToUnixMilli(source.UpdatedAt)
+	typesDictionaryDetailInfo.DictionaryID = source.DictionaryID
+	return typesDictionaryDetailInfo
+}
+func (c *ConverterImpl) entSysDictionaryToTypesDictionaryInfo(source ent.SysDictionary) types.DictionaryInfo {
+	var typesDictionaryInfo types.DictionaryInfo
+	typesDictionaryInfo.ID = source.ID
+	typesDictionaryInfo.Title = source.Title
+	typesDictionaryInfo.Name = source.Name
+	typesDictionaryInfo.Status = converter.StatusToUint8(source.Status)
+	typesDictionaryInfo.Description = source.Desc
+	typesDictionaryInfo.CreatedAt = converter.TimeToUnixMilli(source.CreatedAt)
+	return typesDictionaryInfo
 }
 func (c *ConverterImpl) entSysOauthProviderToTypesOauthProviderInfo(source ent.SysOauthProvider) types.OauthProviderInfo {
 	var typesOauthProviderInfo types.OauthProviderInfo

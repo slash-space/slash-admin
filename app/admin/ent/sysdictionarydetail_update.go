@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"slash-admin/app/admin/ent/predicate"
+	"slash-admin/app/admin/ent/sysdictionary"
 	"slash-admin/app/admin/ent/sysdictionarydetail"
 	"slash-admin/pkg/types"
 	"time"
@@ -72,6 +73,26 @@ func (sddu *SysDictionaryDetailUpdate) AddStatus(t types.Status) *SysDictionaryD
 // ClearStatus clears the value of the "status" field.
 func (sddu *SysDictionaryDetailUpdate) ClearStatus() *SysDictionaryDetailUpdate {
 	sddu.mutation.ClearStatus()
+	return sddu
+}
+
+// SetDictionaryID sets the "dictionary_id" field.
+func (sddu *SysDictionaryDetailUpdate) SetDictionaryID(u uint64) *SysDictionaryDetailUpdate {
+	sddu.mutation.SetDictionaryID(u)
+	return sddu
+}
+
+// SetNillableDictionaryID sets the "dictionary_id" field if the given value is not nil.
+func (sddu *SysDictionaryDetailUpdate) SetNillableDictionaryID(u *uint64) *SysDictionaryDetailUpdate {
+	if u != nil {
+		sddu.SetDictionaryID(*u)
+	}
+	return sddu
+}
+
+// ClearDictionaryID clears the value of the "dictionary_id" field.
+func (sddu *SysDictionaryDetailUpdate) ClearDictionaryID() *SysDictionaryDetailUpdate {
+	sddu.mutation.ClearDictionaryID()
 	return sddu
 }
 
@@ -142,9 +163,34 @@ func (sddu *SysDictionaryDetailUpdate) ClearDeletedAt() *SysDictionaryDetailUpda
 	return sddu
 }
 
+// SetParentID sets the "parent" edge to the SysDictionary entity by ID.
+func (sddu *SysDictionaryDetailUpdate) SetParentID(id uint64) *SysDictionaryDetailUpdate {
+	sddu.mutation.SetParentID(id)
+	return sddu
+}
+
+// SetNillableParentID sets the "parent" edge to the SysDictionary entity by ID if the given value is not nil.
+func (sddu *SysDictionaryDetailUpdate) SetNillableParentID(id *uint64) *SysDictionaryDetailUpdate {
+	if id != nil {
+		sddu = sddu.SetParentID(*id)
+	}
+	return sddu
+}
+
+// SetParent sets the "parent" edge to the SysDictionary entity.
+func (sddu *SysDictionaryDetailUpdate) SetParent(s *SysDictionary) *SysDictionaryDetailUpdate {
+	return sddu.SetParentID(s.ID)
+}
+
 // Mutation returns the SysDictionaryDetailMutation object of the builder.
 func (sddu *SysDictionaryDetailUpdate) Mutation() *SysDictionaryDetailMutation {
 	return sddu.mutation
+}
+
+// ClearParent clears the "parent" edge to the SysDictionary entity.
+func (sddu *SysDictionaryDetailUpdate) ClearParent() *SysDictionaryDetailUpdate {
+	sddu.mutation.ClearParent()
+	return sddu
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -323,6 +369,41 @@ func (sddu *SysDictionaryDetailUpdate) sqlSave(ctx context.Context) (n int, err 
 			Column: sysdictionarydetail.FieldDeletedAt,
 		})
 	}
+	if sddu.mutation.ParentCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   sysdictionarydetail.ParentTable,
+			Columns: []string{sysdictionarydetail.ParentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: sysdictionary.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := sddu.mutation.ParentIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   sysdictionarydetail.ParentTable,
+			Columns: []string{sysdictionarydetail.ParentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: sysdictionary.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	_spec.AddModifiers(sddu.modifiers...)
 	if n, err = sqlgraph.UpdateNodes(ctx, sddu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -386,6 +467,26 @@ func (sdduo *SysDictionaryDetailUpdateOne) AddStatus(t types.Status) *SysDiction
 // ClearStatus clears the value of the "status" field.
 func (sdduo *SysDictionaryDetailUpdateOne) ClearStatus() *SysDictionaryDetailUpdateOne {
 	sdduo.mutation.ClearStatus()
+	return sdduo
+}
+
+// SetDictionaryID sets the "dictionary_id" field.
+func (sdduo *SysDictionaryDetailUpdateOne) SetDictionaryID(u uint64) *SysDictionaryDetailUpdateOne {
+	sdduo.mutation.SetDictionaryID(u)
+	return sdduo
+}
+
+// SetNillableDictionaryID sets the "dictionary_id" field if the given value is not nil.
+func (sdduo *SysDictionaryDetailUpdateOne) SetNillableDictionaryID(u *uint64) *SysDictionaryDetailUpdateOne {
+	if u != nil {
+		sdduo.SetDictionaryID(*u)
+	}
+	return sdduo
+}
+
+// ClearDictionaryID clears the value of the "dictionary_id" field.
+func (sdduo *SysDictionaryDetailUpdateOne) ClearDictionaryID() *SysDictionaryDetailUpdateOne {
+	sdduo.mutation.ClearDictionaryID()
 	return sdduo
 }
 
@@ -456,9 +557,34 @@ func (sdduo *SysDictionaryDetailUpdateOne) ClearDeletedAt() *SysDictionaryDetail
 	return sdduo
 }
 
+// SetParentID sets the "parent" edge to the SysDictionary entity by ID.
+func (sdduo *SysDictionaryDetailUpdateOne) SetParentID(id uint64) *SysDictionaryDetailUpdateOne {
+	sdduo.mutation.SetParentID(id)
+	return sdduo
+}
+
+// SetNillableParentID sets the "parent" edge to the SysDictionary entity by ID if the given value is not nil.
+func (sdduo *SysDictionaryDetailUpdateOne) SetNillableParentID(id *uint64) *SysDictionaryDetailUpdateOne {
+	if id != nil {
+		sdduo = sdduo.SetParentID(*id)
+	}
+	return sdduo
+}
+
+// SetParent sets the "parent" edge to the SysDictionary entity.
+func (sdduo *SysDictionaryDetailUpdateOne) SetParent(s *SysDictionary) *SysDictionaryDetailUpdateOne {
+	return sdduo.SetParentID(s.ID)
+}
+
 // Mutation returns the SysDictionaryDetailMutation object of the builder.
 func (sdduo *SysDictionaryDetailUpdateOne) Mutation() *SysDictionaryDetailMutation {
 	return sdduo.mutation
+}
+
+// ClearParent clears the "parent" edge to the SysDictionary entity.
+func (sdduo *SysDictionaryDetailUpdateOne) ClearParent() *SysDictionaryDetailUpdateOne {
+	sdduo.mutation.ClearParent()
+	return sdduo
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
@@ -666,6 +792,41 @@ func (sdduo *SysDictionaryDetailUpdateOne) sqlSave(ctx context.Context) (_node *
 			Type:   field.TypeTime,
 			Column: sysdictionarydetail.FieldDeletedAt,
 		})
+	}
+	if sdduo.mutation.ParentCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   sysdictionarydetail.ParentTable,
+			Columns: []string{sysdictionarydetail.ParentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: sysdictionary.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := sdduo.mutation.ParentIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   sysdictionarydetail.ParentTable,
+			Columns: []string{sysdictionarydetail.ParentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: sysdictionary.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_spec.AddModifiers(sdduo.modifiers...)
 	_node = &SysDictionaryDetail{config: sdduo.config}

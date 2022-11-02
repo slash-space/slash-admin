@@ -8,6 +8,26 @@ import (
 	"github.com/99designs/gqlgen/graphql"
 )
 
+func (sd *SysDictionary) Details(ctx context.Context) (result []*SysDictionaryDetail, err error) {
+	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
+		result, err = sd.NamedDetails(graphql.GetFieldContext(ctx).Field.Alias)
+	} else {
+		result, err = sd.Edges.DetailsOrErr()
+	}
+	if IsNotLoaded(err) {
+		result, err = sd.QueryDetails().All(ctx)
+	}
+	return result, err
+}
+
+func (sdd *SysDictionaryDetail) Parent(ctx context.Context) (*SysDictionary, error) {
+	result, err := sdd.Edges.ParentOrErr()
+	if IsNotLoaded(err) {
+		result, err = sdd.QueryParent().Only(ctx)
+	}
+	return result, MaskNotFound(err)
+}
+
 func (sm *SysMenu) Roles(ctx context.Context) (result []*SysRole, err error) {
 	if fc := graphql.GetFieldContext(ctx); fc != nil && fc.Field.Alias != "" {
 		result, err = sm.NamedRoles(graphql.GetFieldContext(ctx).Field.Alias)

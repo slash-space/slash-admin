@@ -453,6 +453,22 @@ func (c *SysDictionaryClient) GetX(ctx context.Context, id uint64) *SysDictionar
 	return obj
 }
 
+// QueryDetails queries the details edge of a SysDictionary.
+func (c *SysDictionaryClient) QueryDetails(sd *SysDictionary) *SysDictionaryDetailQuery {
+	query := &SysDictionaryDetailQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := sd.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(sysdictionary.Table, sysdictionary.FieldID, id),
+			sqlgraph.To(sysdictionarydetail.Table, sysdictionarydetail.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, sysdictionary.DetailsTable, sysdictionary.DetailsColumn),
+		)
+		fromV = sqlgraph.Neighbors(sd.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *SysDictionaryClient) Hooks() []Hook {
 	return c.hooks.SysDictionary
@@ -541,6 +557,22 @@ func (c *SysDictionaryDetailClient) GetX(ctx context.Context, id uint64) *SysDic
 		panic(err)
 	}
 	return obj
+}
+
+// QueryParent queries the parent edge of a SysDictionaryDetail.
+func (c *SysDictionaryDetailClient) QueryParent(sdd *SysDictionaryDetail) *SysDictionaryQuery {
+	query := &SysDictionaryQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := sdd.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(sysdictionarydetail.Table, sysdictionarydetail.FieldID, id),
+			sqlgraph.To(sysdictionary.Table, sysdictionary.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, sysdictionarydetail.ParentTable, sysdictionarydetail.ParentColumn),
+		)
+		fromV = sqlgraph.Neighbors(sdd.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
 }
 
 // Hooks returns the client hooks.

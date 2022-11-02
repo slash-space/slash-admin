@@ -20,6 +20,8 @@ const (
 	FieldValue = "value"
 	// FieldStatus holds the string denoting the status field in the database.
 	FieldStatus = "status"
+	// FieldDictionaryID holds the string denoting the dictionary_id field in the database.
+	FieldDictionaryID = "dictionary_id"
 	// FieldRemark holds the string denoting the remark field in the database.
 	FieldRemark = "remark"
 	// FieldOrderNo holds the string denoting the order_no field in the database.
@@ -30,8 +32,17 @@ const (
 	FieldUpdatedAt = "updated_at"
 	// FieldDeletedAt holds the string denoting the deleted_at field in the database.
 	FieldDeletedAt = "deleted_at"
+	// EdgeParent holds the string denoting the parent edge name in mutations.
+	EdgeParent = "parent"
 	// Table holds the table name of the sysdictionarydetail in the database.
 	Table = "sys_dictionary_detail"
+	// ParentTable is the table that holds the parent relation/edge.
+	ParentTable = "sys_dictionary_detail"
+	// ParentInverseTable is the table name for the SysDictionary entity.
+	// It exists in this package in order to avoid circular dependency with the "sysdictionary" package.
+	ParentInverseTable = "sys_dictionary"
+	// ParentColumn is the table column denoting the parent relation/edge.
+	ParentColumn = "dictionary_id"
 )
 
 // Columns holds all SQL columns for sysdictionarydetail fields.
@@ -41,6 +52,7 @@ var Columns = []string{
 	FieldKey,
 	FieldValue,
 	FieldStatus,
+	FieldDictionaryID,
 	FieldRemark,
 	FieldOrderNo,
 	FieldCreatedAt,

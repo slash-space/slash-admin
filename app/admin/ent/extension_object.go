@@ -30,16 +30,17 @@ type CreateSysDictionaryInput struct {
 }
 
 type CreateSysDictionaryDetailInput struct {
-	ID        *uint64
-	Title     *string
-	Key       *string
-	Value     *string
-	Status    *types.Status
-	Remark    *string
-	OrderNo   *uint32
-	CreatedAt *time.Time
-	UpdatedAt *time.Time
-	DeletedAt *time.Time
+	ID           *uint64
+	Title        *string
+	Key          *string
+	Value        *string
+	Status       *types.Status
+	DictionaryID *uint64
+	Remark       *string
+	OrderNo      *uint32
+	CreatedAt    *time.Time
+	UpdatedAt    *time.Time
+	DeletedAt    *time.Time
 }
 
 type CreateSysMenuInput struct {

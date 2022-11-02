@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"slash-admin/app/admin/ent/sysdictionary"
+	"slash-admin/app/admin/ent/sysdictionarydetail"
 	"slash-admin/pkg/types"
 	"time"
 
@@ -101,6 +102,21 @@ func (sdc *SysDictionaryCreate) SetNillableDeletedAt(t *time.Time) *SysDictionar
 func (sdc *SysDictionaryCreate) SetID(u uint64) *SysDictionaryCreate {
 	sdc.mutation.SetID(u)
 	return sdc
+}
+
+// AddDetailIDs adds the "details" edge to the SysDictionaryDetail entity by IDs.
+func (sdc *SysDictionaryCreate) AddDetailIDs(ids ...uint64) *SysDictionaryCreate {
+	sdc.mutation.AddDetailIDs(ids...)
+	return sdc
+}
+
+// AddDetails adds the "details" edges to the SysDictionaryDetail entity.
+func (sdc *SysDictionaryCreate) AddDetails(s ...*SysDictionaryDetail) *SysDictionaryCreate {
+	ids := make([]uint64, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return sdc.AddDetailIDs(ids...)
 }
 
 // Mutation returns the SysDictionaryMutation object of the builder.
@@ -300,6 +316,25 @@ func (sdc *SysDictionaryCreate) createSpec() (*SysDictionary, *sqlgraph.CreateSp
 			Column: sysdictionary.FieldDeletedAt,
 		})
 		_node.DeletedAt = &value
+	}
+	if nodes := sdc.mutation.DetailsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   sysdictionary.DetailsTable,
+			Columns: []string{sysdictionary.DetailsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeUint64,
+					Column: sysdictionarydetail.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }

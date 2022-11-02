@@ -66,6 +66,22 @@ func (sd *SysDictionaryQuery) CollectFields(ctx context.Context, satisfies ...st
 
 func (sd *SysDictionaryQuery) collectField(ctx context.Context, op *graphql.OperationContext, field graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
+	for _, field := range graphql.CollectFields(op, field.Selections, satisfies) {
+		switch field.Name {
+		case "details":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = &SysDictionaryDetailQuery{config: sd.config}
+			)
+			if err := query.collectField(ctx, op, field, path, satisfies...); err != nil {
+				return err
+			}
+			sd.WithNamedDetails(alias, func(wq *SysDictionaryDetailQuery) {
+				*wq = *query
+			})
+		}
+	}
 	return nil
 }
 
@@ -109,6 +125,20 @@ func (sdd *SysDictionaryDetailQuery) CollectFields(ctx context.Context, satisfie
 
 func (sdd *SysDictionaryDetailQuery) collectField(ctx context.Context, op *graphql.OperationContext, field graphql.CollectedField, path []string, satisfies ...string) error {
 	path = append([]string(nil), path...)
+	for _, field := range graphql.CollectFields(op, field.Selections, satisfies) {
+		switch field.Name {
+		case "parent":
+			var (
+				alias = field.Alias
+				path  = append(path, alias)
+				query = &SysDictionaryQuery{config: sdd.config}
+			)
+			if err := query.collectField(ctx, op, field, path, satisfies...); err != nil {
+				return err
+			}
+			sdd.withParent = query
+		}
+	}
 	return nil
 }
 

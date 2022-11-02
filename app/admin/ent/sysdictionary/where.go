@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 // ID filters vertices based on their ID field.
@@ -708,6 +709,34 @@ func DeletedAtIsNil() predicate.SysDictionary {
 func DeletedAtNotNil() predicate.SysDictionary {
 	return predicate.SysDictionary(func(s *sql.Selector) {
 		s.Where(sql.NotNull(s.C(FieldDeletedAt)))
+	})
+}
+
+// HasDetails applies the HasEdge predicate on the "details" edge.
+func HasDetails() predicate.SysDictionary {
+	return predicate.SysDictionary(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(DetailsTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, DetailsTable, DetailsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasDetailsWith applies the HasEdge predicate on the "details" edge with a given conditions (other predicates).
+func HasDetailsWith(preds ...predicate.SysDictionaryDetail) predicate.SysDictionary {
+	return predicate.SysDictionary(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(DetailsInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, DetailsTable, DetailsColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
 	})
 }
 

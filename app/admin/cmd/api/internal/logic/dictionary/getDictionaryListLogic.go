@@ -2,9 +2,12 @@ package dictionary
 
 import (
 	"context"
-
+	"github.com/zeromicro/go-zero/core/errorx"
 	"slash-admin/app/admin/cmd/api/internal/svc"
 	"slash-admin/app/admin/cmd/api/internal/types"
+	"slash-admin/app/admin/ent/predicate"
+	"slash-admin/app/admin/ent/sysdictionary"
+	"slash-admin/pkg/message"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -24,7 +27,27 @@ func NewGetDictionaryListLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 }
 
 func (l *GetDictionaryListLogic) GetDictionaryList(req *types.DictionaryListReq) (resp *types.DictionaryListResp, err error) {
-	// todo: add your logic here and delete this line
+	var predicates []predicate.SysDictionary
 
-	return
+	if req.Name != nil {
+		predicates = append(predicates, sysdictionary.NameContains(*req.Name))
+	}
+
+	if req.Title != nil {
+		predicates = append(predicates, sysdictionary.TitleContains(*req.Title))
+	}
+
+	pageResult, err := l.svcCtx.EntClient.SysDictionary.Query().
+		Where(predicates...).
+		Page(l.ctx, req.PageNo, req.PageSize)
+
+	if err != nil {
+		l.Errorw("query dictionary list error", logx.Field("details", err.Error()))
+		return nil, errorx.NewApiInternalServerError(message.DatabaseError)
+	}
+
+	return &types.DictionaryListResp{
+		Pagination: l.svcCtx.Converter.ConvertPagination(pageResult.PageDetails),
+		List:       l.svcCtx.Converter.ConvertSysDictionaryList(pageResult.List),
+	}, nil
 }

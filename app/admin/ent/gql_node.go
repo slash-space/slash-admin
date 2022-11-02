@@ -126,7 +126,7 @@ func (sd *SysDictionary) Node(ctx context.Context) (node *Node, err error) {
 		ID:     sd.ID,
 		Type:   "SysDictionary",
 		Fields: make([]*Field, 7),
-		Edges:  make([]*Edge, 0),
+		Edges:  make([]*Edge, 1),
 	}
 	var buf []byte
 	if buf, err = json.Marshal(sd.Title); err != nil {
@@ -185,6 +185,16 @@ func (sd *SysDictionary) Node(ctx context.Context) (node *Node, err error) {
 		Name:  "deleted_at",
 		Value: string(buf),
 	}
+	node.Edges[0] = &Edge{
+		Type: "SysDictionaryDetail",
+		Name: "details",
+	}
+	err = sd.QueryDetails().
+		Select(sysdictionarydetail.FieldID).
+		Scan(ctx, &node.Edges[0].IDs)
+	if err != nil {
+		return nil, err
+	}
 	return node, nil
 }
 
@@ -192,8 +202,8 @@ func (sdd *SysDictionaryDetail) Node(ctx context.Context) (node *Node, err error
 	node = &Node{
 		ID:     sdd.ID,
 		Type:   "SysDictionaryDetail",
-		Fields: make([]*Field, 9),
-		Edges:  make([]*Edge, 0),
+		Fields: make([]*Field, 10),
+		Edges:  make([]*Edge, 1),
 	}
 	var buf []byte
 	if buf, err = json.Marshal(sdd.Title); err != nil {
@@ -228,10 +238,18 @@ func (sdd *SysDictionaryDetail) Node(ctx context.Context) (node *Node, err error
 		Name:  "status",
 		Value: string(buf),
 	}
-	if buf, err = json.Marshal(sdd.Remark); err != nil {
+	if buf, err = json.Marshal(sdd.DictionaryID); err != nil {
 		return nil, err
 	}
 	node.Fields[4] = &Field{
+		Type:  "uint64",
+		Name:  "dictionary_id",
+		Value: string(buf),
+	}
+	if buf, err = json.Marshal(sdd.Remark); err != nil {
+		return nil, err
+	}
+	node.Fields[5] = &Field{
 		Type:  "string",
 		Name:  "remark",
 		Value: string(buf),
@@ -239,7 +257,7 @@ func (sdd *SysDictionaryDetail) Node(ctx context.Context) (node *Node, err error
 	if buf, err = json.Marshal(sdd.OrderNo); err != nil {
 		return nil, err
 	}
-	node.Fields[5] = &Field{
+	node.Fields[6] = &Field{
 		Type:  "uint32",
 		Name:  "order_no",
 		Value: string(buf),
@@ -247,7 +265,7 @@ func (sdd *SysDictionaryDetail) Node(ctx context.Context) (node *Node, err error
 	if buf, err = json.Marshal(sdd.CreatedAt); err != nil {
 		return nil, err
 	}
-	node.Fields[6] = &Field{
+	node.Fields[7] = &Field{
 		Type:  "time.Time",
 		Name:  "created_at",
 		Value: string(buf),
@@ -255,7 +273,7 @@ func (sdd *SysDictionaryDetail) Node(ctx context.Context) (node *Node, err error
 	if buf, err = json.Marshal(sdd.UpdatedAt); err != nil {
 		return nil, err
 	}
-	node.Fields[7] = &Field{
+	node.Fields[8] = &Field{
 		Type:  "time.Time",
 		Name:  "updated_at",
 		Value: string(buf),
@@ -263,10 +281,20 @@ func (sdd *SysDictionaryDetail) Node(ctx context.Context) (node *Node, err error
 	if buf, err = json.Marshal(sdd.DeletedAt); err != nil {
 		return nil, err
 	}
-	node.Fields[8] = &Field{
+	node.Fields[9] = &Field{
 		Type:  "time.Time",
 		Name:  "deleted_at",
 		Value: string(buf),
+	}
+	node.Edges[0] = &Edge{
+		Type: "SysDictionary",
+		Name: "parent",
+	}
+	err = sdd.QueryParent().
+		Select(sysdictionary.FieldID).
+		Scan(ctx, &node.Edges[0].IDs)
+	if err != nil {
+		return nil, err
 	}
 	return node, nil
 }

@@ -93,6 +93,10 @@ func (sddc *SysDictionaryDetailCreate) Copy(input *CreateSysDictionaryDetailInpu
 		sddc.SetStatus(*input.Status)
 	}
 
+	if input.DictionaryID != nil {
+		sddc.SetDictionaryID(*input.DictionaryID)
+	}
+
 	if input.Remark != nil {
 		sddc.SetRemark(*input.Remark)
 	}

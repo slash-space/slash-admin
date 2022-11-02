@@ -91,15 +91,15 @@ func init() {
 	// sysdictionarydetail.DefaultStatus holds the default value on creation for the status field.
 	sysdictionarydetail.DefaultStatus = types.Status(sysdictionarydetailDescStatus.Default.(uint8))
 	// sysdictionarydetailDescOrderNo is the schema descriptor for order_no field.
-	sysdictionarydetailDescOrderNo := sysdictionarydetailFields[6].Descriptor()
+	sysdictionarydetailDescOrderNo := sysdictionarydetailFields[7].Descriptor()
 	// sysdictionarydetail.DefaultOrderNo holds the default value on creation for the order_no field.
 	sysdictionarydetail.DefaultOrderNo = sysdictionarydetailDescOrderNo.Default.(uint32)
 	// sysdictionarydetailDescCreatedAt is the schema descriptor for created_at field.
-	sysdictionarydetailDescCreatedAt := sysdictionarydetailFields[7].Descriptor()
+	sysdictionarydetailDescCreatedAt := sysdictionarydetailFields[8].Descriptor()
 	// sysdictionarydetail.DefaultCreatedAt holds the default value on creation for the created_at field.
 	sysdictionarydetail.DefaultCreatedAt = sysdictionarydetailDescCreatedAt.Default.(func() time.Time)
 	// sysdictionarydetailDescUpdatedAt is the schema descriptor for updated_at field.
-	sysdictionarydetailDescUpdatedAt := sysdictionarydetailFields[8].Descriptor()
+	sysdictionarydetailDescUpdatedAt := sysdictionarydetailFields[9].Descriptor()
 	// sysdictionarydetail.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	sysdictionarydetail.DefaultUpdatedAt = sysdictionarydetailDescUpdatedAt.Default.(func() time.Time)
 	// sysdictionarydetail.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.

@@ -1346,21 +1346,24 @@ func (m *SysApiMutation) ResetEdge(name string) error {
 // SysDictionaryMutation represents an operation that mutates the SysDictionary nodes in the graph.
 type SysDictionaryMutation struct {
 	config
-	op            Op
-	typ           string
-	id            *uint64
-	title         *string
-	name          *string
-	status        *types.Status
-	addstatus     *types.Status
-	desc          *string
-	created_at    *time.Time
-	updated_at    *time.Time
-	deleted_at    *time.Time
-	clearedFields map[string]struct{}
-	done          bool
-	oldValue      func(context.Context) (*SysDictionary, error)
-	predicates    []predicate.SysDictionary
+	op             Op
+	typ            string
+	id             *uint64
+	title          *string
+	name           *string
+	status         *types.Status
+	addstatus      *types.Status
+	desc           *string
+	created_at     *time.Time
+	updated_at     *time.Time
+	deleted_at     *time.Time
+	clearedFields  map[string]struct{}
+	details        map[uint64]struct{}
+	removeddetails map[uint64]struct{}
+	cleareddetails bool
+	done           bool
+	oldValue       func(context.Context) (*SysDictionary, error)
+	predicates     []predicate.SysDictionary
 }
 
 var _ ent.Mutation = (*SysDictionaryMutation)(nil)
@@ -1766,6 +1769,60 @@ func (m *SysDictionaryMutation) ResetDeletedAt() {
 	delete(m.clearedFields, sysdictionary.FieldDeletedAt)
 }
 
+// AddDetailIDs adds the "details" edge to the SysDictionaryDetail entity by ids.
+func (m *SysDictionaryMutation) AddDetailIDs(ids ...uint64) {
+	if m.details == nil {
+		m.details = make(map[uint64]struct{})
+	}
+	for i := range ids {
+		m.details[ids[i]] = struct{}{}
+	}
+}
+
+// ClearDetails clears the "details" edge to the SysDictionaryDetail entity.
+func (m *SysDictionaryMutation) ClearDetails() {
+	m.cleareddetails = true
+}
+
+// DetailsCleared reports if the "details" edge to the SysDictionaryDetail entity was cleared.
+func (m *SysDictionaryMutation) DetailsCleared() bool {
+	return m.cleareddetails
+}
+
+// RemoveDetailIDs removes the "details" edge to the SysDictionaryDetail entity by IDs.
+func (m *SysDictionaryMutation) RemoveDetailIDs(ids ...uint64) {
+	if m.removeddetails == nil {
+		m.removeddetails = make(map[uint64]struct{})
+	}
+	for i := range ids {
+		delete(m.details, ids[i])
+		m.removeddetails[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedDetails returns the removed IDs of the "details" edge to the SysDictionaryDetail entity.
+func (m *SysDictionaryMutation) RemovedDetailsIDs() (ids []uint64) {
+	for id := range m.removeddetails {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// DetailsIDs returns the "details" edge IDs in the mutation.
+func (m *SysDictionaryMutation) DetailsIDs() (ids []uint64) {
+	for id := range m.details {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetDetails resets all changes to the "details" edge.
+func (m *SysDictionaryMutation) ResetDetails() {
+	m.details = nil
+	m.cleareddetails = false
+	m.removeddetails = nil
+}
+
 // Where appends a list predicates to the SysDictionaryMutation builder.
 func (m *SysDictionaryMutation) Where(ps ...predicate.SysDictionary) {
 	m.predicates = append(m.predicates, ps...)
@@ -2016,49 +2073,85 @@ func (m *SysDictionaryMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *SysDictionaryMutation) AddedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.details != nil {
+		edges = append(edges, sysdictionary.EdgeDetails)
+	}
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
 func (m *SysDictionaryMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case sysdictionary.EdgeDetails:
+		ids := make([]ent.Value, 0, len(m.details))
+		for id := range m.details {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *SysDictionaryMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.removeddetails != nil {
+		edges = append(edges, sysdictionary.EdgeDetails)
+	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *SysDictionaryMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case sysdictionary.EdgeDetails:
+		ids := make([]ent.Value, 0, len(m.removeddetails))
+		for id := range m.removeddetails {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *SysDictionaryMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.cleareddetails {
+		edges = append(edges, sysdictionary.EdgeDetails)
+	}
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
 func (m *SysDictionaryMutation) EdgeCleared(name string) bool {
+	switch name {
+	case sysdictionary.EdgeDetails:
+		return m.cleareddetails
+	}
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
 func (m *SysDictionaryMutation) ClearEdge(name string) error {
+	switch name {
+	}
 	return fmt.Errorf("unknown SysDictionary unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
 func (m *SysDictionaryMutation) ResetEdge(name string) error {
+	switch name {
+	case sysdictionary.EdgeDetails:
+		m.ResetDetails()
+		return nil
+	}
 	return fmt.Errorf("unknown SysDictionary edge %s", name)
 }
 
@@ -2080,6 +2173,8 @@ type SysDictionaryDetailMutation struct {
 	updated_at    *time.Time
 	deleted_at    *time.Time
 	clearedFields map[string]struct{}
+	parent        *uint64
+	clearedparent bool
 	done          bool
 	oldValue      func(context.Context) (*SysDictionaryDetail, error)
 	predicates    []predicate.SysDictionaryDetail
@@ -2367,6 +2462,55 @@ func (m *SysDictionaryDetailMutation) ResetStatus() {
 	delete(m.clearedFields, sysdictionarydetail.FieldStatus)
 }
 
+// SetDictionaryID sets the "dictionary_id" field.
+func (m *SysDictionaryDetailMutation) SetDictionaryID(u uint64) {
+	m.parent = &u
+}
+
+// DictionaryID returns the value of the "dictionary_id" field in the mutation.
+func (m *SysDictionaryDetailMutation) DictionaryID() (r uint64, exists bool) {
+	v := m.parent
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDictionaryID returns the old "dictionary_id" field's value of the SysDictionaryDetail entity.
+// If the SysDictionaryDetail object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SysDictionaryDetailMutation) OldDictionaryID(ctx context.Context) (v uint64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDictionaryID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDictionaryID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDictionaryID: %w", err)
+	}
+	return oldValue.DictionaryID, nil
+}
+
+// ClearDictionaryID clears the value of the "dictionary_id" field.
+func (m *SysDictionaryDetailMutation) ClearDictionaryID() {
+	m.parent = nil
+	m.clearedFields[sysdictionarydetail.FieldDictionaryID] = struct{}{}
+}
+
+// DictionaryIDCleared returns if the "dictionary_id" field was cleared in this mutation.
+func (m *SysDictionaryDetailMutation) DictionaryIDCleared() bool {
+	_, ok := m.clearedFields[sysdictionarydetail.FieldDictionaryID]
+	return ok
+}
+
+// ResetDictionaryID resets all changes to the "dictionary_id" field.
+func (m *SysDictionaryDetailMutation) ResetDictionaryID() {
+	m.parent = nil
+	delete(m.clearedFields, sysdictionarydetail.FieldDictionaryID)
+}
+
 // SetRemark sets the "remark" field.
 func (m *SysDictionaryDetailMutation) SetRemark(s string) {
 	m.remark = &s
@@ -2580,6 +2724,45 @@ func (m *SysDictionaryDetailMutation) ResetDeletedAt() {
 	delete(m.clearedFields, sysdictionarydetail.FieldDeletedAt)
 }
 
+// SetParentID sets the "parent" edge to the SysDictionary entity by id.
+func (m *SysDictionaryDetailMutation) SetParentID(id uint64) {
+	m.parent = &id
+}
+
+// ClearParent clears the "parent" edge to the SysDictionary entity.
+func (m *SysDictionaryDetailMutation) ClearParent() {
+	m.clearedparent = true
+}
+
+// ParentCleared reports if the "parent" edge to the SysDictionary entity was cleared.
+func (m *SysDictionaryDetailMutation) ParentCleared() bool {
+	return m.DictionaryIDCleared() || m.clearedparent
+}
+
+// ParentID returns the "parent" edge ID in the mutation.
+func (m *SysDictionaryDetailMutation) ParentID() (id uint64, exists bool) {
+	if m.parent != nil {
+		return *m.parent, true
+	}
+	return
+}
+
+// ParentIDs returns the "parent" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ParentID instead. It exists only for internal usage by the builders.
+func (m *SysDictionaryDetailMutation) ParentIDs() (ids []uint64) {
+	if id := m.parent; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetParent resets all changes to the "parent" edge.
+func (m *SysDictionaryDetailMutation) ResetParent() {
+	m.parent = nil
+	m.clearedparent = false
+}
+
 // Where appends a list predicates to the SysDictionaryDetailMutation builder.
 func (m *SysDictionaryDetailMutation) Where(ps ...predicate.SysDictionaryDetail) {
 	m.predicates = append(m.predicates, ps...)
@@ -2599,7 +2782,7 @@ func (m *SysDictionaryDetailMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *SysDictionaryDetailMutation) Fields() []string {
-	fields := make([]string, 0, 9)
+	fields := make([]string, 0, 10)
 	if m.title != nil {
 		fields = append(fields, sysdictionarydetail.FieldTitle)
 	}
@@ -2611,6 +2794,9 @@ func (m *SysDictionaryDetailMutation) Fields() []string {
 	}
 	if m.status != nil {
 		fields = append(fields, sysdictionarydetail.FieldStatus)
+	}
+	if m.parent != nil {
+		fields = append(fields, sysdictionarydetail.FieldDictionaryID)
 	}
 	if m.remark != nil {
 		fields = append(fields, sysdictionarydetail.FieldRemark)
@@ -2643,6 +2829,8 @@ func (m *SysDictionaryDetailMutation) Field(name string) (ent.Value, bool) {
 		return m.Value()
 	case sysdictionarydetail.FieldStatus:
 		return m.Status()
+	case sysdictionarydetail.FieldDictionaryID:
+		return m.DictionaryID()
 	case sysdictionarydetail.FieldRemark:
 		return m.Remark()
 	case sysdictionarydetail.FieldOrderNo:
@@ -2670,6 +2858,8 @@ func (m *SysDictionaryDetailMutation) OldField(ctx context.Context, name string)
 		return m.OldValue(ctx)
 	case sysdictionarydetail.FieldStatus:
 		return m.OldStatus(ctx)
+	case sysdictionarydetail.FieldDictionaryID:
+		return m.OldDictionaryID(ctx)
 	case sysdictionarydetail.FieldRemark:
 		return m.OldRemark(ctx)
 	case sysdictionarydetail.FieldOrderNo:
@@ -2716,6 +2906,13 @@ func (m *SysDictionaryDetailMutation) SetField(name string, value ent.Value) err
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetStatus(v)
+		return nil
+	case sysdictionarydetail.FieldDictionaryID:
+		v, ok := value.(uint64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDictionaryID(v)
 		return nil
 	case sysdictionarydetail.FieldRemark:
 		v, ok := value.(string)
@@ -2812,6 +3009,9 @@ func (m *SysDictionaryDetailMutation) ClearedFields() []string {
 	if m.FieldCleared(sysdictionarydetail.FieldStatus) {
 		fields = append(fields, sysdictionarydetail.FieldStatus)
 	}
+	if m.FieldCleared(sysdictionarydetail.FieldDictionaryID) {
+		fields = append(fields, sysdictionarydetail.FieldDictionaryID)
+	}
 	if m.FieldCleared(sysdictionarydetail.FieldDeletedAt) {
 		fields = append(fields, sysdictionarydetail.FieldDeletedAt)
 	}
@@ -2831,6 +3031,9 @@ func (m *SysDictionaryDetailMutation) ClearField(name string) error {
 	switch name {
 	case sysdictionarydetail.FieldStatus:
 		m.ClearStatus()
+		return nil
+	case sysdictionarydetail.FieldDictionaryID:
+		m.ClearDictionaryID()
 		return nil
 	case sysdictionarydetail.FieldDeletedAt:
 		m.ClearDeletedAt()
@@ -2855,6 +3058,9 @@ func (m *SysDictionaryDetailMutation) ResetField(name string) error {
 	case sysdictionarydetail.FieldStatus:
 		m.ResetStatus()
 		return nil
+	case sysdictionarydetail.FieldDictionaryID:
+		m.ResetDictionaryID()
+		return nil
 	case sysdictionarydetail.FieldRemark:
 		m.ResetRemark()
 		return nil
@@ -2876,19 +3082,28 @@ func (m *SysDictionaryDetailMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *SysDictionaryDetailMutation) AddedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.parent != nil {
+		edges = append(edges, sysdictionarydetail.EdgeParent)
+	}
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
 func (m *SysDictionaryDetailMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case sysdictionarydetail.EdgeParent:
+		if id := m.parent; id != nil {
+			return []ent.Value{*id}
+		}
+	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *SysDictionaryDetailMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
 	return edges
 }
 
@@ -2900,25 +3115,42 @@ func (m *SysDictionaryDetailMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *SysDictionaryDetailMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.clearedparent {
+		edges = append(edges, sysdictionarydetail.EdgeParent)
+	}
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
 func (m *SysDictionaryDetailMutation) EdgeCleared(name string) bool {
+	switch name {
+	case sysdictionarydetail.EdgeParent:
+		return m.clearedparent
+	}
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
 func (m *SysDictionaryDetailMutation) ClearEdge(name string) error {
+	switch name {
+	case sysdictionarydetail.EdgeParent:
+		m.ClearParent()
+		return nil
+	}
 	return fmt.Errorf("unknown SysDictionaryDetail unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
 func (m *SysDictionaryDetailMutation) ResetEdge(name string) error {
+	switch name {
+	case sysdictionarydetail.EdgeParent:
+		m.ResetParent()
+		return nil
+	}
 	return fmt.Errorf("unknown SysDictionaryDetail edge %s", name)
 }
 

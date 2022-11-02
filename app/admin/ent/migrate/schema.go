@@ -79,12 +79,21 @@ var (
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
+		{Name: "dictionary_id", Type: field.TypeUint64, Nullable: true},
 	}
 	// SysDictionaryDetailTable holds the schema information for the "sys_dictionary_detail" table.
 	SysDictionaryDetailTable = &schema.Table{
 		Name:       "sys_dictionary_detail",
 		Columns:    SysDictionaryDetailColumns,
 		PrimaryKey: []*schema.Column{SysDictionaryDetailColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "sys_dictionary_detail_sys_dictionary_details",
+				Columns:    []*schema.Column{SysDictionaryDetailColumns[10]},
+				RefColumns: []*schema.Column{SysDictionaryColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 		Indexes: []*schema.Index{
 			{
 				Name:    "sysdictionarydetail_deleted_at",
@@ -336,6 +345,7 @@ func init() {
 	SysDictionaryTable.Annotation = &entsql.Annotation{
 		Table: "sys_dictionary",
 	}
+	SysDictionaryDetailTable.ForeignKeys[0].RefTable = SysDictionaryTable
 	SysDictionaryDetailTable.Annotation = &entsql.Annotation{
 		Table: "sys_dictionary_detail",
 	}

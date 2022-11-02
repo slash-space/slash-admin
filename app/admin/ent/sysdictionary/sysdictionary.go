@@ -26,8 +26,17 @@ const (
 	FieldUpdatedAt = "updated_at"
 	// FieldDeletedAt holds the string denoting the deleted_at field in the database.
 	FieldDeletedAt = "deleted_at"
+	// EdgeDetails holds the string denoting the details edge name in mutations.
+	EdgeDetails = "details"
 	// Table holds the table name of the sysdictionary in the database.
 	Table = "sys_dictionary"
+	// DetailsTable is the table that holds the details relation/edge.
+	DetailsTable = "sys_dictionary_detail"
+	// DetailsInverseTable is the table name for the SysDictionaryDetail entity.
+	// It exists in this package in order to avoid circular dependency with the "sysdictionarydetail" package.
+	DetailsInverseTable = "sys_dictionary_detail"
+	// DetailsColumn is the table column denoting the details relation/edge.
+	DetailsColumn = "dictionary_id"
 )
 
 // Columns holds all SQL columns for sysdictionary fields.

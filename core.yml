@@ -215,17 +215,17 @@ definitions:
     CreateDictionaryDetailReq:
         description: Create KV information request | 创建或更新字典键值信息请求
         properties:
+            dictionaryId:
+                description: DictionaryID | 所属字典ID
+                format: uint64
+                type: integer
+                x-go-name: DictionaryID
             key:
                 description: Detail key | 键
                 maxLength: 50
                 minLength: 1
                 type: string
                 x-go-name: Key
-            parentId:
-                description: Parent ID | 所属字典ID
-                format: uint64
-                type: integer
-                x-go-name: ParentID
             status:
                 description: Status | 状态
                 format: uint8
@@ -246,7 +246,7 @@ definitions:
             - key
             - value
             - status
-            - parentId
+            - dictionaryId
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
     CreateDictionaryReq:
@@ -520,6 +520,11 @@ definitions:
                 format: int64
                 type: integer
                 x-go-name: CreatedAt
+            dictionaryId:
+                description: Dictionary ID | 字典ID
+                format: uint64
+                type: integer
+                x-go-name: DictionaryID
             id:
                 description: ID
                 format: uint64
@@ -538,6 +543,11 @@ definitions:
                 description: Dictionary title | 字典显示名称
                 type: string
                 x-go-name: Title
+            updatedAt:
+                description: Update time | 更新时间
+                format: int64
+                type: integer
+                x-go-name: UpdatedAt
             value:
                 description: Value | 值
                 type: string
@@ -591,7 +601,8 @@ definitions:
                 x-go-name: Name
             status:
                 description: Dictionary status | 字典状态
-                type: boolean
+                format: uint8
+                type: integer
                 x-go-name: Status
             title:
                 description: Dictionary title | 字典显示名称
@@ -1200,11 +1211,6 @@ definitions:
                 minLength: 1
                 type: string
                 x-go-name: Key
-            parentId:
-                description: Parent ID | 所属字典ID
-                format: uint64
-                type: integer
-                x-go-name: ParentID
             status:
                 description: Status | 状态
                 format: uint8
@@ -1236,7 +1242,7 @@ definitions:
                 description: ID
                 format: uint64
                 type: integer
-                x-go-name: Id
+                x-go-name: ID
             name:
                 description: Dictionary name | 字典名称
                 maxLength: 50

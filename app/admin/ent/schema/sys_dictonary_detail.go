@@ -5,6 +5,7 @@ import (
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
 	"slash-admin/pkg/types"
@@ -29,6 +30,7 @@ func (SysDictionaryDetail) Fields() []ent.Field {
 			Optional().
 			Comment("0=开启 1=禁用"),
 
+		field.Uint64("dictionary_id").Optional().Comment("dictionary id"),
 		field.String("remark").Comment("备注"),
 		field.Uint32("order_no").Default(0).Comment("排序编号"),
 		field.Time("created_at").Default(time.Now),
@@ -38,7 +40,9 @@ func (SysDictionaryDetail) Fields() []ent.Field {
 }
 
 func (SysDictionaryDetail) Edges() []ent.Edge {
-	return nil
+	return []ent.Edge{
+		edge.From("parent", SysDictionary.Type).Ref("details").Unique().Field("dictionary_id"),
+	}
 }
 
 func (SysDictionaryDetail) Indexes() []ent.Index {
