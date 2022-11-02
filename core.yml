@@ -304,6 +304,164 @@ definitions:
             - menuIds
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    CreateOrUpdateMenuParamsReq:
+        description: Create or update menu extra parameters request params | 创建或更新菜单额外参数的请求参数
+        properties:
+            dataType:
+                description: Data Type | 数据类型
+                maxLength: 8
+                minLength: 1
+                type: string
+                x-go-name: DataType
+            id:
+                description: ID
+                format: uint32
+                type: integer
+                x-go-name: ID
+            key:
+                description: Key | 键
+                maxLength: 20
+                minLength: 1
+                type: string
+                x-go-name: Key
+            menuId:
+                description: Menu ID | 菜单ID
+                format: uint32
+                type: integer
+                x-go-name: MenuId
+            value:
+                description: Value | 值
+                maxLength: 100
+                minLength: 1
+                type: string
+                x-go-name: Value
+        required:
+            - id
+            - menuId
+            - dataType
+            - key
+            - value
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    CreateOrUpdateMenuReq:
+        description: Create or update menu information request params | 创建或更新菜单信息参数
+        properties:
+            affix:
+                description: Affix tab | 是否固定标签
+                type: boolean
+                x-go-name: Affix
+            carryParam:
+                description: The route carries parameters or not | 如果该路由会携带参数，且需要在tab页上面显示。则需要设置为true
+                type: boolean
+                x-go-name: CarryParam
+            component:
+                description: The component path | 组件路径
+                example: /sys/menu/index
+                maxLength: 100
+                type: string
+                x-go-name: Component
+            currentActiveMenu:
+                description: Current active menu, if not nil, it will active the tab | 当前激活的菜单
+                maxLength: 30
+                type: string
+                x-go-name: CurrentActiveMenu
+            disabled:
+                description: If disabled | 是否禁用菜单
+                type: boolean
+                x-go-name: Disabled
+            dynamicLevel:
+                description: The maximum number of pages the router can open | 动态路由可打开Tab页数
+                format: uint32
+                type: integer
+                x-go-name: DynamicLevel
+            frameSrc:
+                description: Iframe path | 内嵌iframe的地址
+                type: string
+                x-go-name: FrameSrc
+            hideBreadcrumb:
+                description: If hide the breadcrumb | 隐藏面包屑
+                type: boolean
+                x-go-name: HideBreadcrumb
+            hideChildrenInMenu:
+                description: Hide children menu or not | 隐藏所有子菜单
+                type: boolean
+                x-go-name: HideChildrenInMenu
+            hideMenu:
+                description: Hide menu | 隐藏菜单
+                type: boolean
+                x-go-name: HideMenu
+            hideTab:
+                description: Hide the tab header | 当前路由不在标签页显示
+                type: boolean
+                x-go-name: HideTab
+            icon:
+                description: Menu Icon | 菜单图标
+                maxLength: 50
+                type: string
+                x-go-name: Icon
+            id:
+                description: ID
+                format: uint32
+                type: integer
+                x-go-name: ID
+            ignoreKeepAlive:
+                description: Do not keep alive the tab | 不缓存Tab
+                type: boolean
+                x-go-name: IgnoreKeepAlive
+            name:
+                description: Menu name | 菜单名
+                maxLength: 50
+                type: string
+                x-go-name: Name
+            orderNo:
+                description: The sorting number | 排序编号
+                format: uint32
+                maximum: 1000
+                type: integer
+                x-go-name: OrderNo
+            parentId:
+                description: Parent menu ID | 父级菜单ID
+                format: uint64
+                type: integer
+                x-go-name: ParentId
+            path:
+                description: The path to visit menu | 菜单访问路径
+                maxLength: 30
+                type: string
+                x-go-name: Path
+            realPath:
+                description: The real path of the route without dynamic part | 动态路由的实际Path, 即去除路由的动态部分
+                type: string
+                x-go-name: RealPath
+            redirect:
+                description: Redirect path | 跳转路径
+                example: https://www.google.com
+                maxLength: 100
+                type: string
+                x-go-name: Redirect
+            title:
+                description: Menu title show in page | 菜单显示名
+                maxLength: 50
+                type: string
+                x-go-name: Title
+            type:
+                description: 'Menu type: directory or menu | 菜单类型: 目录或菜单'
+                format: uint32
+                maximum: 10
+                type: integer
+                x-go-name: MenuType
+        required:
+            - id
+            - type
+            - parentId
+            - path
+            - name
+            - redirect
+            - component
+            - orderNo
+            - disabled
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
     CreateProviderReq:
         description: Create provider information request | 创建提供商信息
         properties:
@@ -653,6 +811,61 @@ definitions:
                 $ref: '#/definitions/Pagination'
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    GetMenuListBase:
+        description: The response data of role menu list, show after user login | 角色菜单列表数据， 登录后自动获取
+        properties:
+            children:
+                description: |-
+                    children | 子集
+                    in: body
+                items:
+                    $ref: '#/definitions/GetMenuListBase'
+                type: array
+                x-go-name: Children
+            component:
+                description: The component path | 组件路径
+                type: string
+                x-go-name: Component
+            disabled:
+                description: If disabled | 是否禁用菜单
+                type: boolean
+                x-go-name: Disabled
+            level:
+                description: The menu level | 菜单等级
+                format: uint32
+                type: integer
+                x-go-name: MenuLevel
+            meta:
+                $ref: '#/definitions/MenuMetaInfo'
+            name:
+                description: Menu name | 菜单名
+                type: string
+                x-go-name: Name
+            orderNo:
+                description: The sorting number | 排序编号
+                format: uint32
+                type: integer
+                x-go-name: OrderNo
+            parentId:
+                description: Parent menu ID | 父级菜单ID
+                format: uint64
+                type: integer
+                x-go-name: ParentId
+            path:
+                description: The path to visit menu | 菜单访问路径
+                type: string
+                x-go-name: Path
+            redirect:
+                description: Redirect path | 跳转路径
+                type: string
+                x-go-name: Redirect
+            type:
+                description: 'Menu type: directory or menu | 菜单类型: 目录或菜单'
+                format: uint8
+                type: integer
+                x-go-name: MenuType
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
     GetUserInfoResp:
         description: The response data of user's basic information | 用户基本信息返回数据
         properties:
@@ -776,6 +989,255 @@ definitions:
                 x-go-name: Token
             user:
                 $ref: '#/definitions/UserInfo'
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    MenuInfo:
+        description: The response data of menu information | 菜单返回数据
+        properties:
+            affix:
+                description: Affix tab | 是否固定标签
+                type: boolean
+                x-go-name: Affix
+            carryParam:
+                description: The route carries parameters or not | 如果该路由会携带参数，且需要在tab页上面显示。则需要设置为true
+                type: boolean
+                x-go-name: CarryParam
+            children:
+                description: |-
+                    children | 子集
+                    in: body
+                items:
+                    $ref: '#/definitions/MenuInfo'
+                type: array
+                x-go-name: Children
+            component:
+                description: The component path | 组件路径
+                type: string
+                x-go-name: Component
+            createdAt:
+                description: Create date | 创建日期
+                format: int64
+                type: integer
+                x-go-name: CreatedAt
+            currentActiveMenu:
+                description: Current active menu, if not nil, it will active the tab | 当前激活的菜单
+                maxLength: 30
+                type: string
+                x-go-name: CurrentActiveMenu
+            deletedAt:
+                description: Delete date | 删除日期
+                format: int64
+                type: integer
+                x-go-name: DeletedAt
+            disabled:
+                description: If disabled | 是否禁用菜单
+                type: boolean
+                x-go-name: Disabled
+            dynamicLevel:
+                description: The maximum number of pages the router can open | 动态路由可打开Tab页数
+                format: uint32
+                type: integer
+                x-go-name: DynamicLevel
+            frameSrc:
+                description: Iframe path | 内嵌iframe的地址
+                type: string
+                x-go-name: FrameSrc
+            hideBreadcrumb:
+                description: If hide the breadcrumb | 隐藏面包屑
+                type: boolean
+                x-go-name: HideBreadcrumb
+            hideChildrenInMenu:
+                description: Hide children menu or not | 隐藏所有子菜单
+                type: boolean
+                x-go-name: HideChildrenInMenu
+            hideMenu:
+                description: Hide menu | 隐藏菜单
+                type: boolean
+                x-go-name: HideMenu
+            hideTab:
+                description: Hide the tab header | 当前路由不在标签页显示
+                type: boolean
+                x-go-name: HideTab
+            icon:
+                description: Menu Icon | 菜单图标
+                maxLength: 50
+                type: string
+                x-go-name: Icon
+            id:
+                description: ID
+                format: uint64
+                type: integer
+                x-go-name: ID
+            ignoreKeepAlive:
+                description: Do not keep alive the tab | 不缓存Tab
+                type: boolean
+                x-go-name: IgnoreKeepAlive
+            level:
+                description: The menu level | 菜单等级
+                format: uint8
+                type: integer
+                x-go-name: MenuLevel
+            name:
+                description: Menu name | 菜单名
+                type: string
+                x-go-name: Name
+            orderNo:
+                description: The sorting number | 排序编号
+                format: uint32
+                type: integer
+                x-go-name: OrderNo
+            parentId:
+                description: Parent menu ID | 父级菜单ID
+                format: uint64
+                type: integer
+                x-go-name: ParentId
+            path:
+                description: The path to visit menu | 菜单访问路径
+                type: string
+                x-go-name: Path
+            realPath:
+                description: The real path of the route without dynamic part | 动态路由的实际Path, 即去除路由的动态部分
+                type: string
+                x-go-name: RealPath
+            redirect:
+                description: Redirect path | 跳转路径
+                type: string
+                x-go-name: Redirect
+            title:
+                description: Menu title show in page | 菜单显示名
+                maxLength: 50
+                type: string
+                x-go-name: Title
+            type:
+                description: |-
+                    Menu type: directory or menu | 菜单类型: 目录或菜单
+                    0. directory group 1. menu | 0 目录 1 菜单
+                format: uint8
+                type: integer
+                x-go-name: MenuType
+            updatedAt:
+                description: Update date | 更新日期
+                format: int64
+                type: integer
+                x-go-name: UpdatedAt
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    MenuMetaInfo:
+        description: The meta data of menu | 菜单的meta数据
+        properties:
+            affix:
+                description: Affix tab | 是否固定标签
+                type: boolean
+                x-go-name: Affix
+            carryParam:
+                description: The route carries parameters or not | 如果该路由会携带参数，且需要在tab页上面显示。则需要设置为true
+                type: boolean
+                x-go-name: CarryParam
+            currentActiveMenu:
+                description: Current active menu, if not nil, it will active the tab | 当前激活的菜单
+                maxLength: 30
+                type: string
+                x-go-name: CurrentActiveMenu
+            dynamicLevel:
+                description: The maximum number of pages the router can open | 动态路由可打开Tab页数
+                format: uint32
+                type: integer
+                x-go-name: DynamicLevel
+            frameSrc:
+                description: Iframe path | 内嵌iframe的地址
+                type: string
+                x-go-name: FrameSrc
+            hideBreadcrumb:
+                description: If hide the breadcrumb | 隐藏面包屑
+                type: boolean
+                x-go-name: HideBreadcrumb
+            hideChildrenInMenu:
+                description: Hide children menu or not | 隐藏所有子菜单
+                type: boolean
+                x-go-name: HideChildrenInMenu
+            hideMenu:
+                description: Hide menu | 隐藏菜单
+                type: boolean
+                x-go-name: HideMenu
+            hideTab:
+                description: Hide the tab header | 当前路由不在标签页显示
+                type: boolean
+                x-go-name: HideTab
+            icon:
+                description: Menu Icon | 菜单图标
+                maxLength: 50
+                type: string
+                x-go-name: Icon
+            ignoreKeepAlive:
+                description: Do not keep alive the tab | 不缓存Tab
+                type: boolean
+                x-go-name: IgnoreKeepAlive
+            realPath:
+                description: The real path of the route without dynamic part | 动态路由的实际Path, 即去除路由的动态部分
+                type: string
+                x-go-name: RealPath
+            title:
+                description: Menu title show in page | 菜单显示名
+                maxLength: 50
+                type: string
+                x-go-name: Title
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    MenuParamListByMenuIdResp:
+        description: The response data of menu parameters list which belong to some menu | 某个菜单的菜单参数列表数据
+        properties:
+            list:
+                description: |-
+                    The menu list data | 菜单列表数据
+                    in: body
+                items:
+                    $ref: '#/definitions/MenuParamResp'
+                type: array
+                x-go-name: List
+            pagination:
+                $ref: '#/definitions/Pagination'
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    MenuParamResp:
+        description: The response data of menu parameters  | 菜单参数列表数据
+        properties:
+            createdAt:
+                description: Create date | 创建日期
+                format: int64
+                type: integer
+                x-go-name: CreatedAt
+            dataType:
+                description: Data Type | 数据类型
+                type: string
+                x-go-name: DataType
+            deletedAt:
+                description: Delete date | 删除日期
+                format: int64
+                type: integer
+                x-go-name: DeletedAt
+            id:
+                description: ID
+                format: uint64
+                type: integer
+                x-go-name: ID
+            key:
+                description: Key | 键
+                type: string
+                x-go-name: Key
+            menuId:
+                description: Menu ID | 菜单ID
+                format: uint32
+                type: integer
+                x-go-name: MenuId
+            updatedAt:
+                description: Update date | 更新日期
+                format: int64
+                type: integer
+                x-go-name: UpdatedAt
+            value:
+                description: Value | 值
+                type: string
+                x-go-name: Value
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
     OauthLoginReq:
@@ -1926,6 +2388,108 @@ paths:
             summary: '"Get dictionary list | 获取字典列表"'
             tags:
                 - dictionary
+    /menu:
+        delete:
+            description: '"Delete menu information | 删除菜单信息"'
+            operationId: DeleteMenu
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/IDReq'
+                    type: object
+            responses:
+                "200":
+                    $ref: '#/responses/SimpleMsgResp'
+            summary: '"Delete menu information | 删除菜单信息"'
+            tags:
+                - menu
+        post:
+            description: '"Create or update menu information | 创建或更新菜单"'
+            operationId: CreateOrUpdateMenu
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/CreateOrUpdateMenuReq'
+                    type: object
+            responses:
+                "200":
+                    $ref: '#/responses/SimpleMsgResp'
+            summary: '"Create or update menu information | 创建或更新菜单"'
+            tags:
+                - menu
+    /menu/list:
+        get:
+            description: '"Get menu list | 获取菜单列表"'
+            operationId: GetMenuList
+            responses:
+                "200":
+                    $ref: '#/responses/MenuListResp'
+            summary: '"Get menu list | 获取菜单列表"'
+            tags:
+                - menu
+    /menu/param:
+        delete:
+            description: '"Delete menu extra parameters | 删除菜单额外参数"'
+            operationId: DeleteMenuParam
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/IDReq'
+                    type: object
+            responses:
+                "200":
+                    $ref: '#/responses/SimpleMsgResp'
+            summary: '"Delete menu extra parameters | 删除菜单额外参数"'
+            tags:
+                - menu
+        post:
+            description: '"Create or update menu parameters | 创建或更新菜单参数"'
+            operationId: CreateOrUpdateMenuParam
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/CreateOrUpdateMenuParamsReq'
+                    type: object
+            responses:
+                "200":
+                    $ref: '#/responses/SimpleMsgResp'
+            summary: '"Create or update menu parameters | 创建或更新菜单参数"'
+            tags:
+                - menu
+    /menu/param/list:
+        post:
+            description: '"Get menu extra parameters by menu ID | 获取某个菜单的额外参数列表"'
+            operationId: GetMenuParamListByMenuId
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/IDReq'
+                    type: object
+            responses:
+                "200":
+                    description: MenuParamListByMenuIdResp
+                    schema:
+                        $ref: '#/definitions/MenuParamListByMenuIdResp'
+            summary: '"Get menu extra parameters by menu ID | 获取某个菜单的额外参数列表"'
+            tags:
+                - menu
+    /menu/role:
+        get:
+            description: '"Get role''s menu list API | 获取角色菜单列表"'
+            operationId: GetMenuByRole
+            responses:
+                "200":
+                    description: GetMenuListBase
+                    schema:
+                        $ref: '#/definitions/GetMenuListBase'
+            summary: '"Get role''s menu list API | 获取角色菜单列表"'
+            tags:
+                - menu
     /oauth/login:
         post:
             description: Oauth log in | Oauth 登录
@@ -2422,6 +2986,48 @@ responses:
                 description: role ID | 角色ID
                 format: uint64
                 type: integer
+    MenuListResp:
+        description: The response data of menu list | 菜单列表数据
+        headers:
+            pagination:
+                description: Pagination information | 分页信息
+        schema:
+            $ref: '#/definitions/Pagination'
+            items:
+                $ref: '#/definitions/MenuInfo'
+            type: array
+    MenuParamResp:
+        description: The response data of menu parameters  | 菜单参数列表数据
+        headers:
+            createdAt:
+                description: Create date | 创建日期
+                format: int64
+                type: integer
+            dataType:
+                description: Data Type | 数据类型
+                type: string
+            deletedAt:
+                description: Delete date | 删除日期
+                format: int64
+                type: integer
+            id:
+                description: ID
+                format: uint64
+                type: integer
+            key:
+                description: Key | 键
+                type: string
+            menuId:
+                description: Menu ID | 菜单ID
+                format: uint32
+                type: integer
+            updatedAt:
+                description: Update date | 更新日期
+                format: int64
+                type: integer
+            value:
+                description: Value | 值
+                type: string
     PermCodeResp:
         description: The permission code for front end permission control | 权限码： 用于前端权限控制
         headers:

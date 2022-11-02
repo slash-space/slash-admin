@@ -14,7 +14,7 @@ import "core/core.api"
 import "role/role.api"
 import "captcha/captcha.api"
 import "user/user.api"
-//import "menu.api"
+import "menu/menu.api"
 
 import "apis/apis.api"
 import "authority/authority.api"

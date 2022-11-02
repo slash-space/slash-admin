@@ -9,6 +9,7 @@ import (
 	captcha "slash-admin/app/admin/cmd/api/internal/handler/captcha"
 	core "slash-admin/app/admin/cmd/api/internal/handler/core"
 	dictionary "slash-admin/app/admin/cmd/api/internal/handler/dictionary"
+	menu "slash-admin/app/admin/cmd/api/internal/handler/menu"
 	oauth "slash-admin/app/admin/cmd/api/internal/handler/oauth"
 	role "slash-admin/app/admin/cmd/api/internal/handler/role"
 	token "slash-admin/app/admin/cmd/api/internal/handler/token"
@@ -146,6 +147,50 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Method:  http.MethodGet,
 					Path:    "/user/logout",
 					Handler: user.LogoutHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Authority},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/menu",
+					Handler: menu.CreateOrUpdateMenuHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodDelete,
+					Path:    "/menu",
+					Handler: menu.DeleteMenuHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodGet,
+					Path:    "/menu/list",
+					Handler: menu.GetMenuListHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodGet,
+					Path:    "/menu/role",
+					Handler: menu.GetMenuByRoleHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/menu/param",
+					Handler: menu.CreateOrUpdateMenuParamHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/menu/param/list",
+					Handler: menu.GetMenuParamListByMenuIdHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodDelete,
+					Path:    "/menu/param",
+					Handler: menu.DeleteMenuParamHandler(serverCtx),
 				},
 			}...,
 		),
