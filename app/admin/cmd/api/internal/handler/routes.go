@@ -8,6 +8,7 @@ import (
 	authority "slash-admin/app/admin/cmd/api/internal/handler/authority"
 	captcha "slash-admin/app/admin/cmd/api/internal/handler/captcha"
 	core "slash-admin/app/admin/cmd/api/internal/handler/core"
+	dictionary "slash-admin/app/admin/cmd/api/internal/handler/dictionary"
 	oauth "slash-admin/app/admin/cmd/api/internal/handler/oauth"
 	role "slash-admin/app/admin/cmd/api/internal/handler/role"
 	token "slash-admin/app/admin/cmd/api/internal/handler/token"
@@ -213,6 +214,55 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Method:  http.MethodPost,
 					Path:    "/authority/menu/role",
 					Handler: authority.GetMenuAuthorityHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Authority},
+			[]rest.Route{
+				{
+					Method:  http.MethodPost,
+					Path:    "/dict",
+					Handler: dictionary.CreateDictionaryHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPut,
+					Path:    "/dict",
+					Handler: dictionary.UpdateDictionaryHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodDelete,
+					Path:    "/dict",
+					Handler: dictionary.DeleteDictionaryHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/dict/list",
+					Handler: dictionary.GetDictionaryListHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/dict/detail",
+					Handler: dictionary.CreateDictionaryDetailHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPut,
+					Path:    "/dict/detail",
+					Handler: dictionary.UpdateDictionaryDetailHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodDelete,
+					Path:    "/dict/detail",
+					Handler: dictionary.DeleteDictionaryDetailHandler(serverCtx),
+				},
+				{
+					Method:  http.MethodPost,
+					Path:    "/dict/detail/list",
+					Handler: dictionary.GetDetailByDictionaryNameHandler(serverCtx),
 				},
 			}...,
 		),

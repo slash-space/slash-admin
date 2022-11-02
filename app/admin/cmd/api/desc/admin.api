@@ -18,6 +18,6 @@ import "user/user.api"
 
 import "apis/apis.api"
 import "authority/authority.api"
-//import "dictionary.api"
+import "dictionary/dictionary.api"
 import "oauth/oauth.api"
 import "token/token.api"

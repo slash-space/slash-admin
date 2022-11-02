@@ -212,6 +212,77 @@ definitions:
             - method
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    CreateDictionaryDetailReq:
+        description: Create KV information request | 创建或更新字典键值信息请求
+        properties:
+            key:
+                description: Detail key | 键
+                maxLength: 50
+                minLength: 1
+                type: string
+                x-go-name: Key
+            parentId:
+                description: Parent ID | 所属字典ID
+                format: uint64
+                type: integer
+                x-go-name: ParentID
+            status:
+                description: Status | 状态
+                format: uint8
+                type: integer
+                x-go-name: Status
+            title:
+                description: Detail title | 字典值显示名称
+                maxLength: 50
+                minLength: 1
+                type: string
+                x-go-name: Title
+            value:
+                description: Detail value | 值
+                type: string
+                x-go-name: Value
+        required:
+            - title
+            - key
+            - value
+            - status
+            - parentId
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    CreateDictionaryReq:
+        description: Create dictionary information request | 创建或更新字典信息请求
+        properties:
+            description:
+                description: Dictionary description | 字典描述
+                example: dictionary description
+                maxLength: 50
+                type: string
+                x-go-name: Description
+            name:
+                description: Dictionary name | 字典名称
+                maxLength: 50
+                minLength: 1
+                type: string
+                x-go-name: Name
+            status:
+                description: Dictionary status | 字典状态
+                example: 0
+                format: uint8
+                type: integer
+                x-go-name: Status
+            title:
+                description: Dictionary title | 字典显示名称
+                maxLength: 50
+                minLength: 1
+                type: string
+                x-go-name: Title
+        required:
+            - title
+            - name
+            - status
+            - description
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
     CreateMenuAuthorityReq:
         description: Create menu authorization information request params | 创建或更新菜单授权信息参数
         properties:
@@ -439,6 +510,136 @@ definitions:
             - nickname
             - password
             - email
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    DictionaryDetailInfo:
+        description: The response data of dictionary information | 字典信息
+        properties:
+            createdAt:
+                description: Create time | 创建时间
+                format: int64
+                type: integer
+                x-go-name: CreatedAt
+            id:
+                description: ID
+                format: uint64
+                type: integer
+                x-go-name: ID
+            key:
+                description: Key name | 键
+                type: string
+                x-go-name: Key
+            status:
+                description: Status | 状态
+                format: uint8
+                type: integer
+                x-go-name: Status
+            title:
+                description: Dictionary title | 字典显示名称
+                type: string
+                x-go-name: Title
+            value:
+                description: Value | 值
+                type: string
+                x-go-name: Value
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    DictionaryDetailListResp:
+        description: The response data of dictionary KV list | 字典值的列表数据
+        properties:
+            list:
+                description: |-
+                    The dictionary list data | 字典列表数据
+                    in: body
+                items:
+                    $ref: '#/definitions/DictionaryDetailInfo'
+                type: array
+                x-go-name: List
+            pagination:
+                $ref: '#/definitions/Pagination'
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    DictionaryDetailReq:
+        description: Get dictionary detail list by dictionary name request | 根据字典名称获取对应键值请求
+        properties:
+            name:
+                description: Dictionary name | 字典名
+                type: string
+                x-go-name: Name
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    DictionaryInfo:
+        description: The response data of dictionary information | 字典信息
+        properties:
+            createdAt:
+                description: Create time | 创建时间
+                format: int64
+                type: integer
+                x-go-name: CreatedAt
+            description:
+                description: Dictionary description | 字典描述
+                type: string
+                x-go-name: Description
+            id:
+                description: ID
+                format: uint64
+                type: integer
+                x-go-name: ID
+            name:
+                description: Dictionary name | 字典名称
+                type: string
+                x-go-name: Name
+            status:
+                description: Dictionary status | 字典状态
+                type: boolean
+                x-go-name: Status
+            title:
+                description: Dictionary title | 字典显示名称
+                type: string
+                x-go-name: Title
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    DictionaryListReq:
+        description: Get dictionary list request params | 字典列表请求参数
+        properties:
+            name:
+                description: Dictionary name | 字典名称
+                maxLength: 50
+                type: string
+                x-go-name: Name
+            pageNo:
+                description: Page number | 第几页
+                format: int64
+                minimum: 1
+                type: integer
+                x-go-name: PageNo
+            pageSize:
+                default: 10
+                description: Page size | 单页数据行数
+                format: int64
+                maximum: 100
+                type: integer
+                x-go-name: PageSize
+            title:
+                description: Dictionary title | 字典显示名称
+                maxLength: 50
+                type: string
+                x-go-name: Title
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    DictionaryListResp:
+        description: The response data of dictionary list | 字典列表数据
+        properties:
+            list:
+                description: |-
+                    The dictionary list data | 字典列表数据
+                    in: body
+                items:
+                    $ref: '#/definitions/DictionaryInfo'
+                type: array
+                x-go-name: List
+            pagination:
+                $ref: '#/definitions/Pagination'
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
     GetUserInfoResp:
@@ -985,6 +1186,79 @@ definitions:
             - id
         type: object
         x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    UpdateDictionaryDetailReq:
+        description: Update dictionary KV information request | 创建或更新字典键值信息请求
+        properties:
+            id:
+                description: ID
+                format: uint64
+                type: integer
+                x-go-name: ID
+            key:
+                description: Detail key | 键
+                maxLength: 50
+                minLength: 1
+                type: string
+                x-go-name: Key
+            parentId:
+                description: Parent ID | 所属字典ID
+                format: uint64
+                type: integer
+                x-go-name: ParentID
+            status:
+                description: Status | 状态
+                format: uint8
+                type: integer
+                x-go-name: Status
+            title:
+                description: Detail title | 字典值显示名称
+                maxLength: 50
+                minLength: 1
+                type: string
+                x-go-name: Title
+            value:
+                description: Detail value | 值
+                type: string
+                x-go-name: Value
+        required:
+            - id
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
+    UpdateDictionaryReq:
+        description: Update dictionary information request | 创建或更新字典信息请求
+        properties:
+            description:
+                description: Dictionary description | 字典描述
+                maxLength: 50
+                type: string
+                x-go-name: Description
+            id:
+                description: ID
+                format: uint64
+                type: integer
+                x-go-name: Id
+            name:
+                description: Dictionary name | 字典名称
+                maxLength: 50
+                minLength: 1
+                type: string
+                x-go-name: Name
+            status:
+                description: Dictionary status | 字典状态
+                format: uint8
+                type: integer
+                x-go-name: Status
+            title:
+                description: Dictionary title | 字典显示名称
+                maxLength: 50
+                minLength: 1
+                type: string
+                x-go-name: Title
+        required:
+            - id
+            - name
+        type: object
+        x-go-package: slash-admin/app/admin/cmd/api/internal/types
     UpdateMenuAuthorityReq:
         description: Update menu authorization information request params | 创建或更新菜单授权信息参数
         properties:
@@ -1328,7 +1602,7 @@ definitions:
 host: localhost:9100
 info:
     description: 'Description: core service'
-    title: System Name
+    title: Admin service
     version: 0.0.1
 paths:
     /api:
@@ -1446,18 +1720,18 @@ paths:
                 - authority
     /authority/menu:
         post:
-            description: Create or update menu authorization information | 创建或更新菜单权限
-            operationId: CreateOrUpdateMenuAuthority
+            description: '"Create menu authorization information | 创建菜单权限"'
+            operationId: CreateMenuAuthority
             parameters:
                 - in: body
                   name: body
                   schema:
-                    $ref: '#/definitions/MenuAuthorityInfoReq'
+                    $ref: '#/definitions/CreateMenuAuthorityReq'
                     type: object
             responses:
                 "200":
                     $ref: '#/responses/SimpleMsgResp'
-            summary: Create or update menu authorization information | 创建或更新菜单权限
+            summary: '"Create menu authorization information | 创建菜单权限"'
             tags:
                 - authority
         put:
@@ -1518,6 +1792,134 @@ paths:
             summary: '"Initialize database | 初始化数据库"'
             tags:
                 - core
+    /dict:
+        delete:
+            description: '"Delete dictionary information | 删除字典信息"'
+            operationId: DeleteDictionary
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/IDReq'
+                    type: object
+            responses:
+                "200":
+                    $ref: '#/responses/SimpleMsgResp'
+            summary: '"Delete dictionary information | 删除字典信息"'
+            tags:
+                - dictionary
+        post:
+            description: '"Create dictionary information | 创建字典信息"'
+            operationId: CreateDictionary
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/CreateDictionaryReq'
+                    type: object
+            responses:
+                "200":
+                    $ref: '#/responses/SimpleMsgResp'
+            summary: '"Create dictionary information | 创建字典信息"'
+            tags:
+                - dictionary
+        put:
+            description: '"Update dictionary information | 更新字典信息"'
+            operationId: UpdateDictionary
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/UpdateDictionaryReq'
+                    type: object
+            responses:
+                "200":
+                    $ref: '#/responses/SimpleMsgResp'
+            summary: '"Update dictionary information | 更新字典信息"'
+            tags:
+                - dictionary
+    /dict/detail:
+        delete:
+            description: '"Delete dictionary KV information | 删除字典键值信息"'
+            operationId: DeleteDictionaryDetail
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/IDReq'
+                    type: object
+            responses:
+                "200":
+                    $ref: '#/responses/SimpleMsgResp'
+            summary: '"Delete dictionary KV information | 删除字典键值信息"'
+            tags:
+                - dictionary
+        post:
+            description: '"Create dictionary KV information | 创建字典键值信息"'
+            operationId: CreateDictionaryDetail
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/CreateDictionaryReq'
+                    type: object
+            responses:
+                "200":
+                    $ref: '#/responses/SimpleMsgResp'
+            summary: '"Create dictionary KV information | 创建字典键值信息"'
+            tags:
+                - dictionary
+        put:
+            description: '"Update dictionary KV information | 更新字典键值信息"'
+            operationId: UpdateDictionaryDetail
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/UpdateDictionaryReq'
+                    type: object
+            responses:
+                "200":
+                    $ref: '#/responses/SimpleMsgResp'
+            summary: '"Update dictionary KV information | 更新字典键值信息"'
+            tags:
+                - dictionary
+    /dict/detail/list:
+        post:
+            description: '"Get dictionary detail list by dictionary name | 根据字典名获取字典键值列表"'
+            operationId: GetDetailByDictionaryName
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/DictionaryDetailReq'
+                    type: object
+            responses:
+                "200":
+                    description: DictionaryDetailListResp
+                    schema:
+                        $ref: '#/definitions/DictionaryDetailListResp'
+            summary: '"Get dictionary detail list by dictionary name | 根据字典名获取字典键值列表"'
+            tags:
+                - dictionary
+    /dict/list:
+        post:
+            description: '"Get dictionary list | 获取字典列表"'
+            operationId: GetDictionaryList
+            parameters:
+                - in: body
+                  name: body
+                  schema:
+                    $ref: '#/definitions/DictionaryListReq'
+                    type: object
+            responses:
+                "200":
+                    description: DictionaryListResp
+                    schema:
+                        $ref: '#/definitions/DictionaryListResp'
+            summary: '"Get dictionary list | 获取字典列表"'
+            tags:
+                - dictionary
     /oauth/login:
         post:
             description: Oauth log in | Oauth 登录

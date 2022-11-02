@@ -647,6 +647,174 @@ type MenuAuthorityInfoResp struct {
 	MenuIds []uint64 `json:"menuIds"`
 }
 
+// The response data of dictionary information | 字典信息
+// swagger:model DictionaryInfo
+type DictionaryInfo struct {
+	// ID
+	ID uint64 `json:"id"`
+	// Dictionary title | 字典显示名称
+	Title string `json:"title"`
+	// Dictionary name | 字典名称
+	Name string `json:"name"`
+	// Dictionary status | 字典状态
+	Status bool `json:"status"`
+	// Dictionary description | 字典描述
+	Description string `json:"description"`
+	// Create time | 创建时间
+	CreatedAt int64 `json:"createdAt"`
+}
+
+// Create dictionary information request | 创建或更新字典信息请求
+// swagger:model CreateDictionaryReq
+type CreateDictionaryReq struct {
+	// Dictionary title | 字典显示名称
+	// Required: true
+	// Min length: 1
+	// Max length: 50
+	Title string `json:"title" validate:"min=1,max=50"`
+	// Dictionary name | 字典名称
+	// Required: true
+	// Min length: 1
+	// Max length: 50
+	Name string `json:"name" validate:"min=1,max=50"`
+	// Dictionary status | 字典状态
+	// Required: true
+	// Example: 0
+	Status uint8 `json:"status" validator:"number,oneof=0 1"`
+	// Dictionary description | 字典描述
+	// Required: true
+	// Max length: 50
+	// Example: dictionary description
+	Description string `json:"description" validate:"max=50"`
+}
+
+// Update dictionary information request | 创建或更新字典信息请求
+// swagger:model UpdateDictionaryReq
+type UpdateDictionaryReq struct {
+	// ID
+	// Required: true
+	Id uint64 `json:"id" validate:"number"`
+	// Dictionary title | 字典显示名称
+	// Min length: 1
+	// Max length: 50
+	Title *string `json:"title,optional" validate:"omitempty,min=1,max=50"`
+	// Dictionary name | 字典名称
+	// Required: true
+	// Min length: 1
+	// Max length: 50
+	Name *string `json:"name,optional" validate:"omitempty,min=1,max=50"`
+	// Dictionary status | 字典状态
+	Status *uint8 `json:"status,optional" validator:"omitempty,number,oneof=0 1"`
+	// Dictionary description | 字典描述
+	// Max length: 50
+	Description *string `json:"description,optional" validate:"omitempty,max=50"`
+}
+
+// The response data of dictionary list | 字典列表数据
+// swagger:model DictionaryListResp
+type DictionaryListResp struct {
+	// PageInfo | 分页信息
+	// in: body
+	Pagination *Pagination `json:"pagination"`
+	// The dictionary list data | 字典列表数据
+	// in: body
+	List []*DictionaryInfo `json:"list"`
+}
+
+// Get dictionary list request params | 字典列表请求参数
+// swagger:model DictionaryListReq
+type DictionaryListReq struct {
+	PageReq
+	// Dictionary title | 字典显示名称
+	// Max length: 50
+	Title *string `json:"title,optional" validate:"omitempty,max=50"`
+	// Dictionary name | 字典名称
+	// Max length: 50
+	Name *string `json:"name,optional" validate:"omitempty,max=50"`
+}
+
+// The response data of dictionary information | 字典信息
+// swagger:model DictionaryDetailInfo
+// swagger:model DictionaryDetailInfo
+type DictionaryDetailInfo struct {
+	// ID
+	ID uint64 `json:"id"`
+	// Dictionary title | 字典显示名称
+	Title string `json:"title"`
+	// Key name | 键
+	Key string `json:"key"`
+	// Value | 值
+	Value string `json:"value"`
+	// Status | 状态
+	Status uint8 `json:"status"`
+	// Create time | 创建时间
+	CreatedAt int64 `json:"createdAt"`
+}
+
+// The response data of dictionary KV list | 字典值的列表数据
+// swagger:model DictionaryDetailListResp
+type DictionaryDetailListResp struct {
+	// PageInfo | 分页信息
+	// in: body
+	Pagination *Pagination `json:"pagination"`
+	// The dictionary list data | 字典列表数据
+	// in: body
+	List []*DictionaryDetailInfo `json:"list"`
+}
+
+// Create KV information request | 创建或更新字典键值信息请求
+// swagger:model CreateDictionaryDetailReq
+type CreateDictionaryDetailReq struct {
+	// Detail title | 字典值显示名称
+	// Required: true
+	// Min length: 1
+	// Max length: 50
+	Title string `json:"title" validate:"min=1,max=50"`
+	// Detail key | 键
+	// Required: true
+	// Min length: 1
+	// Max length: 50
+	Key string `json:"key" validate:"min=1,max=50"`
+	// Detail value | 值
+	// Required: true
+	Value string `json:"value"`
+	// Status | 状态
+	// Required: true
+	Status uint8 `json:"status" validate:"number,oneof=0 1"`
+	// Parent ID | 所属字典ID
+	// Required: true
+	ParentID uint64 `json:"parentId" validate:"number"`
+}
+
+// Update dictionary KV information request | 创建或更新字典键值信息请求
+// swagger:model UpdateDictionaryDetailReq
+type UpdateDictionaryDetailReq struct {
+	// ID
+	// Required: true
+	ID uint64 `json:"id" validate:"number"`
+	// Detail title | 字典值显示名称
+	// Min length: 1
+	// Max length: 50
+	Title *string `json:"title,optional" validate:"omitempty,min=1,max=50"`
+	// Detail key | 键
+	// Min length: 1
+	// Max length: 50
+	Key *string `json:"key,optional" validate:"omitempty,min=1,max=50"`
+	// Detail value | 值
+	Value *string `json:"value,optional"`
+	// Status | 状态
+	Status *uint8 `json:"status,optional" validate:"omitempty,number,oneof=0 1"`
+	// Parent ID | 所属字典ID
+	ParentID *uint64 `json:"parentId,optional" validate:"omitempty,number"`
+}
+
+// Get dictionary detail list by dictionary name request | 根据字典名称获取对应键值请求
+// swagger:model DictionaryDetailReq
+type DictionaryDetailReq struct {
+	// Dictionary name | 字典名
+	Name string `json:"name"`
+}
+
 // The response data of oauth provider information | 提供者信息
 // swagger:model OauthProviderInfo
 type OauthProviderInfo struct {
