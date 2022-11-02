@@ -2329,7 +2329,7 @@ paths:
                 - in: body
                   name: body
                   schema:
-                    $ref: '#/definitions/CreateDictionaryReq'
+                    $ref: '#/definitions/CreateDictionaryDetailReq'
                     type: object
             responses:
                 "200":
@@ -2344,7 +2344,7 @@ paths:
                 - in: body
                   name: body
                   schema:
-                    $ref: '#/definitions/UpdateDictionaryReq'
+                    $ref: '#/definitions/UpdateDictionaryDetailReq'
                     type: object
             responses:
                 "200":

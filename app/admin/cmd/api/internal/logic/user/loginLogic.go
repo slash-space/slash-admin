@@ -3,8 +3,6 @@ package user
 import (
 	"context"
 	"github.com/zeromicro/go-zero/core/errorx"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 	"slash-admin/app/admin/cmd/api/internal/globalkey"
 	"slash-admin/app/admin/cmd/api/internal/logic/captcha"
 	"slash-admin/app/admin/ent"
@@ -58,7 +56,7 @@ func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.LoginResp, err erro
 
 	if ok := utils.BcryptCheck(req.Password, user.Password); !ok {
 		logx.Errorw("wrong password", logx.Field("detail", req))
-		return nil, status.Error(codes.InvalidArgument, message.WrongUsernameOrPassword)
+		return nil, errorx.NewApiBadRequestError(message.WrongUsernameOrPassword)
 	}
 
 	roleMeta := &types.RoleMetaInfo{

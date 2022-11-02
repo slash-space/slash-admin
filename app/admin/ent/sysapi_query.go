@@ -23,7 +23,6 @@ type SysApiQuery struct {
 	order      []OrderFunc
 	fields     []string
 	predicates []predicate.SysApi
-	loadTotal  []func(context.Context, []*SysApi) error
 	modifiers  []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -337,11 +336,6 @@ func (saq *SysApiQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*SysA
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
-	}
-	for i := range saq.loadTotal {
-		if err := saq.loadTotal[i](ctx, nodes); err != nil {
-			return nil, err
-		}
 	}
 	return nodes, nil
 }

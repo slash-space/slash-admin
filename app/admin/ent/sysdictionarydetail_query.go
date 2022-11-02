@@ -25,7 +25,6 @@ type SysDictionaryDetailQuery struct {
 	fields     []string
 	predicates []predicate.SysDictionaryDetail
 	withParent *SysDictionaryQuery
-	loadTotal  []func(context.Context, []*SysDictionaryDetail) error
 	modifiers  []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -381,11 +380,6 @@ func (sddq *SysDictionaryDetailQuery) sqlAll(ctx context.Context, hooks ...query
 	if query := sddq.withParent; query != nil {
 		if err := sddq.loadParent(ctx, query, nodes, nil,
 			func(n *SysDictionaryDetail, e *SysDictionary) { n.Edges.Parent = e }); err != nil {
-			return nil, err
-		}
-	}
-	for i := range sddq.loadTotal {
-		if err := sddq.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}

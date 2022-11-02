@@ -43,10 +43,6 @@ type SysDictionaryEdges struct {
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [1]bool
-	// totalCount holds the count of the edges above.
-	totalCount [1]map[string]int
-
-	namedDetails map[string][]*SysDictionaryDetail
 }
 
 // DetailsOrErr returns the Details value or an error if the edge
@@ -192,30 +188,6 @@ func (sd *SysDictionary) String() string {
 	}
 	builder.WriteByte(')')
 	return builder.String()
-}
-
-// NamedDetails returns the Details named value or an error if the edge was not
-// loaded in eager-loading with this name.
-func (sd *SysDictionary) NamedDetails(name string) ([]*SysDictionaryDetail, error) {
-	if sd.Edges.namedDetails == nil {
-		return nil, &NotLoadedError{edge: name}
-	}
-	nodes, ok := sd.Edges.namedDetails[name]
-	if !ok {
-		return nil, &NotLoadedError{edge: name}
-	}
-	return nodes, nil
-}
-
-func (sd *SysDictionary) appendNamedDetails(name string, edges ...*SysDictionaryDetail) {
-	if sd.Edges.namedDetails == nil {
-		sd.Edges.namedDetails = make(map[string][]*SysDictionaryDetail)
-	}
-	if len(edges) == 0 {
-		sd.Edges.namedDetails[name] = []*SysDictionaryDetail{}
-	} else {
-		sd.Edges.namedDetails[name] = append(sd.Edges.namedDetails[name], edges...)
-	}
 }
 
 // SysDictionaries is a parsable slice of SysDictionary.

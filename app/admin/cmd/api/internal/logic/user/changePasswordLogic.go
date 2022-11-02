@@ -3,8 +3,6 @@ package user
 import (
 	"context"
 	"github.com/zeromicro/go-zero/core/errorx"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 	"slash-admin/app/admin/cmd/api/internal/globalkey"
 	"slash-admin/app/admin/ent"
 	"slash-admin/app/admin/ent/sysuser"
@@ -47,7 +45,7 @@ func (l *ChangePasswordLogic) ChangePassword(req *types.ChangePasswordReq) (resp
 
 	if ok := utils.BcryptCheck(req.OldPassword, target.Password); !ok {
 		l.Infow("password not match", logx.Field("uuid", uuid))
-		return nil, status.Errorf(codes.InvalidArgument, message.WrongPassword)
+		return nil, errorx.NewApiBadRequestError(message.WrongPassword)
 	}
 
 	newPassword := utils.BcryptEncrypt(req.NewPassword)

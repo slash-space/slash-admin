@@ -23,7 +23,6 @@ type CasbinRuleQuery struct {
 	order      []OrderFunc
 	fields     []string
 	predicates []predicate.CasbinRule
-	loadTotal  []func(context.Context, []*CasbinRule) error
 	modifiers  []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -337,11 +336,6 @@ func (crq *CasbinRuleQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
-	}
-	for i := range crq.loadTotal {
-		if err := crq.loadTotal[i](ctx, nodes); err != nil {
-			return nil, err
-		}
 	}
 	return nodes, nil
 }

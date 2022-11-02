@@ -20,18 +20,15 @@ import (
 // SysRoleQuery is the builder for querying SysRole entities.
 type SysRoleQuery struct {
 	config
-	limit          *int
-	offset         *int
-	unique         *bool
-	order          []OrderFunc
-	fields         []string
-	predicates     []predicate.SysRole
-	withMenus      *SysMenuQuery
-	withRole       *SysUserQuery
-	loadTotal      []func(context.Context, []*SysRole) error
-	modifiers      []func(*sql.Selector)
-	withNamedMenus map[string]*SysMenuQuery
-	withNamedRole  map[string]*SysUserQuery
+	limit      *int
+	offset     *int
+	unique     *bool
+	order      []OrderFunc
+	fields     []string
+	predicates []predicate.SysRole
+	withMenus  *SysMenuQuery
+	withRole   *SysUserQuery
+	modifiers  []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -432,25 +429,6 @@ func (srq *SysRoleQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Sys
 			return nil, err
 		}
 	}
-	for name, query := range srq.withNamedMenus {
-		if err := srq.loadMenus(ctx, query, nodes,
-			func(n *SysRole) { n.appendNamedMenus(name) },
-			func(n *SysRole, e *SysMenu) { n.appendNamedMenus(name, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range srq.withNamedRole {
-		if err := srq.loadRole(ctx, query, nodes,
-			func(n *SysRole) { n.appendNamedRole(name) },
-			func(n *SysRole, e *SysUser) { n.appendNamedRole(name, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for i := range srq.loadTotal {
-		if err := srq.loadTotal[i](ctx, nodes); err != nil {
-			return nil, err
-		}
-	}
 	return nodes, nil
 }
 
@@ -650,34 +628,6 @@ func (srq *SysRoleQuery) sqlQuery(ctx context.Context) *sql.Selector {
 func (srq *SysRoleQuery) Modify(modifiers ...func(s *sql.Selector)) *SysRoleSelect {
 	srq.modifiers = append(srq.modifiers, modifiers...)
 	return srq.Select()
-}
-
-// WithNamedMenus tells the query-builder to eager-load the nodes that are connected to the "menus"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (srq *SysRoleQuery) WithNamedMenus(name string, opts ...func(*SysMenuQuery)) *SysRoleQuery {
-	query := &SysMenuQuery{config: srq.config}
-	for _, opt := range opts {
-		opt(query)
-	}
-	if srq.withNamedMenus == nil {
-		srq.withNamedMenus = make(map[string]*SysMenuQuery)
-	}
-	srq.withNamedMenus[name] = query
-	return srq
-}
-
-// WithNamedRole tells the query-builder to eager-load the nodes that are connected to the "role"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (srq *SysRoleQuery) WithNamedRole(name string, opts ...func(*SysUserQuery)) *SysRoleQuery {
-	query := &SysUserQuery{config: srq.config}
-	for _, opt := range opts {
-		opt(query)
-	}
-	if srq.withNamedRole == nil {
-		srq.withNamedRole = make(map[string]*SysUserQuery)
-	}
-	srq.withNamedRole[name] = query
-	return srq
 }
 
 // SysRoleGroupBy is the group-by builder for SysRole entities.

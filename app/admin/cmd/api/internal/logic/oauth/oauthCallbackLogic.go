@@ -6,8 +6,6 @@ import (
 	"fmt"
 	"github.com/zeromicro/go-zero/core/errorx"
 	"golang.org/x/oauth2"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 	"io"
 	"net/http"
 	"slash-admin/app/admin/cmd/api/internal/logic/user"
@@ -81,7 +79,7 @@ func (l *OauthCallbackLogic) OauthCallback(req *types.OauthCallbackParamReq) (re
 	// get user information
 	content, err := getUserInfo(providerConfig[provider], userInfoURL[provider], req.Code)
 	if err != nil {
-		return nil, status.Error(codes.InvalidArgument, err.Error())
+		return nil, errorx.NewApiBadRequestError(err.Error())
 	}
 
 	// find or register user

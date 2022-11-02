@@ -1,7 +1,6 @@
 package schema
 
 import (
-	"entgo.io/contrib/entgql"
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
@@ -41,6 +40,5 @@ func (CasbinRule) Index() []ent.Index {
 func (CasbinRule) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entsql.Annotation{Table: "casbin_rule"},
-		entgql.Skip(entgql.SkipAll),
 	}
 }

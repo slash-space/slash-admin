@@ -19,16 +19,14 @@ import (
 // SysDictionaryQuery is the builder for querying SysDictionary entities.
 type SysDictionaryQuery struct {
 	config
-	limit            *int
-	offset           *int
-	unique           *bool
-	order            []OrderFunc
-	fields           []string
-	predicates       []predicate.SysDictionary
-	withDetails      *SysDictionaryDetailQuery
-	loadTotal        []func(context.Context, []*SysDictionary) error
-	modifiers        []func(*sql.Selector)
-	withNamedDetails map[string]*SysDictionaryDetailQuery
+	limit       *int
+	offset      *int
+	unique      *bool
+	order       []OrderFunc
+	fields      []string
+	predicates  []predicate.SysDictionary
+	withDetails *SysDictionaryDetailQuery
+	modifiers   []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -387,18 +385,6 @@ func (sdq *SysDictionaryQuery) sqlAll(ctx context.Context, hooks ...queryHook) (
 			return nil, err
 		}
 	}
-	for name, query := range sdq.withNamedDetails {
-		if err := sdq.loadDetails(ctx, query, nodes,
-			func(n *SysDictionary) { n.appendNamedDetails(name) },
-			func(n *SysDictionary, e *SysDictionaryDetail) { n.appendNamedDetails(name, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for i := range sdq.loadTotal {
-		if err := sdq.loadTotal[i](ctx, nodes); err != nil {
-			return nil, err
-		}
-	}
 	return nodes, nil
 }
 
@@ -540,20 +526,6 @@ func (sdq *SysDictionaryQuery) sqlQuery(ctx context.Context) *sql.Selector {
 func (sdq *SysDictionaryQuery) Modify(modifiers ...func(s *sql.Selector)) *SysDictionarySelect {
 	sdq.modifiers = append(sdq.modifiers, modifiers...)
 	return sdq.Select()
-}
-
-// WithNamedDetails tells the query-builder to eager-load the nodes that are connected to the "details"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (sdq *SysDictionaryQuery) WithNamedDetails(name string, opts ...func(*SysDictionaryDetailQuery)) *SysDictionaryQuery {
-	query := &SysDictionaryDetailQuery{config: sdq.config}
-	for _, opt := range opts {
-		opt(query)
-	}
-	if sdq.withNamedDetails == nil {
-		sdq.withNamedDetails = make(map[string]*SysDictionaryDetailQuery)
-	}
-	sdq.withNamedDetails[name] = query
-	return sdq
 }
 
 // SysDictionaryGroupBy is the group-by builder for SysDictionary entities.

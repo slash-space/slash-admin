@@ -19,19 +19,16 @@ import (
 // SysMenuQuery is the builder for querying SysMenu entities.
 type SysMenuQuery struct {
 	config
-	limit             *int
-	offset            *int
-	unique            *bool
-	order             []OrderFunc
-	fields            []string
-	predicates        []predicate.SysMenu
-	withRoles         *SysRoleQuery
-	withParent        *SysMenuQuery
-	withChildren      *SysMenuQuery
-	loadTotal         []func(context.Context, []*SysMenu) error
-	modifiers         []func(*sql.Selector)
-	withNamedRoles    map[string]*SysRoleQuery
-	withNamedChildren map[string]*SysMenuQuery
+	limit        *int
+	offset       *int
+	unique       *bool
+	order        []OrderFunc
+	fields       []string
+	predicates   []predicate.SysMenu
+	withRoles    *SysRoleQuery
+	withParent   *SysMenuQuery
+	withChildren *SysMenuQuery
+	modifiers    []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -473,25 +470,6 @@ func (smq *SysMenuQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Sys
 			return nil, err
 		}
 	}
-	for name, query := range smq.withNamedRoles {
-		if err := smq.loadRoles(ctx, query, nodes,
-			func(n *SysMenu) { n.appendNamedRoles(name) },
-			func(n *SysMenu, e *SysRole) { n.appendNamedRoles(name, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for name, query := range smq.withNamedChildren {
-		if err := smq.loadChildren(ctx, query, nodes,
-			func(n *SysMenu) { n.appendNamedChildren(name) },
-			func(n *SysMenu, e *SysMenu) { n.appendNamedChildren(name, e) }); err != nil {
-			return nil, err
-		}
-	}
-	for i := range smq.loadTotal {
-		if err := smq.loadTotal[i](ctx, nodes); err != nil {
-			return nil, err
-		}
-	}
 	return nodes, nil
 }
 
@@ -717,34 +695,6 @@ func (smq *SysMenuQuery) sqlQuery(ctx context.Context) *sql.Selector {
 func (smq *SysMenuQuery) Modify(modifiers ...func(s *sql.Selector)) *SysMenuSelect {
 	smq.modifiers = append(smq.modifiers, modifiers...)
 	return smq.Select()
-}
-
-// WithNamedRoles tells the query-builder to eager-load the nodes that are connected to the "roles"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (smq *SysMenuQuery) WithNamedRoles(name string, opts ...func(*SysRoleQuery)) *SysMenuQuery {
-	query := &SysRoleQuery{config: smq.config}
-	for _, opt := range opts {
-		opt(query)
-	}
-	if smq.withNamedRoles == nil {
-		smq.withNamedRoles = make(map[string]*SysRoleQuery)
-	}
-	smq.withNamedRoles[name] = query
-	return smq
-}
-
-// WithNamedChildren tells the query-builder to eager-load the nodes that are connected to the "children"
-// edge with the given name. The optional arguments are used to configure the query builder of the edge.
-func (smq *SysMenuQuery) WithNamedChildren(name string, opts ...func(*SysMenuQuery)) *SysMenuQuery {
-	query := &SysMenuQuery{config: smq.config}
-	for _, opt := range opts {
-		opt(query)
-	}
-	if smq.withNamedChildren == nil {
-		smq.withNamedChildren = make(map[string]*SysMenuQuery)
-	}
-	smq.withNamedChildren[name] = query
-	return smq
 }
 
 // SysMenuGroupBy is the group-by builder for SysMenu entities.

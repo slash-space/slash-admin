@@ -25,7 +25,6 @@ type SysUserQuery struct {
 	fields     []string
 	predicates []predicate.SysUser
 	withRole   *SysRoleQuery
-	loadTotal  []func(context.Context, []*SysUser) error
 	modifiers  []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -381,11 +380,6 @@ func (suq *SysUserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Sys
 	if query := suq.withRole; query != nil {
 		if err := suq.loadRole(ctx, query, nodes, nil,
 			func(n *SysUser, e *SysRole) { n.Edges.Role = e }); err != nil {
-			return nil, err
-		}
-	}
-	for i := range suq.loadTotal {
-		if err := suq.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}

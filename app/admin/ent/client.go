@@ -51,8 +51,6 @@ type Client struct {
 	SysToken *SysTokenClient
 	// SysUser is the client for interacting with the SysUser builders.
 	SysUser *SysUserClient
-	// additional fields for node api
-	tables tables
 }
 
 // NewClient creates a new client configured with the given options.

@@ -4,8 +4,6 @@ import (
 	"context"
 	"github.com/google/uuid"
 	"github.com/zeromicro/go-zero/core/errorx"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 	"slash-admin/app/admin/ent/sysuser"
 	"slash-admin/pkg/message"
 	pType "slash-admin/pkg/types"
@@ -46,7 +44,7 @@ func (l *CreateUserLogic) CreateUser(req *types.CreateUserReq) (resp *types.Simp
 			logx.Field("username", req.Username),
 			logx.Field("email", req.Email),
 		)
-		return nil, status.Error(codes.InvalidArgument, message.UserAlreadyExists)
+		return nil, errorx.NewApiBadRequestError(message.UserAlreadyExists)
 	}
 
 	// create user

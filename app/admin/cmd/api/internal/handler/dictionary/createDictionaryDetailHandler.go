@@ -19,7 +19,7 @@ import (
 //  + name: body
 //    require: true
 //    in: body
-//    type: CreateDictionaryReq
+//    type: CreateDictionaryDetailReq
 //
 //
 // Responses:
@@ -29,7 +29,7 @@ import (
 
 func CreateDictionaryDetailHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req types.CreateDictionaryReq
+		var req types.CreateDictionaryDetailReq
 		if err := httpx.Parse(r, &req); err != nil {
 			httpx.Error(w, err)
 			return
