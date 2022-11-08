@@ -24,29 +24,32 @@ type SimpleMsgResp {
 // The page request parameters | 列表请求参数
 type PageReq {
     // Page number | 第几页
-    // Minimum: 1
     PageNo int `json:"pageNo,optional,default=1" validate:"number,min=1"`
 
     // Page size | 单页数据行数
-    // Maximum: 100
-    // Default: 10
     PageSize int  `json:"pageSize,optional,default=10," validate:"number,max=100"`
+}
+
+// The page request parameters | 列表请求参数
+type PageParamReq {
+    // Page number | 第几页
+    PageNo int `form:"pageNo,optional,default=1" validate:"number,min=1"`
+
+    // Page size | 单页数据行数
+    PageSize int  `form:"pageSize,optional,default=10," validate:"number,max=100"`
 }
 
 // Basic id request | 基础id参数请求
 type IDReq {
     // ID
-    // Required: true
     ID uint64 `json:"id" validate:"number"`
 }
 
 // Basic Get id request | 基础id参数请求
 type IDParamReq {
     // ID
-    // Required: true
     ID uint64 `form:"id" validate:"number"`
 }
-
 
 // Page information return ｜ 分页信息返回
 type Pagination struct {
@@ -58,16 +61,13 @@ type Pagination struct {
 // Basic id request | 基础id参数请求
 type IDPathReq {
     // ID
-    // Required: true
     ID uint64 `path:"id"`
 }
 
 // Basic UUID request | 基础UUID参数请求
 type UUIDReq {
     // UUID
-    // Required: true
-    // Max length: 36
-    UUID string `json:"UUID" validate:"len=36"`
+    UUID string `json:"uuid,required"`
 }
 
 // The base response data | 基础信息
@@ -92,7 +92,6 @@ type SetBooleanStatusReq {
     ID uint64 `json:"id" validate:"number"`
 
     // Status code | 状态码
-    // Required: true
     Status uint8 `json:"status" validate:"number"`
 }
 

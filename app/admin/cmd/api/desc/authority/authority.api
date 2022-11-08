@@ -23,59 +23,45 @@ type (
     // Create api authorization information request | 创建API授权信息
     CreateApiAuthorityReq {
         // Role ID | 角色ID
-        // Required: true
-        // Maximum: 1000
         RoleId uint64 `json:"roleId" validate:"number,max=1000"`
 
         // API authorization list | API授权列表数据
-        // Required: true
         Data []*ApiAuthorityInfo `json:"data"`
     }
 
     // Update api authorization information request | 更新API授权信息
     UpdateApiAuthorityReq {
         // Role ID | 角色ID
-        // Required: true
-        // Maximum: 1000
         RoleId uint64 `json:"roleId" validate:"number,max=1000"`
 
         // API authorization list | API授权列表数据
-        // Required: true
         Data []*ApiAuthorityInfo `json:"data"`
     }
 
     // The response data of api authorization list | API授权列表数据
     ApiAuthorityListResp {
         // Pageinfo | 分页信息
-        // in: body
         Pagination *Pagination `json:"pagination"`
 
         // The api authorization list data | API授权列表数据
-        // in: body
         List []*ApiAuthorityInfo `json:"list"`
     }
 
     // Create menu authorization information request params | 创建或更新菜单授权信息参数
     CreateMenuAuthorityReq  {
         // role ID | 角色ID
-        // Required: true
-        // Maximum: 1000
         RoleId uint64 `json:"roleId" validate:"number,max=1000"`
 
         // menu ID array | 菜单ID数组
-        // Required: true
         MenuIds []uint64 `json:"menuIds"`
     }
 
     // Update menu authorization information request params | 创建或更新菜单授权信息参数
     UpdateMenuAuthorityReq  {
         // role ID | 角色ID
-        // Required: true
-        // Maximum: 1000
         RoleId uint64 `json:"roleId" validate:"number,max=1000"`
 
         // menu ID array | 菜单ID数组
-        // Required: true
         MenuIds []uint64 `json:"menuIds"`
     }
 

@@ -27,7 +27,7 @@ func NewDeleteRoleLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Delete
 	}
 }
 
-func (l *DeleteRoleLogic) DeleteRole(req *types.IDReq) (resp *types.SimpleMsgResp, err error) {
+func (l *DeleteRoleLogic) DeleteRole(req *types.IDPathReq) (resp *types.SimpleMsgResp, err error) {
 	// check users has this role
 	exist, err := l.svcCtx.EntClient.SysUser.Query().Where(sysuser.RoleIDEQ(req.ID)).Exist(l.ctx)
 

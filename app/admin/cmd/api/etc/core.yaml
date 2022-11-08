@@ -2,6 +2,7 @@ Name: core
 Host: 0.0.0.0
 Port: 9100
 Timeout: 30000
+Mode: dev
 
 Auth:
   AccessSecret: jS6VKDtsJf3z1n2VKDtsJf3z1n2

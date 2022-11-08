@@ -19,7 +19,6 @@ type CaptchaInfoResp {
 @server(
     group: captcha
 )
-
 service core {
     @doc("Get captcha | 获取验证码")
     @handler getCaptcha
