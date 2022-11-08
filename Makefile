@@ -26,9 +26,18 @@ start-admin-api:
 	modd
 
 ent-admin-orm:
-	cd app/admin/ent && go run -mod=mod ./entc.go
+	cd app/admin/ent && go run ./entc.go
 	@printf $(GREEN)"[SUCCESS] generate ent-admin-orm success"
 
 goverter-admin:
 	cd app/admin/cmd/api/internal/converter && go run ./goverter.go
 	@printf $(GREEN)"[SUCCESS] generate goverter-admin success"
+
+
+ent-bookstore-orm:
+	cd app/bookstore/ent && go run ./entc.go
+	@printf $(GREEN)"[SUCCESS] generate ent-bookstore-orm success"
+
+ent-bookstore-proto:
+	cd app/bookstore/ent && go run ./entpc.go
+	@printf $(GREEN)"[SUCCESS] generate ent-bookstore-proto success"
