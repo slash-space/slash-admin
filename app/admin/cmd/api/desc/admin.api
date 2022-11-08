@@ -1,8 +1,8 @@
 syntax = "v1"
 
 info(
-	title: "core service"
-	desc: "this is the api describe file for core services"
+	title: "slash admin"
+	desc: "slash admin backend service"
 	author: "waltcow"
 	email: "waltcow@gmail.com"
 	version: "v1.0"

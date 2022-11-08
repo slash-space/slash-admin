@@ -25,7 +25,7 @@ func NewGetRoleListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetRo
 	}
 }
 
-func (l *GetRoleListLogic) GetRoleList(req *types.PageReq) (resp *types.RoleListResp, err error) {
+func (l *GetRoleListLogic) GetRoleList(req *types.PageParamReq) (resp *types.RoleListResp, err error) {
 	page, err := l.svcCtx.EntClient.SysRole.Query().Page(l.ctx, req.PageNo, req.PageSize)
 
 	if err != nil {

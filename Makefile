@@ -14,7 +14,6 @@ CYAN  = "\e[36;1m"
 
 goctl-admin-api:
 	goctls api go --swagger --api ./app/admin/cmd/api/desc/admin.api --dir ./app/admin/cmd/api -style=goZero
-	swagger generate spec --output=./core.yml --scan-models
 	@printf $(GREEN)"[SUCCESS] generate goctl-admin-api success"
 
 scan-admin-swagger:
@@ -25,11 +24,6 @@ start-admin-api:
 	lsof -i:9100 | awk 'NR!=1 {print $2}' | xargs killall -9 || true
 	@printf $(GREEN)"[SUCCESS] kill admin-api success"
 	modd
-
-serve-admin-swagger:
-	lsof -i:36666 | awk 'NR!=1 {print $2}' | xargs killall -9 || true
-	@printf $(GREEN)"[SUCCESS] serve swagger-ui success"
-	swagger serve -F=swagger --port 36666 core.yml
 
 ent-admin-orm:
 	cd app/admin/ent && go run -mod=mod ./entc.go

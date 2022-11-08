@@ -37,67 +37,44 @@ type (
 
     CreateRoleReq {
         // Role Name | 角色名
-        // Required : true
-        // Max length: 20
-        // Example: "admin"
         Name string `json:"name" validate:"max=20"`
 
         // Role value | 角色值
-        // Required : true
-        // Max length: 10
-        // Example: "admin"
         Value string `json:"value" validate:"max=10"`
 
         // Role's default page | 角色默认管理页面
-        // Max length: 20
-        // Example: "/dashboard"
         DefaultRouter string `json:"defaultRouter,optional,default='dashboard'" validate:"max=50"`
 
         // Role status | 角色状态
-        // Maximum: 1
-        // Example: 0
         Status uint8 `json:"status,optional,default=0" validate:"number,oneof=0 1"`
 
         // Role remark | 角色备注
-        // Max length: 200
-        // Example: "admin remark"
         Remark string `json:"remark,optional,default=''" validate:"omitempty,max=200"`
 
         // Role's sorting number | 角色排序
-        // Maximum: 1000
-        // Example: 0
         OrderNo uint32 `json:"orderNo,optional,default=0" validate:"number,max=1000"`
     }
 
     UpdateRoleReq {
         // Role ID | 角色 ID
-        // Required : true
-        // Default: 1
-        ID uint64 `json:"id" validate:"number,max=1000"`
+        ID uint64 `path:"id" validate:"number,max=1000"`
 
         // Role Name | 角色名
-        // Max length: 20
         Name *string `json:"name,optional" validate:"omitempty,max=20"`
 
         // Role value | 角色值
-        // Max length: 10
         Value *string `json:"value,optional" validate:"omitempty,max=10"`
 
         // Role's default page | 角色默认管理页面
-        // Max length: 20
         DefaultRouter *string `json:"defaultRouter,optional" validate:"omitempty,max=50"`
 
         // Role status | 角色状态
-        // Maximum: 10
         Status *uint8 `json:"status,optional" validate:"omitempty,number,max=10"`
 
         // Role remark | 角色备注
-        // Max length: 200
         Remark *string `json:"remark,default=''" validate:"omitempty,max=200"`
 
         // Role's sorting number | 角色排序
-        // Required : true
-        // Maximum: 1000
         OrderNo *uint32 `json:"orderNo" validate:"omitempty,number,max=1000"`
     }
 
@@ -105,26 +82,26 @@ type (
     // The response data of role list | 角色列表数据
     RoleListResp {
 
-        // in: body
+        // PageInfo | 分页信息
         Pagination *Pagination `json:"pagination"`
 
-
         // The role list data | 角色列表数据
-        // in: body
-        List []*RoleInfo `json:"data"`
+        List []*RoleInfo `json:"list"`
     }
 
     // The request params of setting role status | 设置角色状态参数
     SetStatusReq {
         // ID
-        // Required: true
-        // Maximum: 1000
-        ID uint64 `json:"id" validate:"number,max=1000"`
+        ID uint64 `path:"id" validate:"number,max=1000"`
 
         // Status code | 状态码
-        // Required: true
-        // Maximum: 1
         Status uint8 `json:"status" validate:"number,oneof=0 1"`
+    }
+
+    RoleListReq {
+        PageParamReq
+
+        keyword string `form:"keyword,optional,default=''" validate:"omitempty,max=20"`
     }
 )
 
@@ -141,17 +118,17 @@ service core {
 
     @doc("Update role information | 更新角色")
     @handler updateRole
-    put /role (UpdateRoleReq) returns (SimpleMsgResp)
+    put /role/:id (UpdateRoleReq) returns (SimpleMsgResp)
 
     @doc("Delete role information | 删除角色信息")
     @handler deleteRole
-    delete /role (IDReq) returns (SimpleMsgResp)
+    delete /role/:id (IDPathReq) returns (SimpleMsgResp)
 
     @doc("Get role list | 获取角色列表")
     @handler getRoleList
-    post /role/list (PageReq) returns (RoleListResp)
+    get /role/list (PageParamReq) returns (RoleListResp)
 
     @doc("Set role status | 设置角色状态")
     @handler setRoleStatus
-    post /role/status (SetStatusReq) returns (SimpleMsgResp)
+    post /role/status/:id (SetStatusReq) returns (SimpleMsgResp)
 }
